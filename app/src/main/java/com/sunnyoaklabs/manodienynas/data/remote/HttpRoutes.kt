@@ -4,7 +4,7 @@ object HttpRoutes {
 
     private const val BASE_URL = "https://www.manodienynas.lt"
 
-    const val EVENT_GET = "$BASE_URL/1/lt/page/sf/resolve_post/event/list"
+    const val EVENTS_GET = "$BASE_URL/1/lt/page/sf/resolve_post/event/list"
 
     const val MARKS_GET = "$BASE_URL/1/lt/page/marks_pupil/marks"
 
@@ -24,7 +24,7 @@ object HttpRoutes {
 
     const val MESSAGE_GOTTEN_LIST_GET = "$BASE_URL/1/lt/page/message_new/message_list"
     const val MESSAGE_SENT_LIST_GET = "$BASE_URL/1/lt/page/message_new/sent_list"
-    const val MESSAGE_STARTED_LIST_GET = "$BASE_URL/1/lt/page/message_new/starred_list"
+    const val MESSAGE_STARRED_LIST_GET = "$BASE_URL/1/lt/page/message_new/starred_list"
     const val MESSAGE_DELETED_LIST_GET = "$BASE_URL/1/lt/page/message_new/deleted_list"
     const val MESSAGE_INDIVIDUAL_GET = "$BASE_URL/1/lt/page/message_new/message/{message_id}"
 

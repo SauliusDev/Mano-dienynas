@@ -96,4 +96,7 @@ dependencies {
 
     // Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:2.3.0"
+
+    // jsoup
+    implementation 'org.jsoup:jsoup:1.13.1'
 }

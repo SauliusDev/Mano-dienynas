@@ -1,4 +1,11 @@
 package com.sunnyoaklabs.manodienynas.data.local
 
-class Converters {
+import com.sunnyoaklabs.manodienynas.data.util.JsonFormatter
+
+class Converters(
+    private val jsonParser: JsonFormatter
+) {
+
+    fun
+
 }
