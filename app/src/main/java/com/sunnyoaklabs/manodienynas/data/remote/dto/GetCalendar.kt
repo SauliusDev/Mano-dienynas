@@ -1,6 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.remote.dto
 
-data class PostHomeWorkDto(
+data class GetCalendar(
     val dateFrom: String,
     val dateTo: String,
     val changeDate: String,

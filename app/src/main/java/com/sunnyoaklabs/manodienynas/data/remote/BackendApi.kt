@@ -1,10 +1,9 @@
 package com.sunnyoaklabs.manodienynas.data.remote
 
-import com.sunnyoaklabs.manodienynas.data.remote.dto.*
-import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWorkDto
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWorkDto
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWorkDto
+import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
+import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
+import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
+import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
 import org.jsoup.nodes.Document
 
 interface BackendApi {
@@ -16,13 +15,13 @@ interface BackendApi {
     suspend fun getAttendance(): Document
 
     suspend fun getClassWork(): Document
-    suspend fun postClassWork(payload: PostClassWorkDto): Document
+    suspend fun postClassWork(payload: PostClassWork): Document
 
     suspend fun getHomeWork(): Document
-    suspend fun postHomeWork(payload: PostHomeWorkDto): Document
+    suspend fun postHomeWork(payload: PostHomeWork): Document
 
     suspend fun getControlWork(): Document
-    suspend fun postControlWork(payload: PostControlWorkDto): Document
+    suspend fun postControlWork(payload: PostControlWork): Document
 
     suspend fun getTerm(): Document
 
@@ -32,7 +31,7 @@ interface BackendApi {
 
     suspend fun getMessagesSent(): Document
 
-    suspend fun getMessagesFavorite(): Document
+    suspend fun getMessagesStarred(): Document
 
     suspend fun getMessagesDeleted(): Document
 
@@ -45,5 +44,5 @@ interface BackendApi {
     suspend fun getSchedule(): Document
 
     suspend fun getCalendar(): Document
-    suspend fun getCalendarDate(payload: GetCalendarDto): Document
+    suspend fun getCalendarDate(payload: GetCalendar): Document
 }
