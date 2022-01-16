@@ -1,0 +1,30 @@
+CREATE TABLE control_work (
+    id INTEGER NOT NULL PRIMARY KEY,
+    field_index TEXT,
+    date TEXT,
+    field_group TEXT,
+    theme TEXT,
+    dateAddition TEXT
+);
+
+getControlWorkById:
+SELECT *
+FROM control_work
+WHERE id = :id;
+
+getAllControlWork:
+SELECT *
+FROM control_work;
+
+insertControlWork:
+INSERT OR REPLACE
+INTO control_work
+VALUES(?, ?, ?, ?, ?, ?);
+
+deleteControlWorkById:
+DELETE FROM control_work
+WHERE id = :id;
+
+deleteAllControlWork:
+DELETE FROM control_work
+WHERE id = :id;

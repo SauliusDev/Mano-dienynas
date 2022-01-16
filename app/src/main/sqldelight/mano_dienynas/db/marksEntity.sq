@@ -1,0 +1,29 @@
+CREATE TABLE marks (
+    id INTEGER NOT NULL PRIMARY KEY,
+    lesson TEXT,
+    teacher TEXT,
+    average TEXT,
+    markEvent TEXT
+);
+
+getMarkById:
+SELECT *
+FROM marks
+WHERE id = :id;
+
+getAllMarks:
+SELECT *
+FROM marks;
+
+insertMark:
+INSERT OR REPLACE
+INTO marks
+VALUES(?, ?, ?, ?, ?);
+
+deleteMarkById:
+DELETE FROM marks
+WHERE id = :id;
+
+deleteAllMarks:
+DELETE FROM marks
+WHERE id = :id;

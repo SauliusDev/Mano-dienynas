@@ -1,0 +1,32 @@
+CREATE TABLE classwork (
+    id INTEGER NOT NULL PRIMARY KEY,
+    month TEXT,
+    monthDay TEXT,
+    weekDay TEXT,
+    lesson TEXT,
+    teacher TEXT,
+    description TEXT,
+    dateAddition TEXT
+);
+
+getClassworkById:
+SELECT *
+FROM classwork
+WHERE id = :id;
+
+getAllClasswork:
+SELECT *
+FROM classwork;
+
+insertClasswork:
+INSERT OR REPLACE
+INTO classwork
+VALUES(?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteClassworkById:
+DELETE FROM classwork
+WHERE id = :id;
+
+deleteAllClasswork:
+DELETE FROM classwork
+WHERE id = :id;

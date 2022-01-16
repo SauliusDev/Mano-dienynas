@@ -1,0 +1,28 @@
+CREATE TABLE schedule (
+    id INTEGER NOT NULL PRIMARY KEY,
+    timeRange TEXT,
+    lessonOrder INTEGER,
+    lesson TEXT
+);
+
+getScheduleById:
+SELECT *
+FROM schedule
+WHERE id = :id;
+
+getAllSchedule:
+SELECT *
+FROM schedule;
+
+insertSchedule:
+INSERT OR REPLACE
+INTO schedule
+VALUES(?, ?, ?, ?);
+
+deleteScheduleById:
+DELETE FROM schedule
+WHERE id = :id;
+
+deleteAllSchedule:
+DELETE FROM schedule
+WHERE id = :id;

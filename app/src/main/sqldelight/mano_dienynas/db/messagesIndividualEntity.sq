@@ -1,0 +1,30 @@
+CREATE TABLE messages_individual (
+    id INTEGER NOT NULL PRIMARY KEY,
+    messageId TEXT,
+    title TEXT,
+    sender TEXT,
+    date TEXT,
+    content TEXT
+);
+
+getMessageIndividualById:
+SELECT *
+FROM messages_individual
+WHERE id = :id;
+
+getAllMessagesIndividual:
+SELECT *
+FROM messages_individual;
+
+insertMessageIndividual:
+INSERT OR REPLACE
+INTO messages_individual
+VALUES(?, ?, ?, ?, ?, ?);
+
+deleteMessageIndividualById:
+DELETE FROM messages_individual
+WHERE id = :id;
+
+deleteAllMessagesIndividual:
+DELETE FROM messages_individual
+WHERE id = :id;

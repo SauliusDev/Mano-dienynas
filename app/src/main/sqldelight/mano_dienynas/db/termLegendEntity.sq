@@ -1,0 +1,27 @@
+CREATE TABLE term_legend (
+    id INTEGER NOT NULL PRIMARY KEY,
+    abbreviation TEXT,
+    description TEXT
+);
+
+getTermLegendById:
+SELECT *
+FROM term_legend
+WHERE id = :id;
+
+getAllTermLegend:
+SELECT *
+FROM term_legend;
+
+insertTermLegend:
+INSERT OR REPLACE
+INTO term_legend
+VALUES(?, ?, ?);
+
+deleteTermLegendById:
+DELETE FROM term_legend
+WHERE id = :id;
+
+deleteAllTermLegend:
+DELETE FROM term_legend
+WHERE id = :id;

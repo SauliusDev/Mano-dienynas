@@ -1,0 +1,30 @@
+CREATE TABLE messages_sent (
+    id INTEGER NOT NULL PRIMARY KEY,
+    messageId TEXT,
+    isStarred TEXT,
+    date TEXT,
+    theme TEXT,
+    sender TEXT
+);
+
+getMessageSentById:
+SELECT *
+FROM messages_sent
+WHERE id = :id;
+
+getAllMessagesSent:
+SELECT *
+FROM messages_sent;
+
+insertMessageSent:
+INSERT OR REPLACE
+INTO messages_sent
+VALUES(?, ?, ?, ?, ?, ?);
+
+deleteMessageSentById:
+DELETE FROM messages_sent
+WHERE id = :id;
+
+deleteAllMessagesSent:
+DELETE FROM messages_sent
+WHERE id = :id;

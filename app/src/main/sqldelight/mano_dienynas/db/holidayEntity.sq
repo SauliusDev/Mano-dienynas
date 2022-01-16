@@ -1,0 +1,28 @@
+CREATE TABLE holiday (
+    id INTEGER NOT NULL PRIMARY KEY,
+    name TEXT,
+    rangeStart TEXT,
+    rangeEnd TEXT
+);
+
+getHolidayById:
+SELECT *
+FROM holiday
+WHERE id = :id;
+
+getAllHoliday:
+SELECT *
+FROM holiday;
+
+insertHoliday:
+INSERT OR REPLACE
+INTO holiday
+VALUES(?, ?, ?, ?);
+
+deleteHolidayById:
+DELETE FROM holiday
+WHERE id = :id;
+
+deleteAllHoliday:
+DELETE FROM holiday
+WHERE id = :id;

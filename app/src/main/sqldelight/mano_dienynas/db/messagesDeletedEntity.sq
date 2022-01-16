@@ -1,0 +1,30 @@
+CREATE TABLE messages_deleted (
+    id INTEGER NOT NULL PRIMARY KEY,
+    messageId TEXT,
+    isStarred TEXT,
+    date TEXT,
+    theme TEXT,
+    sender TEXT
+);
+
+getMessageDeletedById:
+SELECT *
+FROM messages_deleted
+WHERE id = :id;
+
+getAllMessagesDeleted:
+SELECT *
+FROM messages_deleted;
+
+insertMessageDeleted:
+INSERT OR REPLACE
+INTO messages_deleted
+VALUES(?, ?, ?, ?, ?, ?);
+
+deleteMessageDeletedById:
+DELETE FROM messages_deleted
+WHERE id = :id;
+
+deleteAllMessagesDeleted:
+DELETE FROM messages_deleted
+WHERE id = :id;

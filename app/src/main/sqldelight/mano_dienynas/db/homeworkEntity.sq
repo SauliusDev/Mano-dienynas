@@ -1,0 +1,33 @@
+CREATE TABLE homework (
+    id INTEGER NOT NULL PRIMARY KEY,
+    month TEXT,
+    monthDay TEXT,
+    weekDay TEXT,
+    lesson TEXT,
+    teacher TEXT,
+    description TEXT,
+    dateAddition TEXT,
+    attachmentsUrl TEXT
+);
+
+getHomeworkById:
+SELECT *
+FROM homework
+WHERE id = :id;
+
+getAllHomework:
+SELECT *
+FROM homework;
+
+insertHomework:
+INSERT OR REPLACE
+INTO homework
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteHomeworkById:
+DELETE FROM homework
+WHERE id = :id;
+
+deleteAllHomework:
+DELETE FROM homework
+WHERE id = :id;

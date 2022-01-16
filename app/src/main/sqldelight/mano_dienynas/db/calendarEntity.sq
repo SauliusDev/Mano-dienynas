@@ -1,0 +1,29 @@
+CREATE TABLE calendar (
+    id INTEGER NOT NULL PRIMARY KEY,
+    allDay TEXT,
+    type TEXT,
+    start TEXT,
+    title TEXT
+);
+
+getCalendarById:
+SELECT *
+FROM calendar
+WHERE id = :id;
+
+getAllCalendar:
+SELECT *
+FROM calendar;
+
+insertCalendar:
+INSERT OR REPLACE
+INTO calendar
+VALUES(?, ?, ?, ?, ?);
+
+deleteCalendarById:
+DELETE FROM calendar
+WHERE id = :id;
+
+deleteAllCalendar:
+DELETE FROM calendar
+WHERE id = :id;

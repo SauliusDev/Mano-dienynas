@@ -1,0 +1,32 @@
+CREATE TABLE events (
+    id INTEGER NOT NULL PRIMARY KEY,
+    title TEXT,
+    pupilInfo TEXT,
+    createDate TEXT,
+    createDateText TEXT,
+    eventHeader TEXT,
+    eventText TEXT,
+    creator_name TEXT
+);
+
+getEventById:
+SELECT *
+FROM events
+WHERE id = :id;
+
+getAllEvents:
+SELECT *
+FROM events;
+
+insertEvent:
+INSERT OR REPLACE
+INTO events
+VALUES(?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteEventById:
+DELETE FROM events
+WHERE id = :id;
+
+deleteAllEvents:
+DELETE FROM events
+WHERE id = :id;

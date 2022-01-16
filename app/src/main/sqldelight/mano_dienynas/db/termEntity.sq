@@ -1,0 +1,37 @@
+CREATE TABLE term (
+    id INTEGER NOT NULL PRIMARY KEY,
+    subject TEXT,
+    abbreviationMarks TEXT,
+    abbreviationMissedLessons TEXT,
+    average TEXT,
+    derived TEXT,
+    credit TEXT,
+    additionalWorks TEXT,
+    exams TEXT,
+    yearDescription TEXT,
+    yearMark TEXT,
+    yearAdditionalWorks TEXT,
+    yearExams TEXT
+);
+
+getTermById:
+SELECT *
+FROM term
+WHERE id = :id;
+
+getAllTerm:
+SELECT *
+FROM term;
+
+insertTerm:
+INSERT OR REPLACE
+INTO term
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteTermById:
+DELETE FROM term
+WHERE id = :id;
+
+deleteAllTerm:
+DELETE FROM term
+WHERE id = :id;

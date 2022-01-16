@@ -1,0 +1,31 @@
+CREATE TABLE parent_meetings (
+    id INTEGER NOT NULL PRIMARY KEY,
+    className TEXT,
+    description TEXT,
+    date TEXT,
+    location TEXT,
+    attachmentUrl TEXT,
+    creationDate TEXT
+);
+
+getParentMeetingById:
+SELECT *
+FROM parent_meetings
+WHERE id = :id;
+
+getAllParentMeetings:
+SELECT *
+FROM parent_meetings;
+
+insertParentMeeting:
+INSERT OR REPLACE
+INTO parent_meetings
+VALUES(?, ?, ?, ?, ?, ?, ?);
+
+deleteParentMeetingById:
+DELETE FROM parent_meetings
+WHERE id = :id;
+
+deleteAllParentMeetings:
+DELETE FROM parent_meetings
+WHERE id = :id;

@@ -1,0 +1,31 @@
+CREATE TABLE attendance (
+    id INTEGER NOT NULL PRIMARY KEY,
+    lessonTitle TEXT,
+    teacher TEXT,
+    attendance TEXT,
+    attendanceRange TEXT
+);
+
+getAttendanceById:
+SELECT *
+FROM attendance
+WHERE id = :id;
+
+getAllAttendance:
+SELECT *
+FROM attendance;
+
+insertAttendance:
+INSERT OR REPLACE
+INTO attendance
+VALUES(?, ?, ?, ?, ?);
+
+deleteAttendanceById:
+DELETE FROM attendance
+WHERE id = :id;
+
+deleteAllAttendance:
+DELETE FROM attendance
+WHERE id = :id;
+
+
