@@ -1,4 +1,4 @@
-CREATE TABLE events (
+CREATE TABLE eventEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     title TEXT,
     pupilInfo TEXT,
@@ -11,22 +11,22 @@ CREATE TABLE events (
 
 getEventById:
 SELECT *
-FROM events
+FROM eventEntity
 WHERE id = :id;
 
 getAllEvents:
 SELECT *
-FROM events;
+FROM eventEntity;
 
 insertEvent:
 INSERT OR REPLACE
-INTO events
+INTO eventEntity
 VALUES(?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteEventById:
-DELETE FROM events
+DELETE FROM eventEntity
 WHERE id = :id;
 
 deleteAllEvents:
-DELETE FROM events
+DELETE FROM eventEntity
 WHERE id = :id;

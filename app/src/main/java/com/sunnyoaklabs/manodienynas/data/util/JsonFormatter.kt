@@ -8,7 +8,7 @@ interface JsonFormatter {
 
     fun toEvents(html: Document): List<Event>
 
-    fun toMarks(html: Document): List<Marks>
+    fun toMarks(html: Document): List<Mark>
 
     fun toAttendance(html: Document): List<Attendance>
 
@@ -28,7 +28,7 @@ interface JsonFormatter {
 
     fun toHoliday(html: Document): List<Holiday>
 
-    fun toParentMeeting(html: Document): List<ParentMeetings>
+    fun toParentMeeting(html: Document): List<ParentMeeting>
 
     fun toSchedule(html: Document): List<Schedule>
 

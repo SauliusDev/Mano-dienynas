@@ -101,4 +101,11 @@ dependencies {
     // sql delight
     implementation "com.squareup.sqldelight:android-driver:1.5.2"
     implementation "com.squareup.sqldelight:coroutines-extensions-jvm:1.5.2"
+    implementation "com.squareup.sqldelight:native-driver:1.5.3"
+}
+
+sqldelight {
+    ManoDienynasDatabase {
+        packageName = "com.sunnyoaklabs.manodienynas"
+    }
 }

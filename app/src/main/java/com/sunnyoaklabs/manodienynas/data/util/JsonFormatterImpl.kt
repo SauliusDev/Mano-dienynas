@@ -10,7 +10,7 @@ class JsonFormatterImpl(): JsonFormatter {
         TODO("Not yet implemented")
     }
 
-    override fun toMarks(html: Document): List<Marks> {
+    override fun toMarks(html: Document): List<Mark> {
         TODO("Not yet implemented")
     }
 
@@ -50,7 +50,7 @@ class JsonFormatterImpl(): JsonFormatter {
         TODO("Not yet implemented")
     }
 
-    override fun toParentMeeting(html: Document): List<ParentMeetings> {
+    override fun toParentMeeting(html: Document): List<ParentMeeting> {
         TODO("Not yet implemented")
     }
 

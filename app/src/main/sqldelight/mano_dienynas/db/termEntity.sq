@@ -1,4 +1,4 @@
-CREATE TABLE term (
+CREATE TABLE termEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     subject TEXT,
     abbreviationMarks TEXT,
@@ -16,22 +16,22 @@ CREATE TABLE term (
 
 getTermById:
 SELECT *
-FROM term
+FROM termEntity
 WHERE id = :id;
 
 getAllTerm:
 SELECT *
-FROM term;
+FROM termEntity;
 
 insertTerm:
 INSERT OR REPLACE
-INTO term
+INTO termEntity
 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteTermById:
-DELETE FROM term
+DELETE FROM termEntity
 WHERE id = :id;
 
 deleteAllTerm:
-DELETE FROM term
+DELETE FROM termEntity
 WHERE id = :id;

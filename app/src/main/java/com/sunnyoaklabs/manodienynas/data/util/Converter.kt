@@ -5,8 +5,6 @@ import com.google.gson.reflect.TypeToken
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
-import com.sunnyoaklabs.manodienynas.data.util.JsonFormatter
-import com.sunnyoaklabs.manodienynas.data.util.JsonParser
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import org.jsoup.nodes.Document
 
@@ -15,31 +13,38 @@ class Converter(
     private val jsonParser: JsonParser
 ) {
 
-    fun fromAttendanceJson(json: String): List<List<Int>> {
-        return jsonParser.fromJson<ArrayList<ArrayList<Int>>>(
-            json,
-            object : TypeToken<ArrayList<ArrayList<Int>>>(){}.type
-        ) ?: emptyList()
-    }
-
-    fun toAttendanceJson(json: PostClassWork): String {
+    fun toAttendanceJson(list: List<AttendanceItem>): String {
         return jsonParser.toJson(
-            json,
-            object : TypeToken<ArrayList<ArrayList<Int>>>(){}.type
+            list,
+            object : TypeToken<ArrayList<AttendanceItem>>(){}.type
         ) ?: "[]"
     }
 
-    fun fromAttendanceRangeJson(json: String): List<PostClassWork> {
-        return jsonParser.fromJson<ArrayList<PostClassWork>>(
+    fun fromAttendanceJson(json: String): List<AttendanceItem> {
+        return jsonParser.fromJson<ArrayList<AttendanceItem>>(
             json,
-            object : TypeToken<ArrayList<PostClassWork>>(){}.type
+            object : TypeToken<ArrayList<AttendanceItem>>(){}.type
         ) ?: emptyList()
     }
 
-    fun toAttendanceRangeJson(json: PostClassWork): String {
+    fun toAttendanceRangeJson(list: List<AttendanceRange>): String {
         return jsonParser.toJson(
+            list,
+            object : TypeToken<ArrayList<AttendanceRange>>(){}.type
+        ) ?: "[]"
+    }
+
+    fun fromAttendanceRangeJson(json: String): List<AttendanceRange> {
+        return jsonParser.fromJson<ArrayList<AttendanceRange>>(
             json,
-            object : TypeToken<ArrayList<PostClassWork>>(){}.type
+            object : TypeToken<ArrayList<AttendanceRange>>(){}.type
+        ) ?: emptyList()
+    }
+
+    fun toMarkEventJson(list: List<MarkEvent>): String {
+        return jsonParser.toJson(
+            list,
+            object : TypeToken<ArrayList<MarkEvent>>(){}.type
         ) ?: "[]"
     }
 
@@ -48,13 +53,6 @@ class Converter(
             json,
             object : TypeToken<ArrayList<MarkEvent>>(){}.type
         ) ?: emptyList()
-    }
-
-    fun toMarkEventJson(json: PostClassWork): String {
-        return jsonParser.toJson(
-            json,
-            object : TypeToken<ArrayList<MarkEvent>>(){}.type
-        ) ?: "[]"
     }
 
     fun toPostClassWorkJson(payload: PostClassWork): String {
@@ -82,7 +80,7 @@ class Converter(
         return jsonFormatter.toEvents(html = html)
     }
 
-    fun toMarks(html: Document): List<Marks> {
+    fun toMarks(html: Document): List<Mark> {
         return jsonFormatter.toMarks(html = html)
     }
 
@@ -122,7 +120,7 @@ class Converter(
         return jsonFormatter.toHoliday(html = html)
     }
 
-    fun toParentMeeting(html: Document): List<ParentMeetings> {
+    fun toParentMeeting(html: Document): List<ParentMeeting> {
         return jsonFormatter.toParentMeeting(html = html)
     }
 

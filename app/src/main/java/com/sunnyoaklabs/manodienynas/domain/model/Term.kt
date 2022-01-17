@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.domain.model
 
 data class Term(
+    val id: Long,
     val subject: String,
     val abbreviationMarks: String,
     val abbreviationMissedLessons: String,

@@ -1,6 +1,6 @@
-CREATE TABLE calendar (
+CREATE TABLE calendarEntity (
     id INTEGER NOT NULL PRIMARY KEY,
-    allDay TEXT,
+    allDay INTEGER,
     type TEXT,
     start TEXT,
     title TEXT
@@ -8,22 +8,22 @@ CREATE TABLE calendar (
 
 getCalendarById:
 SELECT *
-FROM calendar
+FROM calendarEntity
 WHERE id = :id;
 
 getAllCalendar:
 SELECT *
-FROM calendar;
+FROM calendarEntity;
 
 insertCalendar:
 INSERT OR REPLACE
-INTO calendar
+INTO calendarEntity
 VALUES(?, ?, ?, ?, ?);
 
 deleteCalendarById:
-DELETE FROM calendar
+DELETE FROM calendarEntity
 WHERE id = :id;
 
 deleteAllCalendar:
-DELETE FROM calendar
+DELETE FROM calendarEntity
 WHERE id = :id;

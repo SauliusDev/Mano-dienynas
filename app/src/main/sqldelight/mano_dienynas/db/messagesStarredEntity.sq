@@ -1,4 +1,4 @@
-CREATE TABLE messages_started (
+CREATE TABLE messageStartedEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     messageId TEXT,
     isStarred TEXT,
@@ -9,22 +9,22 @@ CREATE TABLE messages_started (
 
 getMessageStartedById:
 SELECT *
-FROM messages_started
+FROM messageStartedEntity
 WHERE id = :id;
 
 getAllMessagesStarted:
 SELECT *
-FROM messages_started;
+FROM messageStartedEntity;
 
 insertMessageStarted:
 INSERT OR REPLACE
-INTO messages_started
+INTO messageStartedEntity
 VALUES(?, ?, ?, ?, ?, ?);
 
 deleteMessageStartedById:
-DELETE FROM messages_started
+DELETE FROM messageStartedEntity
 WHERE id = :id;
 
 deleteAllMessagesStarted:
-DELETE FROM messages_started
+DELETE FROM messageStartedEntity
 WHERE id = :id;

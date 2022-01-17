@@ -1,4 +1,4 @@
-CREATE TABLE attendance (
+CREATE TABLE attendanceEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     lessonTitle TEXT,
     teacher TEXT,
@@ -8,24 +8,24 @@ CREATE TABLE attendance (
 
 getAttendanceById:
 SELECT *
-FROM attendance
+FROM attendanceEntity
 WHERE id = :id;
 
 getAllAttendance:
 SELECT *
-FROM attendance;
+FROM attendanceEntity;
 
 insertAttendance:
 INSERT OR REPLACE
-INTO attendance
+INTO attendanceEntity
 VALUES(?, ?, ?, ?, ?);
 
 deleteAttendanceById:
-DELETE FROM attendance
+DELETE FROM attendanceEntity
 WHERE id = :id;
 
 deleteAllAttendance:
-DELETE FROM attendance
+DELETE FROM attendanceEntity
 WHERE id = :id;
 
 

@@ -1,4 +1,4 @@
-CREATE TABLE marks (
+CREATE TABLE markEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     lesson TEXT,
     teacher TEXT,
@@ -8,22 +8,22 @@ CREATE TABLE marks (
 
 getMarkById:
 SELECT *
-FROM marks
+FROM markEntity
 WHERE id = :id;
 
 getAllMarks:
 SELECT *
-FROM marks;
+FROM markEntity;
 
 insertMark:
 INSERT OR REPLACE
-INTO marks
+INTO markEntity
 VALUES(?, ?, ?, ?, ?);
 
 deleteMarkById:
-DELETE FROM marks
+DELETE FROM markEntity
 WHERE id = :id;
 
 deleteAllMarks:
-DELETE FROM marks
+DELETE FROM markEntity
 WHERE id = :id;

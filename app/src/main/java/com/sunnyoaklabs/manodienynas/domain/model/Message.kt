@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.domain.model
 
 data class Message(
+    val id: Long,
     val messageId: String,
     val isStarred: String,
     val date: String,

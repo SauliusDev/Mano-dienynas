@@ -1,4 +1,4 @@
-CREATE TABLE control_work (
+CREATE TABLE controlWorkEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     field_index TEXT,
     date TEXT,
@@ -9,22 +9,22 @@ CREATE TABLE control_work (
 
 getControlWorkById:
 SELECT *
-FROM control_work
+FROM controlWorkEntity
 WHERE id = :id;
 
 getAllControlWork:
 SELECT *
-FROM control_work;
+FROM controlWorkEntity;
 
 insertControlWork:
 INSERT OR REPLACE
-INTO control_work
+INTO controlWorkEntity
 VALUES(?, ?, ?, ?, ?, ?);
 
 deleteControlWorkById:
-DELETE FROM control_work
+DELETE FROM controlWorkEntity
 WHERE id = :id;
 
 deleteAllControlWork:
-DELETE FROM control_work
+DELETE FROM controlWorkEntity
 WHERE id = :id;

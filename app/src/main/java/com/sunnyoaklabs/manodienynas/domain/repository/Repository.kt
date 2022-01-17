@@ -12,7 +12,7 @@ interface Repository {
 
     fun getEvents(): Flow<Resource<List<Event>>>
 
-    fun getMarks(): Flow<Resource<List<Marks>>>
+    fun getMarks(): Flow<Resource<List<Mark>>>
 
     fun getAttendance(): Flow<Resource<List<Attendance>>>
 
@@ -41,7 +41,7 @@ interface Repository {
 
     fun getHoliday(): Flow<Resource<List<Holiday>>>
 
-    fun getParentMeetings(): Flow<Resource<List<ParentMeetings>>>
+    fun getParentMeetings(): Flow<Resource<List<ParentMeeting>>>
 
     fun getSchedule(): Flow<Resource<List<Schedule>>>
 

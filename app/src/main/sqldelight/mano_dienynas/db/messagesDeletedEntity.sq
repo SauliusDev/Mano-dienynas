@@ -1,4 +1,4 @@
-CREATE TABLE messages_deleted (
+CREATE TABLE messageDeletedEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     messageId TEXT,
     isStarred TEXT,
@@ -9,22 +9,22 @@ CREATE TABLE messages_deleted (
 
 getMessageDeletedById:
 SELECT *
-FROM messages_deleted
+FROM messageDeletedEntity
 WHERE id = :id;
 
 getAllMessagesDeleted:
 SELECT *
-FROM messages_deleted;
+FROM messageDeletedEntity;
 
 insertMessageDeleted:
 INSERT OR REPLACE
-INTO messages_deleted
+INTO messageDeletedEntity
 VALUES(?, ?, ?, ?, ?, ?);
 
 deleteMessageDeletedById:
-DELETE FROM messages_deleted
+DELETE FROM messageDeletedEntity
 WHERE id = :id;
 
 deleteAllMessagesDeleted:
-DELETE FROM messages_deleted
+DELETE FROM messageDeletedEntity
 WHERE id = :id;

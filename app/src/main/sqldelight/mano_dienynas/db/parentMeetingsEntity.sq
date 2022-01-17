@@ -1,4 +1,4 @@
-CREATE TABLE parent_meetings (
+CREATE TABLE parentMeetingEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     className TEXT,
     description TEXT,
@@ -10,22 +10,22 @@ CREATE TABLE parent_meetings (
 
 getParentMeetingById:
 SELECT *
-FROM parent_meetings
+FROM parentMeetingEntity
 WHERE id = :id;
 
 getAllParentMeetings:
 SELECT *
-FROM parent_meetings;
+FROM parentMeetingEntity;
 
 insertParentMeeting:
 INSERT OR REPLACE
-INTO parent_meetings
+INTO parentMeetingEntity
 VALUES(?, ?, ?, ?, ?, ?, ?);
 
 deleteParentMeetingById:
-DELETE FROM parent_meetings
+DELETE FROM parentMeetingEntity
 WHERE id = :id;
 
 deleteAllParentMeetings:
-DELETE FROM parent_meetings
+DELETE FROM parentMeetingEntity
 WHERE id = :id;

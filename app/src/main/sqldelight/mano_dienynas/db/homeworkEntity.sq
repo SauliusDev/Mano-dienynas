@@ -1,4 +1,4 @@
-CREATE TABLE homework (
+CREATE TABLE homeworkEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     month TEXT,
     monthDay TEXT,
@@ -12,22 +12,22 @@ CREATE TABLE homework (
 
 getHomeworkById:
 SELECT *
-FROM homework
+FROM homeworkEntity
 WHERE id = :id;
 
 getAllHomework:
 SELECT *
-FROM homework;
+FROM homeworkEntity;
 
 insertHomework:
 INSERT OR REPLACE
-INTO homework
+INTO homeworkEntity
 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteHomeworkById:
-DELETE FROM homework
+DELETE FROM homeworkEntity
 WHERE id = :id;
 
 deleteAllHomework:
-DELETE FROM homework
+DELETE FROM homeworkEntity
 WHERE id = :id;

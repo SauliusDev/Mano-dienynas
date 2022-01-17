@@ -1,4 +1,4 @@
-CREATE TABLE classwork (
+CREATE TABLE classworkEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     month TEXT,
     monthDay TEXT,
@@ -11,22 +11,22 @@ CREATE TABLE classwork (
 
 getClassworkById:
 SELECT *
-FROM classwork
+FROM classworkEntity
 WHERE id = :id;
 
 getAllClasswork:
 SELECT *
-FROM classwork;
+FROM classworkEntity;
 
 insertClasswork:
 INSERT OR REPLACE
-INTO classwork
+INTO classworkEntity
 VALUES(?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteClassworkById:
-DELETE FROM classwork
+DELETE FROM classworkEntity
 WHERE id = :id;
 
 deleteAllClasswork:
-DELETE FROM classwork
+DELETE FROM classworkEntity
 WHERE id = :id;

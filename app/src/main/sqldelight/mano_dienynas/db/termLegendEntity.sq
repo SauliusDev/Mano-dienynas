@@ -1,4 +1,4 @@
-CREATE TABLE term_legend (
+CREATE TABLE termLegendEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     abbreviation TEXT,
     description TEXT
@@ -6,22 +6,22 @@ CREATE TABLE term_legend (
 
 getTermLegendById:
 SELECT *
-FROM term_legend
+FROM termLegendEntity
 WHERE id = :id;
 
 getAllTermLegend:
 SELECT *
-FROM term_legend;
+FROM termLegendEntity;
 
 insertTermLegend:
 INSERT OR REPLACE
-INTO term_legend
+INTO termLegendEntity
 VALUES(?, ?, ?);
 
 deleteTermLegendById:
-DELETE FROM term_legend
+DELETE FROM termLegendEntity
 WHERE id = :id;
 
 deleteAllTermLegend:
-DELETE FROM term_legend
+DELETE FROM termLegendEntity
 WHERE id = :id;

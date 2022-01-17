@@ -1,4 +1,4 @@
-CREATE TABLE messages_individual (
+CREATE TABLE messageIndividualEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     messageId TEXT,
     title TEXT,
@@ -9,22 +9,22 @@ CREATE TABLE messages_individual (
 
 getMessageIndividualById:
 SELECT *
-FROM messages_individual
+FROM messageIndividualEntity
 WHERE id = :id;
 
 getAllMessagesIndividual:
 SELECT *
-FROM messages_individual;
+FROM messageIndividualEntity;
 
 insertMessageIndividual:
 INSERT OR REPLACE
-INTO messages_individual
+INTO messageIndividualEntity
 VALUES(?, ?, ?, ?, ?, ?);
 
 deleteMessageIndividualById:
-DELETE FROM messages_individual
+DELETE FROM messageIndividualEntity
 WHERE id = :id;
 
 deleteAllMessagesIndividual:
-DELETE FROM messages_individual
+DELETE FROM messageIndividualEntity
 WHERE id = :id;

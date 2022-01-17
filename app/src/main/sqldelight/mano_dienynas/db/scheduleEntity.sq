@@ -1,4 +1,4 @@
-CREATE TABLE schedule (
+CREATE TABLE scheduleEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     timeRange TEXT,
     lessonOrder INTEGER,
@@ -7,22 +7,22 @@ CREATE TABLE schedule (
 
 getScheduleById:
 SELECT *
-FROM schedule
+FROM scheduleEntity
 WHERE id = :id;
 
 getAllSchedule:
 SELECT *
-FROM schedule;
+FROM scheduleEntity;
 
 insertSchedule:
 INSERT OR REPLACE
-INTO schedule
+INTO scheduleEntity
 VALUES(?, ?, ?, ?);
 
 deleteScheduleById:
-DELETE FROM schedule
+DELETE FROM scheduleEntity
 WHERE id = :id;
 
 deleteAllSchedule:
-DELETE FROM schedule
+DELETE FROM scheduleEntity
 WHERE id = :id;

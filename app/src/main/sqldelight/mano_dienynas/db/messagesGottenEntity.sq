@@ -1,4 +1,4 @@
-CREATE TABLE messages_gotten (
+CREATE TABLE messageGottenEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     messageId TEXT,
     isStarred TEXT,
@@ -9,22 +9,22 @@ CREATE TABLE messages_gotten (
 
 getMessageGottenById:
 SELECT *
-FROM messages_gotten
+FROM messageGottenEntity
 WHERE id = :id;
 
 getAllMessagesGotten:
 SELECT *
-FROM messages_gotten;
+FROM messageGottenEntity;
 
 insertMessageGotten:
 INSERT OR REPLACE
-INTO messages_gotten
+INTO messageGottenEntity
 VALUES(?, ?, ?, ?, ?, ?);
 
 deleteMessageGottenById:
-DELETE FROM messages_gotten
+DELETE FROM messageGottenEntity
 WHERE id = :id;
 
 deleteAllMessagesGotten:
-DELETE FROM messages_gotten
+DELETE FROM messageGottenEntity
 WHERE id = :id;

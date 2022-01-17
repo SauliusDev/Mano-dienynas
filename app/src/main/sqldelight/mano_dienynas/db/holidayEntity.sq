@@ -1,4 +1,4 @@
-CREATE TABLE holiday (
+CREATE TABLE holidayEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT,
     rangeStart TEXT,
@@ -7,22 +7,22 @@ CREATE TABLE holiday (
 
 getHolidayById:
 SELECT *
-FROM holiday
+FROM holidayEntity
 WHERE id = :id;
 
 getAllHoliday:
 SELECT *
-FROM holiday;
+FROM holidayEntity;
 
 insertHoliday:
 INSERT OR REPLACE
-INTO holiday
+INTO holidayEntity
 VALUES(?, ?, ?, ?);
 
 deleteHolidayById:
-DELETE FROM holiday
+DELETE FROM holidayEntity
 WHERE id = :id;
 
 deleteAllHoliday:
-DELETE FROM holiday
+DELETE FROM holidayEntity
 WHERE id = :id;

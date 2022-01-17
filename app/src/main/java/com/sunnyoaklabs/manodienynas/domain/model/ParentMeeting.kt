@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.domain.model
 
-data class ParentMeetings(
+data class ParentMeeting(
+    val id: Long,
     val className: String,
     val description: String,
     val date: String,
