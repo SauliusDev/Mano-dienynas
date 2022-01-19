@@ -55,6 +55,13 @@ class Converter(
         ) ?: emptyList()
     }
 
+    fun toPostLogin(payload: Credentials): String {
+        return jsonParser.toJson(
+            payload,
+            object : TypeToken<Credentials>(){}.type
+        ) ?: "[]"
+    }
+
     fun toPostClassWorkJson(payload: PostClassWork): String {
         return jsonParser.toJson(
             payload,

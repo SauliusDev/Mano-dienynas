@@ -3,6 +3,8 @@ package com.sunnyoaklabs.manodienynas.data.remote
 object HttpRoutes {
 
     private const val BASE_URL = "https://www.manodienynas.lt"
+   
+    const val LOGIN_POST = "$BASE_URL/1/lt/ajax/user/login"
 
     const val EVENTS_GET = "$BASE_URL/1/lt/page/sf/resolve_post/event/list"
 

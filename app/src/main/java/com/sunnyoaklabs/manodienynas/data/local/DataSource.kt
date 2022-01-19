@@ -6,6 +6,14 @@ import manodienynas.db.*
 
 interface DataSource {
 
+    suspend fun getSessionId(): SessionIdEntity?
+    suspend fun deleteSessionId()
+    suspend fun insertSessionId(sessionId: String)
+
+    suspend fun getCredentials(): CredentialsEntity?
+    suspend fun deleteCredentials()
+    suspend fun insertEvent(credentials: Credentials)
+
     suspend fun getEventById(id: Long): EventEntity?
     fun getAllEvents(): Flow<List<EventEntity>>
     suspend fun deleteEventById(id: Long)

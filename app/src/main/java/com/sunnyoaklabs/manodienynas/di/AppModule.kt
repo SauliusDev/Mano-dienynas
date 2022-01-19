@@ -1,11 +1,21 @@
 package com.sunnyoaklabs.manodienynas.di
 
+import android.app.Application
 import com.google.gson.Gson
+import com.squareup.sqldelight.android.AndroidSqliteDriver
+import com.squareup.sqldelight.db.SqlDriver
+import com.sunnyoaklabs.manodienynas.ManoDienynasDatabase
 import com.sunnyoaklabs.manodienynas.core.util.DispatcherProvider
 import com.sunnyoaklabs.manodienynas.core.util.StandardDispatchers
+import com.sunnyoaklabs.manodienynas.data.local.DataSource
+import com.sunnyoaklabs.manodienynas.data.local.DataSourceImpl
+import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
+import com.sunnyoaklabs.manodienynas.data.remote.BackendApiImpl
+import com.sunnyoaklabs.manodienynas.data.repository.RepositoryImpl
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.data.util.GsonParser
 import com.sunnyoaklabs.manodienynas.data.util.JsonFormatterImpl
+import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +25,23 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideRepository(
+        dataSource: DataSource,
+        api: BackendApi
+    ): Repository {
+        return RepositoryImpl(api, dataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBackendApi(
+        converter: Converter
+    ): BackendApi {
+        return BackendApi.create(converter)
+    }
 
     @Provides
     @Singleton
@@ -29,5 +56,25 @@ object AppModule {
             jsonFormatter = JsonFormatterImpl(),
             jsonParser = GsonParser(Gson())
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideSqlDriver(app: Application): SqlDriver {
+        return AndroidSqliteDriver(
+            schema = ManoDienynasDatabase.Schema,
+            context = app,
+            name = "manodienynas.db"
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataSource(
+        driver: SqlDriver,
+        provider: DispatcherProvider,
+        converter: Converter
+    ): DataSource {
+        return DataSourceImpl(ManoDienynasDatabase(driver), provider, converter)
     }
 }

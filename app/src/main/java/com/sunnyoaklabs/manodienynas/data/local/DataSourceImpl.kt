@@ -18,6 +18,47 @@ class DataSourceImpl @Inject constructor(
     private val converter: Converter
 ): DataSource {
 
+    override suspend fun getSessionId(): SessionIdEntity? {
+        return withContext(dispatchers.io) {
+            db.sessionIdEntityQueries.getSessionId().executeAsOneOrNull()
+        }
+    }
+
+    override suspend fun deleteSessionId() {
+        withContext(dispatchers.io) {
+            db.sessionIdEntityQueries.deleteSessionId()
+        }
+    }
+
+    override suspend fun insertSessionId(sessionId: String) {
+        return withContext(dispatchers.io) {
+            db.sessionIdEntityQueries.insertSessionId(
+                sessionId
+            )
+        }
+    }
+
+    override suspend fun getCredentials(): CredentialsEntity? {
+        return withContext(dispatchers.io) {
+            db.credentialsEntityQueries.getCredentials().executeAsOneOrNull()
+        }
+    }
+
+    override suspend fun deleteCredentials() {
+        withContext(dispatchers.io) {
+            db.credentialsEntityQueries.deleteCredentials()
+        }
+    }
+
+    override suspend fun insertEvent(credentials: Credentials) {
+        return withContext(dispatchers.io) {
+            db.credentialsEntityQueries.insertCredentials(
+                credentials.username,
+                credentials.password
+            )
+        }
+    }
+
     override suspend fun getEventById(id: Long): EventEntity? {
         return withContext(dispatchers.io) {
             db.eventsEntityQueries.getEventById(id).executeAsOneOrNull()

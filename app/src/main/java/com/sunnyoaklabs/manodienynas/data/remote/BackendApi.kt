@@ -4,9 +4,19 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
+import com.sunnyoaklabs.manodienynas.data.util.Converter
+import com.sunnyoaklabs.manodienynas.domain.model.Credentials
+import io.ktor.client.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import io.ktor.client.features.logging.*
 import org.jsoup.nodes.Document
+import javax.inject.Inject
 
 interface BackendApi {
+
+    suspend fun postLogin(credentials: Credentials): Document
 
     suspend fun getEvents(): Document
 
@@ -45,4 +55,20 @@ interface BackendApi {
 
     suspend fun getCalendar(): Document
     suspend fun getCalendarDate(payload: GetCalendar): Document
+
+    companion object {
+        fun create(converter: Converter): BackendApi {
+            return BackendApiImpl(
+                client = HttpClient(Android) {
+                    install(Logging) {
+                        level = LogLevel.ALL
+                    }
+                    install(JsonFeature) {
+                        serializer = KotlinxSerializer()
+                    }
+                },
+                converter = converter
+            )
+        }
+    }
 }

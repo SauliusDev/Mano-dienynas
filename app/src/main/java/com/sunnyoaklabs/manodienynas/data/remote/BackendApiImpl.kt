@@ -12,6 +12,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.EVENTS_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOLIDAY_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOME_WORK_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOME_WORK_POST
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.LOGIN_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MARKS_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_DELETED_LIST_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_GOTTEN_LIST_GET
@@ -26,17 +27,24 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
+import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import org.jsoup.nodes.Document
-import javax.inject.Inject
 
-
-class BackendApiImpl @Inject constructor(
+class BackendApiImpl(
     private val converter: Converter,
     private val client: HttpClient
 ) : BackendApi {
+
+    override suspend fun postLogin(credentials: Credentials): Document {
+        return client.post {
+            url(LOGIN_POST)
+            contentType(ContentType.Application.Json)
+            body = converter.toPostLogin(credentials)
+        }
+    }
 
     override suspend fun getEvents(): Document {
         return client.get { url(EVENTS_GET) }
