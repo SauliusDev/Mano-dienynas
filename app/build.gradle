@@ -53,7 +53,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion '1.5.21'
+        // kotlinCompilerVersion '1.5.21'
     }
     packagingOptions {
         resources {
@@ -120,7 +120,7 @@ dependencies {
     // sql delight
     implementation "com.squareup.sqldelight:android-driver:1.5.2"
     implementation "com.squareup.sqldelight:coroutines-extensions-jvm:1.5.2"
-    implementation "com.squareup.sqldelight:native-driver:1.5.3"
+    //implementation "com.squareup.sqldelight:native-driver:1.5.3"
 
     // splash screen
     implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'

@@ -32,6 +32,9 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import org.jsoup.nodes.Document
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 
 class BackendApiImpl(
     private val converter: Converter,
@@ -141,6 +144,5 @@ class BackendApiImpl(
     override suspend fun getCalendarDate(payload: GetCalendar): Document {
         return client.get { url(CALENDAR_DATE_GET) }
     }
-
 
 }

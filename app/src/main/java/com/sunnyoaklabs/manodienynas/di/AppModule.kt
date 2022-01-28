@@ -10,12 +10,13 @@ import com.sunnyoaklabs.manodienynas.core.util.StandardDispatchers
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.local.DataSourceImpl
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
-import com.sunnyoaklabs.manodienynas.data.remote.BackendApiImpl
 import com.sunnyoaklabs.manodienynas.data.repository.RepositoryImpl
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.data.util.GsonParser
 import com.sunnyoaklabs.manodienynas.data.util.JsonFormatterImpl
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
+import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionId
+import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionIdRemote
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +26,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideGetSessionIdUseCase(repository: Repository): GetSessionId {
+        return GetSessionId(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetSessionIdRemoteUseCase(repository: Repository): GetSessionIdRemote {
+        return GetSessionIdRemote(repository)
+    }
 
     @Provides
     @Singleton

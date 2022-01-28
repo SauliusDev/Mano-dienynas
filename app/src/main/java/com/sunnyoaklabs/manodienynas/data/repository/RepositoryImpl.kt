@@ -1,5 +1,9 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
+import com.sunnyoaklabs.manodienynas.core.util.Errors.EMPTY_CREDENTIALS_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Errors.EMPTY_SESSION_ID_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.toCredentials
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.toSessionId
@@ -15,22 +19,37 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import manodienynas.db.CredentialsEntity
 import java.io.IOException
+import java.lang.Exception
 
 class RepositoryImpl(
     private val api: BackendApi,
     private val dataSource: DataSource
 ): Repository {
 
+    override fun getSessionIdRemote(credentials: Credentials): Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val remoteSessionId = api.postLogin(credentials)
+            dataSource.deleteSessionId()
+            dataSource.insertSessionId(remoteSessionId.toString())
+        } catch (e: IOException) {
+            emit(Resource.Error(IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(UNKNOWN_ERROR))
+        }
+
+        val newSessionId = dataSource.getSessionId()
+        emit(Resource.Success(newSessionId.toSessionId()))
+    }
+
     override fun getSessionId(): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
 
         val sessionId = dataSource.getSessionId()
+        emit(Resource.Loading(sessionId.toSessionId()))
 
-        if (sessionId == null) {
-            emit(Resource.Error(
-                message = "Empty session id"
-            ))
-        }
+        sessionId ?: emit(Resource.Error(EMPTY_SESSION_ID_ERROR))
 
         emit(Resource.Success(sessionId.toSessionId()))
     }
@@ -40,11 +59,7 @@ class RepositoryImpl(
 
         val credentials = dataSource.getCredentials()
 
-        if (credentials == null) {
-            emit(Resource.Error(
-                message = "Empty credentials"
-            ))
-        }
+        credentials ?: emit(Resource.Error(EMPTY_CREDENTIALS_ERROR))
 
         emit(Resource.Success(credentials.toCredentials()))
     }

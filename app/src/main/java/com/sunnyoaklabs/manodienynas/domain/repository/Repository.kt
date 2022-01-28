@@ -12,6 +12,8 @@ interface Repository {
 
     fun getSessionId(): Flow<Resource<String>>
 
+    fun getSessionIdRemote(credentials: Credentials): Flow<Resource<String>>
+
     fun getCredentials(): Flow<Resource<Credentials>>
 
     fun getEvents(): Flow<Resource<List<Event>>>
