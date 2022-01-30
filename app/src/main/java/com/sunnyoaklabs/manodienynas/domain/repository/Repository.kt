@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
+    suspend fun getUserSetting(): UserSettings
+
     fun getSessionId(): Flow<Resource<String>>
 
     fun getSessionIdRemote(credentials: Credentials): Flow<Resource<String>>

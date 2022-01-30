@@ -3,40 +3,33 @@ package com.sunnyoaklabs.manodienynas
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.activity.viewModels
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.sunnyoaklabs.manodienynas.core.util.Errors.EMPTY_CREDENTIALS_ERROR
-import com.sunnyoaklabs.manodienynas.core.util.Errors.EMPTY_SESSION_ID_ERROR
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
-import com.sunnyoaklabs.manodienynas.presentation.LoginScreen
-import com.sunnyoaklabs.manodienynas.presentation.LoginViewModel
-import com.sunnyoaklabs.manodienynas.presentation.MainViewModel
+import com.sunnyoaklabs.manodienynas.domain.model.UserSettings
+import com.sunnyoaklabs.manodienynas.presentation.login.composable.LoginScreen
+import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
+import com.sunnyoaklabs.manodienynas.presentation.login.composable.SettingsScreen
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
+
+    private val viewModel: LoginViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ManoDienynasTheme {
-                // todo display toast using error gotten from intent
-                //  1. add two textfield and button for login
-                //  2. in view model get data from repository
-
                 val errorMessage = intent.getStringExtra("error")
-                val viewModel: LoginViewModel = hiltViewModel()
                 val scaffoldState = rememberScaffoldState()
 
                 LaunchedEffect(key1 = true) {
@@ -48,18 +41,36 @@ class LoginActivity : ComponentActivity() {
                     }
                 }
 
-                Scaffold(
-                    scaffoldState = scaffoldState
-                ) {
-                    Box(modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                    ) {
-                        LoginScreen(Credentials("", ""))
-                    }
-                }
+                // todo workflow
+                //      1. navigation works
+                //      2. login works with needed tokens gotten
+
+//                DestinationsNavHost(navGraph = NavGraphs.root)
             }
         }
+    }
+
+    @Destination(start = true)
+    @Composable
+    fun LoginScreen(
+        navigator: DestinationsNavigator
+    ) {
+        LoginScreen(
+            navigator,
+            Credentials("", "")
+        )
+    }
+
+    @Destination
+    @Composable
+    fun SettingScreen(
+        navigator: DestinationsNavigator
+    ) {
+        SettingsScreen(
+            navigator,
+            viewModel.getAppDescription(),
+            viewModel.getAppLicense()
+        )
     }
 
     private suspend fun showErrorSnackbar(
@@ -77,12 +88,7 @@ class LoginActivity : ComponentActivity() {
                     message = errorMessage
                 )
             }
-            EMPTY_SESSION_ID_ERROR -> {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message = errorMessage
-                )
-            }
-            EMPTY_CREDENTIALS_ERROR -> {
+            NULL_OBJECT_RECEIVED_ERROR -> {
                 scaffoldState.snackbarHostState.showSnackbar(
                     message = errorMessage
                 )

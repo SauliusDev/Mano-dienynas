@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.App.Starting" >
+        android:theme="@style/Theme.ManoDienynas" >
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -28,7 +28,7 @@
             android:name=".LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.App.Starting" />
+            android:theme="@style/Theme.ManoDienynas" />
     </application>
 
 </manifest>

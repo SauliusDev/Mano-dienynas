@@ -7,6 +7,7 @@ import com.sunnyoaklabs.manodienynas.core.util.DispatcherProvider
 import com.sunnyoaklabs.manodienynas.core.util.toLong
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import manodienynas.db.*
@@ -17,6 +18,24 @@ class DataSourceImpl @Inject constructor(
     private val dispatchers: DispatcherProvider,
     private val converter: Converter
 ): DataSource {
+
+    override suspend fun getUserSetting(): UserSettingEntity? {
+        return withContext(Dispatchers.IO) {
+            db.userSettingsEntityQueries.getUserSetting().executeAsOneOrNull()
+        }
+    }
+
+    override suspend fun deleteUserSetting() {
+        return withContext(dispatchers.io) {
+            db.userSettingsEntityQueries.deleteUserSetting()
+        }
+    }
+
+    override suspend fun insertUserSetting(userSettings: UserSettings) {
+        return withContext(dispatchers.io) {
+            db.userSettingsEntityQueries.insertUserSetting(userSettings.keepSignedIn.toLong())
+        }
+    }
 
     override suspend fun getSessionId(): SessionIdEntity? {
         return withContext(dispatchers.io) {

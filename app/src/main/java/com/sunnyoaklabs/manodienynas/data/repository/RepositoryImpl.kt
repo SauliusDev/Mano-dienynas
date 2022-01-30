@@ -1,12 +1,12 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
-import com.sunnyoaklabs.manodienynas.core.util.Errors.EMPTY_CREDENTIALS_ERROR
-import com.sunnyoaklabs.manodienynas.core.util.Errors.EMPTY_SESSION_ID_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.toCredentials
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.toSessionId
+import com.sunnyoaklabs.manodienynas.core.util.toUserSettings
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
@@ -25,6 +25,11 @@ class RepositoryImpl(
     private val api: BackendApi,
     private val dataSource: DataSource
 ): Repository {
+
+    override suspend fun getUserSetting(): UserSettings {
+        val userSettings = dataSource.getUserSetting()
+        return userSettings.toUserSettings()
+    }
 
     override fun getSessionIdRemote(credentials: Credentials): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
@@ -49,7 +54,7 @@ class RepositoryImpl(
         val sessionId = dataSource.getSessionId()
         emit(Resource.Loading(sessionId.toSessionId()))
 
-        sessionId ?: emit(Resource.Error(EMPTY_SESSION_ID_ERROR))
+        sessionId ?: emit(Resource.Error(NULL_OBJECT_RECEIVED_ERROR))
 
         emit(Resource.Success(sessionId.toSessionId()))
     }
@@ -59,7 +64,7 @@ class RepositoryImpl(
 
         val credentials = dataSource.getCredentials()
 
-        credentials ?: emit(Resource.Error(EMPTY_CREDENTIALS_ERROR))
+        credentials ?: emit(Resource.Error(NULL_OBJECT_RECEIVED_ERROR))
 
         emit(Resource.Success(credentials.toCredentials()))
     }

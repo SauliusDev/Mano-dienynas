@@ -1,0 +1,17 @@
+Šiuo metu programėlėje palaikomos šios funkcijos:
+
+- Teksto klaidų taisymas
+
+- Kirčiavimas
+
+- Lemma
+
+- Morfologinis nagrinėjimas
+
+- Visų galimų kirčiavimo ir morfologijos variantų rodymas
+
+- Asmenavimas nuosakomis ir laikais
+
+Programa kol kas yra tik ankstyvoje (beta) versijoje todėl kai kurios funkcijos gali būti neištobulintos. Programą numatoma naujinti, pridėti daugiau funkcijų ir taisyti esamas ar pastebėtas klaidas. Pastabas ir pasiūlymus prašome siųsti pasirinkus meniu "Praneškite apie klaidą".
+
+Programos versija 2.3v

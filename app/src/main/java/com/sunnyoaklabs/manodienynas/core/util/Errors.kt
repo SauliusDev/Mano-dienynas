@@ -6,8 +6,6 @@ object Errors {
 
     const val IO_ERROR = "Network Failure"
 
-    const val EMPTY_SESSION_ID_ERROR = "Empty Session Id"
-
-    const val EMPTY_CREDENTIALS_ERROR = "Empty Credentials"
+    const val NULL_OBJECT_RECEIVED_ERROR = "Null object received"
 
 }

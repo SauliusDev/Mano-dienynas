@@ -6,6 +6,10 @@ import manodienynas.db.*
 
 interface DataSource {
 
+    suspend fun getUserSetting(): UserSettingEntity?
+    suspend fun deleteUserSetting()
+    suspend fun insertUserSetting(userSettings: UserSettings)
+
     suspend fun getSessionId(): SessionIdEntity?
     suspend fun deleteSessionId()
     suspend fun insertSessionId(sessionId: String)

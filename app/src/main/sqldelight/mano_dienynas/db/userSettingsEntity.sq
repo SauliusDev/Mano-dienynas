@@ -1,0 +1,15 @@
+CREATE TABLE userSettingEntity (
+    keepSignedIn INTEGER
+);
+
+getUserSetting:
+SELECT *
+FROM userSettingEntity;
+
+insertUserSetting:
+INSERT OR REPLACE
+INTO userSettingEntity
+VALUES(?);
+
+deleteUserSetting:
+DELETE FROM userSettingEntity;

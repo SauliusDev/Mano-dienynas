@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "914667300317",
+    "project_id": "play-apps-e1d5d",
+    "storage_bucket": "play-apps-e1d5d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914667300317:android:2329c9c0dd933714d64234",
+        "android_client_info": {
+          "package_name": "com.sunnyOakLabs.lietuviuKalbosPagalbininkas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914667300317-dvjb1ccbc5t4qh2otr2cqheigij35n56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsPkbiEmkbUQ6x-Xy3vJE7b6lxTmA83Tg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914667300317-dvjb1ccbc5t4qh2otr2cqheigij35n56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914667300317:android:c1d8d9103028633dd64234",
+        "android_client_info": {
+          "package_name": "com.sunnyoaklabs.manodienynas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914667300317-dvjb1ccbc5t4qh2otr2cqheigij35n56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsPkbiEmkbUQ6x-Xy3vJE7b6lxTmA83Tg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914667300317-dvjb1ccbc5t4qh2otr2cqheigij35n56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914667300317:android:70f8947bbb1d783dd64234",
+        "android_client_info": {
+          "package_name": "lt.azuolas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914667300317-5utkho904o6vfacdmum5obhnhe94mc3u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lt.azuolas",
+            "certificate_hash": "7c8a53d80268b4c23c8d421527dde46bbc10242d"
+          }
+        },
+        {
+          "client_id": "914667300317-dvjb1ccbc5t4qh2otr2cqheigij35n56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsPkbiEmkbUQ6x-Xy3vJE7b6lxTmA83Tg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914667300317-dvjb1ccbc5t4qh2otr2cqheigij35n56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
