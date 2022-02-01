@@ -1,21 +1,18 @@
 package com.sunnyoaklabs.manodienynas.presentation.login
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sunnyoaklabs.manodienynas.R
-import com.sunnyoaklabs.manodienynas.core.util.Resource
-import com.sunnyoaklabs.manodienynas.core.util.toUserSettings
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
-import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
-import com.sunnyoaklabs.manodienynas.domain.model.UserSettings
+import com.sunnyoaklabs.manodienynas.domain.model.Credentials
+import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import javax.inject.Inject
@@ -30,20 +27,38 @@ class LoginViewModel @Inject constructor(
     var keepSignedIn by mutableStateOf(false)
         private set
 
+    var credentials by mutableStateOf(Credentials("", ""))
+        private set
+
     init {
+        getCredentials()
         getKeepSignedIn()
     }
 
+    fun getCredentials() {
+        viewModelScope.launch { credentials = repository.getCredentials() }
+    }
+
+    fun insertCredentials(credentials: Credentials) {
+        viewModelScope.launch { dataSource.insertCredentials(credentials) }
+    }
+
+    fun deleteCredentials() {
+        viewModelScope.launch { dataSource.deleteCredentials() }
+    }
+
     fun getKeepSignedIn() {
-        viewModelScope.launch { keepSignedIn = repository.getUserSetting().keepSignedIn }
+        viewModelScope.launch {
+            keepSignedIn = repository.getSettings().keepSignedIn
+        }
     }
 
     fun deleteKeepSignedIn() {
-        viewModelScope.launch { dataSource.deleteUserSetting() }
+        viewModelScope.launch { dataSource.deleteSettings() }
     }
 
     fun insertKeepSignedIn(keepSignedIn: Boolean) {
-        viewModelScope.launch { dataSource.insertUserSetting(UserSettings(keepSignedIn)) }
+        viewModelScope.launch { dataSource.insertSettings(Settings(keepSignedIn)) }
     }
 
     fun getAppDescription(): String {

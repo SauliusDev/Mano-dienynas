@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sunnyoaklabs.manodienynas" >
+    package="com.sunnyoaklabs.manodienynas">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,11 +12,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ManoDienynas" >
+        android:theme="@style/Theme.ManoDienynas">
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/title_activity_test"
             android:theme="@style/Theme.App.Starting" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +27,13 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.App.Starting"/>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.ManoDienynas" />
+            android:theme="@style/Theme.App.Starting"/>
     </application>
 
 </manifest>

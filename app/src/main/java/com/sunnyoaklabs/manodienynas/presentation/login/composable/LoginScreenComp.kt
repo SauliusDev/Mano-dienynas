@@ -1,34 +1,57 @@
 package com.sunnyoaklabs.manodienynas.presentation.login.composable
 
+import android.content.Context
+import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.sunnyoaklabs.manodienynas.LoginActivity
+import com.sunnyoaklabs.manodienynas.MainActivity
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.TestActivity
+import com.sunnyoaklabs.manodienynas.destinations.SettingScreenDestination
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
+import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 
 @Composable
-fun LoginScreen(
+fun LoginScreenComp(
     navigator: DestinationsNavigator,
-    credentials: Credentials,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel(),
+    context: Context = LocalContext.current
 ) {
-    var username by remember { mutableStateOf(credentials.username) }
-    var password by remember { mutableStateOf(credentials.password) }
+    /* TODO only for testing */
+    var username by remember { mutableStateOf("abca68237@gmail.com") }
+    var password by remember { mutableStateOf("KR10kly5") }
+//    var username by remember { mutableStateOf(viewModel.credentials.username) }
+//    var password by remember { mutableStateOf(viewModel.credentials.password) }
+
+    var passwordVisibility by remember { mutableStateOf(false) }
 
     ConstraintLayout(
         Modifier
@@ -38,6 +61,7 @@ fun LoginScreen(
         val (button) = createRefs()
 
         settingButton(
+            navigator,
             modifier = Modifier
                 .constrainAs(button) {
                     top.linkTo(parent.top, margin = 32.dp)
@@ -70,10 +94,22 @@ fun LoginScreen(
             value = password,
             onValueChange = { password = it },
             label = { Text(stringResource(id = R.string.password)) },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             maxLines = 1,
             textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold),
+            trailingIcon = {
+                val image = if (passwordVisibility)
+                    Icons.Filled.Visibility
+                else Icons.Filled.VisibilityOff
+                IconButton(
+                    onClick = {
+                        passwordVisibility = !passwordVisibility
+                    }
+                ) {
+                    Icon(imageVector  = image, "")
+                }
+            },
             modifier = Modifier
                 .padding(
                     vertical = LocalSpacing.current.medium,
@@ -87,7 +123,14 @@ fun LoginScreen(
         )
         Button(
             onClick = {
-                //navigator.navigate()
+                if (username.isNotEmpty() && password.isNotEmpty()) {
+                    viewModel.deleteCredentials()
+                    viewModel.insertCredentials(Credentials(username, password))
+                    context.startActivity(
+                        Intent(context, TestActivity::class.java)
+                            .putExtra("initial", "Login from login activity")
+                    )
+                }
             },
             modifier = Modifier
                 .padding(
@@ -105,13 +148,17 @@ fun LoginScreen(
 
 @Composable
 fun settingButton(
+    navigator: DestinationsNavigator,
     modifier: Modifier = Modifier
 ) {
     IconButton(
         modifier = modifier.background(Color.Transparent),
         onClick = {
-            /*TODO navigate to settings */
-        }) {
+            navigator.navigate(
+                SettingScreenDestination()
+            )
+        }
+    ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_settings),
             contentDescription = stringResource(id = R.string.go_to_settings_screen),
@@ -125,19 +172,20 @@ fun settingButton(
 
 @Composable
 fun CheckboxItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    var isChecked by remember { mutableStateOf(false) }
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Checkbox(
-            checked = isChecked,
+            checked = viewModel.keepSignedIn,
             onCheckedChange = {
-                isChecked = !isChecked
+                viewModel.deleteKeepSignedIn()
+                viewModel.insertKeepSignedIn(!viewModel.keepSignedIn)
+                viewModel.getKeepSignedIn()
             }
         )
         Text(

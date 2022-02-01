@@ -1,5 +1,5 @@
 package com.sunnyoaklabs.manodienynas.domain.model
 
-data class UserSettings(
+data class Settings(
     val keepSignedIn: Boolean = false
 )

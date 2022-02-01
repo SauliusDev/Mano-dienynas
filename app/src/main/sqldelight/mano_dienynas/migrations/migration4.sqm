@@ -1,0 +1,17 @@
+DROP TABLE IF EXISTS settingsEntity;
+
+CREATE TABLE settingsEntity (
+    keepSignedIn INTEGER
+);
+
+getSettings:
+SELECT *
+FROM settingsEntity;
+
+insertSettings:
+INSERT OR REPLACE
+INTO settingsEntity
+VALUES(?);
+
+deleteSettings:
+DELETE FROM settingsEntity;

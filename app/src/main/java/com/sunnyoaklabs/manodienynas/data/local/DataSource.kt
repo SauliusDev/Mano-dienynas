@@ -6,9 +6,9 @@ import manodienynas.db.*
 
 interface DataSource {
 
-    suspend fun getUserSetting(): UserSettingEntity?
-    suspend fun deleteUserSetting()
-    suspend fun insertUserSetting(userSettings: UserSettings)
+    suspend fun getSettings(): SettingsEntity?
+    suspend fun deleteSettings()
+    suspend fun insertSettings(settings: Settings)
 
     suspend fun getSessionId(): SessionIdEntity?
     suspend fun deleteSessionId()
@@ -16,7 +16,7 @@ interface DataSource {
 
     suspend fun getCredentials(): CredentialsEntity?
     suspend fun deleteCredentials()
-    suspend fun insertEvent(credentials: Credentials)
+    suspend fun insertCredentials(credentials: Credentials)
 
     suspend fun getEventById(id: Long): EventEntity?
     fun getAllEvents(): Flow<List<EventEntity>>

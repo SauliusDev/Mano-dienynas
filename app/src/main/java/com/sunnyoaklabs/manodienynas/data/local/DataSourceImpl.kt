@@ -7,7 +7,6 @@ import com.sunnyoaklabs.manodienynas.core.util.DispatcherProvider
 import com.sunnyoaklabs.manodienynas.core.util.toLong
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import manodienynas.db.*
@@ -19,21 +18,21 @@ class DataSourceImpl @Inject constructor(
     private val converter: Converter
 ): DataSource {
 
-    override suspend fun getUserSetting(): UserSettingEntity? {
-        return withContext(Dispatchers.IO) {
-            db.userSettingsEntityQueries.getUserSetting().executeAsOneOrNull()
+    override suspend fun getSettings(): SettingsEntity? {
+        return withContext(dispatchers.io) {
+            db.settingsEntityQueries.getSettings().executeAsOneOrNull()
         }
     }
 
-    override suspend fun deleteUserSetting() {
+    override suspend fun deleteSettings() {
         return withContext(dispatchers.io) {
-            db.userSettingsEntityQueries.deleteUserSetting()
+            db.settingsEntityQueries.deleteSettings()
         }
     }
 
-    override suspend fun insertUserSetting(userSettings: UserSettings) {
+    override suspend fun insertSettings(settings: Settings) {
         return withContext(dispatchers.io) {
-            db.userSettingsEntityQueries.insertUserSetting(userSettings.keepSignedIn.toLong())
+            db.settingsEntityQueries.insertSettings(settings.keepSignedIn.toLong())
         }
     }
 
@@ -69,7 +68,7 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertEvent(credentials: Credentials) {
+    override suspend fun insertCredentials(credentials: Credentials) {
         return withContext(dispatchers.io) {
             db.credentialsEntityQueries.insertCredentials(
                 credentials.username,

@@ -4,7 +4,7 @@
 
     <!-- Login activity -->
     <string name="username">Vartotojo vardas</string>
-    <string name="password">Slaptažodis</string>
+    <string name="password">Jūsų el.paštas</string>
     <string name="settings">Nustatymai</string>
     <string name="keep_signed_in">Palikti mano paskyrą prijungta</string>
     <string name="app_description">Programos aprašymas</string>
@@ -13,5 +13,7 @@
     <string name="go_to_login_screen">Eiti į prisijungimo ekraną</string>
     <string name="go_to_settings_screen">Eiti į nustatymų ekraną</string>
     <string name="sign_in">Prisijungti</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_test">TestActivity</string>
 
 </resources>

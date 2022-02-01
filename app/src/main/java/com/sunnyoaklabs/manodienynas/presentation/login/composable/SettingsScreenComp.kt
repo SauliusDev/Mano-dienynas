@@ -1,6 +1,5 @@
 package com.sunnyoaklabs.manodienynas.presentation.login.composable
 
-import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -11,26 +10,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.R
-import com.sunnyoaklabs.manodienynas.domain.model.Credentials
-import com.sunnyoaklabs.manodienynas.domain.model.UserSettings
+import com.sunnyoaklabs.manodienynas.destinations.LoginScreenDestination
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
-import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
-import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 
 @Composable
-fun SettingsScreen(
+fun SettingsScreenComp(
     navigator: DestinationsNavigator,
-    appDescription: String,
-    appLicense: String,
     modifier: Modifier = Modifier
 ) {
+    val viewModel: LoginViewModel = hiltViewModel()
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -38,8 +33,8 @@ fun SettingsScreen(
     ) {
         ToolbarSettings(navigator)
         ItemKeepSignedIn()
-        ItemAppDescription(appDescription)
-        ItemAppLicense(appLicense)
+        ItemAppDescription(viewModel.getAppDescription())
+        ItemAppLicense(viewModel.getAppLicense())
     }
 }
 
@@ -53,8 +48,7 @@ fun ToolbarSettings(
         navigationIcon = {
             IconButton(
                 onClick = {
-                    /*TODO navigate back to setting */
-                    navigator
+                    navigator.navigate(LoginScreenDestination)
                 }
             ) {
                 Icon(
@@ -72,8 +66,6 @@ fun ItemKeepSignedIn(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    var keepSignedIn by remember { mutableStateOf(viewModel.keepSignedIn) }
-
     Card(
         modifier = Modifier.padding(
             top = LocalSpacing.current.medium,
@@ -87,9 +79,8 @@ fun ItemKeepSignedIn(
                 .fillMaxWidth()
                 .clickable {
                     viewModel.deleteKeepSignedIn()
-                    viewModel.insertKeepSignedIn(!keepSignedIn)
+                    viewModel.insertKeepSignedIn(!viewModel.keepSignedIn)
                     viewModel.getKeepSignedIn()
-                    keepSignedIn = !keepSignedIn
                 }
         ) {
             Row(
@@ -100,12 +91,11 @@ fun ItemKeepSignedIn(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = keepSignedIn,
+                    checked = viewModel.keepSignedIn,
                     onCheckedChange = {
                         viewModel.deleteKeepSignedIn()
-                        viewModel.insertKeepSignedIn(!keepSignedIn)
+                        viewModel.insertKeepSignedIn(!viewModel.keepSignedIn)
                         viewModel.getKeepSignedIn()
-                        keepSignedIn = !keepSignedIn
                     }
                 )
                 Text(

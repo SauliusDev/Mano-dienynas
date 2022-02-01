@@ -1,12 +1,9 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
+import com.sunnyoaklabs.manodienynas.core.util.*
 import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
-import com.sunnyoaklabs.manodienynas.core.util.toCredentials
-import com.sunnyoaklabs.manodienynas.core.util.Resource
-import com.sunnyoaklabs.manodienynas.core.util.toSessionId
-import com.sunnyoaklabs.manodienynas.core.util.toUserSettings
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
@@ -17,7 +14,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import manodienynas.db.CredentialsEntity
 import java.io.IOException
 import java.lang.Exception
 
@@ -26,9 +22,9 @@ class RepositoryImpl(
     private val dataSource: DataSource
 ): Repository {
 
-    override suspend fun getUserSetting(): UserSettings {
-        val userSettings = dataSource.getUserSetting()
-        return userSettings.toUserSettings()
+    override suspend fun getSettings(): Settings {
+        val userSettings = dataSource.getSettings()
+        return userSettings.toSettings()
     }
 
     override fun getSessionIdRemote(credentials: Credentials): Flow<Resource<String>> = flow {
@@ -59,14 +55,9 @@ class RepositoryImpl(
         emit(Resource.Success(sessionId.toSessionId()))
     }
 
-    override fun getCredentials(): Flow<Resource<Credentials>>  = flow {
-        emit(Resource.Loading())
-
+    override suspend fun getCredentials(): Credentials {
         val credentials = dataSource.getCredentials()
-
-        credentials ?: emit(Resource.Error(NULL_OBJECT_RECEIVED_ERROR))
-
-        emit(Resource.Success(credentials.toCredentials()))
+        return credentials.toCredentials()
     }
 
     override fun getEvents(): Flow<Resource<List<Event>>> = flow {
