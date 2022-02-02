@@ -2,7 +2,6 @@ package com.sunnyoaklabs.manodienynas.presentation.login.composable
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,17 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sunnyoaklabs.manodienynas.LoginActivity
-import com.sunnyoaklabs.manodienynas.MainActivity
+import com.sunnyoaklabs.manodienynas.*
 import com.sunnyoaklabs.manodienynas.R
-import com.sunnyoaklabs.manodienynas.TestActivity
 import com.sunnyoaklabs.manodienynas.destinations.SettingScreenDestination
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
@@ -127,7 +121,7 @@ fun LoginScreenComp(
                     viewModel.deleteCredentials()
                     viewModel.insertCredentials(Credentials(username, password))
                     context.startActivity(
-                        Intent(context, TestActivity::class.java)
+                        Intent(context, MainActivity::class.java)
                             .putExtra("initial", "Login from login activity")
                     )
                 }
@@ -144,6 +138,11 @@ fun LoginScreenComp(
         }
 
     }
+}
+
+@Composable
+fun progressBar() {
+
 }
 
 @Composable

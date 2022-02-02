@@ -32,9 +32,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 /*
     todo workflow:
-        <> SplashActivity replaces current splash screen (viewModel and code migrated from MainActivity)
+        <> indeterminate progress bar in login when user presses login
         <> login works with needed tokens gotten
-        <> password button with (hide) (un hide) features
+        <> get something from
  */
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {

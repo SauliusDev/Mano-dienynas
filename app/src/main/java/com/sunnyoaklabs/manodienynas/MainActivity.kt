@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
+import com.sunnyoaklabs.manodienynas.presentation.splash.SplashViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -22,29 +23,26 @@ import kotlinx.coroutines.delay
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
+    private val splashViewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("console log", "main activity started 1 ${viewModel.until.value}")
-        viewModel.until.value = true
-        Log.e("console log", "main activity started 2 ${viewModel.until.value}")
         /** Handles initial login **/
         val intentExtra = intent.getStringExtra("initial")
         intentExtra?.let {
-            viewModel.setInitialLogin(true)
+            splashViewModel.setInitialLogin(true)
         }
         /** Splash screen handling **/
         installSplashScreen().apply {
             setKeepVisibleCondition {
-//                viewModel.mainScreenState.value.isLoading
-                viewModel.until.value
+                splashViewModel.userState.value.isLoading
             }
         }
-        if (!viewModel.mainScreenState.value.isUserLoggedIn) {
+        if (!splashViewModel.userState.value.isUserLoggedIn) {
             startActivity(
                 Intent(this, LoginActivity::class.java)
-                    .putExtra("error", viewModel.errorMessage.value)
+                    .putExtra("error", splashViewModel.errorMessage.value)
             )
         }
         /** MainActivity content **/
