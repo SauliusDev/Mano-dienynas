@@ -15,8 +15,7 @@ import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.data.util.GsonParser
 import com.sunnyoaklabs.manodienynas.data.util.JsonFormatterImpl
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
-import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionId
-import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionIdRemote
+import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,14 +28,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGetSessionIdUseCase(repository: Repository): GetSessionId {
-        return GetSessionId(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetSessionIdRemoteUseCase(repository: Repository): GetSessionIdRemote {
-        return GetSessionIdRemote(repository)
+    fun provideGetSessionCookiesUseCase(repository: Repository): GetSessionCookies {
+        return GetSessionCookies(repository)
     }
 
     @Provides

@@ -15,10 +15,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
-import com.sunnyoaklabs.manodienynas.presentation.splash.SplashViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -39,6 +38,7 @@ class MainActivity : ComponentActivity() {
                 splashViewModel.userState.value.isLoading
             }
         }
+        Log.e("console log", "main: "+splashViewModel.userState.value.isUserLoggedIn)
         if (!splashViewModel.userState.value.isUserLoggedIn) {
             startActivity(
                 Intent(this, LoginActivity::class.java)

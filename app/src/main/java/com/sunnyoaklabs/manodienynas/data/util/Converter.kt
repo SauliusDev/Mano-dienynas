@@ -5,12 +5,13 @@ import com.google.gson.reflect.TypeToken
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
+import com.sunnyoaklabs.manodienynas.data.remote.dto.PostLogin
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import org.jsoup.nodes.Document
 
 class Converter(
     private val jsonFormatter: JsonFormatter,
-    private val jsonParser: JsonParser
+    private val jsonParser: JsonParser,
 ) {
 
     fun toAttendanceJson(list: List<AttendanceItem>): String {
@@ -55,10 +56,10 @@ class Converter(
         ) ?: emptyList()
     }
 
-    fun toPostLogin(payload: Credentials): String {
+    fun toPostLogin(payload: PostLogin): String {
         return jsonParser.toJson(
             payload,
-            object : TypeToken<Credentials>(){}.type
+            object : TypeToken<PostLogin>(){}.type
         ) ?: "[]"
     }
 

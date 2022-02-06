@@ -1,60 +1,56 @@
 package com.sunnyoaklabs.manodienynas.data.remote
 
-import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
+import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.data.util.Converter
-import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
+import io.ktor.client.features.*
+import io.ktor.client.features.cookies.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
-import org.jsoup.nodes.Document
-import javax.inject.Inject
 
 interface BackendApi {
 
-    suspend fun postLogin(credentials: Credentials): Document
+    suspend fun postLogin(payload: PostLogin): String
 
-    suspend fun getEvents(): Document
+    suspend fun getEvents(): String
 
-    suspend fun getMarks(): Document
+    suspend fun getMarks(): String
 
-    suspend fun getAttendance(): Document
+    suspend fun getAttendance(): String
 
-    suspend fun getClassWork(): Document
-    suspend fun postClassWork(payload: PostClassWork): Document
+    suspend fun getClassWork(): String
+    suspend fun postClassWork(payload: PostClassWork): String
 
-    suspend fun getHomeWork(): Document
-    suspend fun postHomeWork(payload: PostHomeWork): Document
+    suspend fun getHomeWork(): String
+    suspend fun postHomeWork(payload: PostHomeWork): String
 
-    suspend fun getControlWork(): Document
-    suspend fun postControlWork(payload: PostControlWork): Document
+    suspend fun getControlWork(): String
+    suspend fun postControlWork(payload: PostControlWork): String
 
-    suspend fun getTerm(): Document
+    suspend fun getTerm(): String
 
-    suspend fun getTermLegend(): Document
+    suspend fun getTermLegend(): String
 
-    suspend fun getMessagesGotten(): Document
+    suspend fun getMessagesGotten(): String
 
-    suspend fun getMessagesSent(): Document
+    suspend fun getMessagesSent(): String
 
-    suspend fun getMessagesStarred(): Document
+    suspend fun getMessagesStarred(): String
 
-    suspend fun getMessagesDeleted(): Document
+    suspend fun getMessagesDeleted(): String
 
-    suspend fun getMessageIndividual(): Document
+    suspend fun getMessageIndividual(): String
 
-    suspend fun getHoliday(): Document
+    suspend fun getHoliday(): String
 
-    suspend fun getParentMeetings(): Document
+    suspend fun getParentMeetings(): String
 
-    suspend fun getSchedule(): Document
+    suspend fun getSchedule(): String
 
-    suspend fun getCalendar(): Document
-    suspend fun getCalendarDate(payload: GetCalendar): Document
+    suspend fun getCalendar(): String
+    suspend fun getCalendarDate(payload: GetCalendar): String
 
     companion object {
         fun create(converter: Converter): BackendApi {
@@ -65,6 +61,14 @@ interface BackendApi {
                     }
                     install(JsonFeature) {
                         serializer = KotlinxSerializer()
+                    }
+                    install(HttpCookies) {
+                        storage = AcceptAllCookiesStorage()
+                    }
+                    install(HttpTimeout) {
+                        requestTimeoutMillis = 15000L
+                        connectTimeoutMillis = 15000L
+                        socketTimeoutMillis = 15000L
                     }
                 },
                 converter = converter

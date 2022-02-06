@@ -2,7 +2,9 @@ package com.sunnyoaklabs.manodienynas.presentation.login.composable
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -13,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +34,13 @@ import com.sunnyoaklabs.manodienynas.destinations.SettingScreenDestination
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
+import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @Composable
 fun LoginScreenComp(
@@ -46,6 +56,7 @@ fun LoginScreenComp(
 //    var password by remember { mutableStateOf(viewModel.credentials.password) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     ConstraintLayout(
         Modifier
@@ -54,7 +65,8 @@ fun LoginScreenComp(
     ) {
         val (button) = createRefs()
 
-        settingButton(
+        SettingButton(
+            isLoading,
             navigator,
             modifier = Modifier
                 .constrainAs(button) {
@@ -62,14 +74,15 @@ fun LoginScreenComp(
                     end.linkTo(parent.end, margin = 64.dp)
                 }
                 .width(50.dp)
-                .height(50.dp),
+                .height(50.dp)
         )
     }
 
     Column(
         modifier = modifier
             .fillMaxHeight(),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
             value = username,
@@ -82,7 +95,8 @@ fun LoginScreenComp(
                     vertical = LocalSpacing.current.medium,
                     horizontal = LocalSpacing.current.extraLarge
                 )
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            enabled = !isLoading
         )
         TextField(
             value = password,
@@ -101,7 +115,7 @@ fun LoginScreenComp(
                         passwordVisibility = !passwordVisibility
                     }
                 ) {
-                    Icon(imageVector  = image, "")
+                    Icon(imageVector = image, "")
                 }
             },
             modifier = Modifier
@@ -109,21 +123,29 @@ fun LoginScreenComp(
                     vertical = LocalSpacing.current.medium,
                     horizontal = LocalSpacing.current.extraLarge
                 )
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            enabled = !isLoading
         )
         CheckboxItem(
+            isLoading,
             Modifier
                 .fillMaxWidth()
         )
         Button(
             onClick = {
                 if (username.isNotEmpty() && password.isNotEmpty()) {
-                    viewModel.deleteCredentials()
-                    viewModel.insertCredentials(Credentials(username, password))
-                    context.startActivity(
-                        Intent(context, MainActivity::class.java)
-                            .putExtra("initial", "Login from login activity")
-                    )
+                    isLoading = true
+                    CoroutineScope(IO).launch {
+                        viewModel.deleteCredentials()
+                        viewModel.insertCredentials(Credentials(username, password))
+                        viewModel.getCredentials()
+                        viewModel.credentials.collect {
+                            context.startActivity(
+                                Intent(context, MainActivity::class.java)
+                                    .putExtra("initial", "Login from login activity")
+                            )
+                        }
+                    }
                 }
             },
             modifier = Modifier
@@ -131,22 +153,31 @@ fun LoginScreenComp(
                     vertical = LocalSpacing.current.medium,
                     horizontal = LocalSpacing.current.extraLarge
                 )
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            enabled = !isLoading
         ) {
             Text(text = stringResource(id = R.string.sign_in))
-
         }
-
+        if(isLoading) {
+            ProgressBar(Modifier.padding(vertical = 20.dp))
+        }
     }
 }
 
 @Composable
-fun progressBar() {
-
+fun ProgressBar(
+    modifier: Modifier = Modifier
+) {
+    CircularProgressIndicator(
+        modifier = modifier.size(60.dp),
+        color = accentBlue,
+        strokeWidth = 8.dp
+    )
 }
 
 @Composable
-fun settingButton(
+fun SettingButton(
+    isLoading: Boolean,
     navigator: DestinationsNavigator,
     modifier: Modifier = Modifier
 ) {
@@ -156,7 +187,8 @@ fun settingButton(
             navigator.navigate(
                 SettingScreenDestination()
             )
-        }
+        },
+        enabled = !isLoading
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_settings),
@@ -171,6 +203,7 @@ fun settingButton(
 
 @Composable
 fun CheckboxItem(
+    isLoading: Boolean,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
@@ -185,7 +218,8 @@ fun CheckboxItem(
                 viewModel.deleteKeepSignedIn()
                 viewModel.insertKeepSignedIn(!viewModel.keepSignedIn)
                 viewModel.getKeepSignedIn()
-            }
+            },
+            enabled = !isLoading
         )
         Text(
             text = stringResource(id = R.string.keep_signed_in),

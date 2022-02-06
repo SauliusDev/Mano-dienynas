@@ -8,14 +8,20 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
+import com.sunnyoaklabs.manodienynas.presentation.main.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import javax.inject.Inject
+import kotlin.coroutines.suspendCoroutine
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -24,19 +30,18 @@ class LoginViewModel @Inject constructor(
     private val dataSource: DataSource
 ) : ViewModel() {
 
+    private val _credentials = MutableStateFlow(Credentials("", ""))
+    val credentials: StateFlow<Credentials> = _credentials
+
     var keepSignedIn by mutableStateOf(false)
         private set
 
-    var credentials by mutableStateOf(Credentials("", ""))
-        private set
-
     init {
-        getCredentials()
         getKeepSignedIn()
     }
 
     fun getCredentials() {
-        viewModelScope.launch { credentials = repository.getCredentials() }
+        viewModelScope.launch { _credentials.value = repository.getCredentials() }
     }
 
     fun insertCredentials(credentials: Credentials) {

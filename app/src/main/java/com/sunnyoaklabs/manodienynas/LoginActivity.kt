@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
@@ -26,13 +27,13 @@ import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
 import com.sunnyoaklabs.manodienynas.presentation.login.composable.LoginScreenComp
 import com.sunnyoaklabs.manodienynas.presentation.login.composable.SettingsScreenComp
+import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
 /*
     todo workflow:
-        <> indeterminate progress bar in login when user presses login
         <> login works with needed tokens gotten
         <> get something from
  */

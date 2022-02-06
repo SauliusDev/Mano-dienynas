@@ -1,6 +1,5 @@
 package com.sunnyoaklabs.manodienynas.data.remote
 
-import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.ATTENDANCE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_DATE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_GET
@@ -23,125 +22,122 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.PARENT_MEETINGS_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.SCHEDULE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.TERM_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.TERM_LEGEND_GET
-import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
-import com.sunnyoaklabs.manodienynas.domain.model.Credentials
+import com.sunnyoaklabs.manodienynas.data.remote.dto.*
+import com.sunnyoaklabs.manodienynas.data.util.Converter
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import org.jsoup.nodes.Document
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
 
 class BackendApiImpl(
     private val converter: Converter,
     private val client: HttpClient
 ) : BackendApi {
 
-    override suspend fun postLogin(credentials: Credentials): Document {
+    override suspend fun postLogin(payload: PostLogin): String {
         return client.post {
             url(LOGIN_POST)
-            contentType(ContentType.Application.Json)
-            body = converter.toPostLogin(credentials)
+            body = FormDataContent(Parameters.build {
+                append("username", payload.username)
+                append("password", payload.password)
+                append("dienynas_remember_me", payload.dienynas_remember_me.toString())
+            })
         }
     }
 
-    override suspend fun getEvents(): Document {
+    override suspend fun getEvents(): String {
         return client.get { url(EVENTS_GET) }
     }
 
-    override suspend fun getMarks(): Document {
+    override suspend fun getMarks(): String {
         return client.get { url(MARKS_GET) }
     }
 
-    override suspend fun getAttendance(): Document {
+    override suspend fun getAttendance(): String {
         return client.get { url(ATTENDANCE_GET) }
     }
 
-    override suspend fun getClassWork(): Document {
+    override suspend fun getClassWork(): String {
         return client.get { url(CLASS_WORK_GET) }
     }
 
-    override suspend fun postClassWork(payload: PostClassWork): Document {
+    override suspend fun postClassWork(payload: PostClassWork): String {
         return client.post {
             url(CLASS_WORK_POST)
-            contentType(ContentType.Application.Json)
+            contentType(ContentType.Application.FormUrlEncoded)
             body = converter.toPostClassWorkJson(payload)
         }
     }
 
-    override suspend fun getHomeWork(): Document {
+    override suspend fun getHomeWork(): String {
         return client.get { url(HOME_WORK_GET) }
     }
 
-    override suspend fun postHomeWork(payload: PostHomeWork): Document {
+    override suspend fun postHomeWork(payload: PostHomeWork): String {
         return client.post {
             url(HOME_WORK_POST)
-            contentType(ContentType.Application.Json)
+            contentType(ContentType.Application.FormUrlEncoded)
             body = converter.toPostHomeWorkJson(payload)
         }
     }
 
-    override suspend fun getControlWork(): Document {
+    override suspend fun getControlWork(): String {
         return client.get { url(CONTROL_WORK_GET) }
     }
 
-    override suspend fun postControlWork(payload: PostControlWork): Document {
+    override suspend fun postControlWork(payload: PostControlWork): String {
         return client.post {
             url(CONTROL_WORK_POST)
-            contentType(ContentType.Application.Json)
+            contentType(ContentType.Application.FormUrlEncoded)
             body = converter.toPostControlWorkJson(payload)
         }
     }
 
-    override suspend fun getTerm(): Document {
-        return client.get { url(TERM_GET) } 
+    override suspend fun getTerm(): String {
+        return client.get { url(TERM_GET) }
     }
 
-    override suspend fun getTermLegend(): Document {
+    override suspend fun getTermLegend(): String {
         return client.get { url(TERM_LEGEND_GET) }
     }
 
-    override suspend fun getMessagesGotten(): Document {
+    override suspend fun getMessagesGotten(): String {
         return client.get { url(MESSAGE_GOTTEN_LIST_GET) }
     }
 
-    override suspend fun getMessagesSent(): Document {
+    override suspend fun getMessagesSent(): String {
         return client.get { url(MESSAGE_SENT_LIST_GET) }
     }
 
-    override suspend fun getMessagesStarred(): Document {
+    override suspend fun getMessagesStarred(): String {
         return client.get { url(MESSAGE_STARRED_LIST_GET) }
     }
 
-    override suspend fun getMessagesDeleted(): Document {
+    override suspend fun getMessagesDeleted(): String {
         return client.get { url(MESSAGE_DELETED_LIST_GET) }
     }
 
-    override suspend fun getMessageIndividual(): Document {
+    override suspend fun getMessageIndividual(): String {
         return client.get { url(MESSAGE_INDIVIDUAL_GET) }
     }
 
-    override suspend fun getHoliday(): Document {
+    override suspend fun getHoliday(): String {
         return client.get { url(HOLIDAY_GET) }
     }
 
-    override suspend fun getParentMeetings(): Document {
+    override suspend fun getParentMeetings(): String {
         return client.get { url(PARENT_MEETINGS_GET) }
     }
 
-    override suspend fun getSchedule(): Document {
+    override suspend fun getSchedule(): String {
         return client.get { url(SCHEDULE_GET) }
     }
 
-    override suspend fun getCalendar(): Document {
+    override suspend fun getCalendar(): String {
         return client.get { url(CALENDAR_GET) }
     }
 
-    override suspend fun getCalendarDate(payload: GetCalendar): Document {
+    override suspend fun getCalendarDate(payload: GetCalendar): String {
         return client.get { url(CALENDAR_DATE_GET) }
     }
 

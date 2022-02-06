@@ -5,6 +5,10 @@ import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import manodienynas.db.CredentialsEntity
 import manodienynas.db.SessionIdEntity
 import manodienynas.db.SettingsEntity
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+
+fun String.toDocument(): Document = Jsoup.parse(this)
 
 fun Boolean.toLong(): Long = if (this) 1 else 0
 

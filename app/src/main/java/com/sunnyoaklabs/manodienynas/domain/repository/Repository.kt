@@ -12,9 +12,7 @@ interface Repository {
 
     suspend fun getSettings(): Settings
 
-    fun getSessionId(): Flow<Resource<String>>
-
-    fun getSessionIdRemote(credentials: Credentials): Flow<Resource<String>>
+    suspend fun getSessionCookies(): Flow<Resource<String>>
 
     suspend fun getCredentials(): Credentials
 

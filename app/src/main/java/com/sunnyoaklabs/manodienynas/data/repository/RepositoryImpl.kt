@@ -6,10 +6,7 @@ import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
-import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
+import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
@@ -20,39 +17,29 @@ import java.lang.Exception
 class RepositoryImpl(
     private val api: BackendApi,
     private val dataSource: DataSource
-): Repository {
+) : Repository {
 
     override suspend fun getSettings(): Settings {
         val userSettings = dataSource.getSettings()
         return userSettings.toSettings()
     }
 
-    override fun getSessionIdRemote(credentials: Credentials): Flow<Resource<String>> = flow {
+    override suspend fun getSessionCookies(): Flow<Resource<String>> = flow {
         emit(Resource.Loading())
-
         try {
-            val remoteSessionId = api.postLogin(credentials)
-            dataSource.deleteSessionId()
-            dataSource.insertSessionId(remoteSessionId.toString())
+            val credentials = getCredentials()
+            val message = api.postLogin(
+                PostLogin(
+                    credentials.username,
+                    credentials.password,
+                    1
+                ))
+            emit(Resource.Success(message))
         } catch (e: IOException) {
-            emit(Resource.Error(IO_ERROR))
+            emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
-            emit(Resource.Error(UNKNOWN_ERROR))
+            emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-
-        val newSessionId = dataSource.getSessionId()
-        emit(Resource.Success(newSessionId.toSessionId()))
-    }
-
-    override fun getSessionId(): Flow<Resource<String>> = flow {
-        emit(Resource.Loading())
-
-        val sessionId = dataSource.getSessionId()
-        emit(Resource.Loading(sessionId.toSessionId()))
-
-        sessionId ?: emit(Resource.Error(NULL_OBJECT_RECEIVED_ERROR))
-
-        emit(Resource.Success(sessionId.toSessionId()))
     }
 
     override suspend fun getCredentials(): Credentials {
