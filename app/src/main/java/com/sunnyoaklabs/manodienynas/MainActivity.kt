@@ -18,6 +18,10 @@ import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -28,6 +32,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /** Handles initial login **/
+        splashViewModel
         val intentExtra = intent.getStringExtra("initial")
         intentExtra?.let {
             splashViewModel.setInitialLogin(true)
@@ -38,12 +43,15 @@ class MainActivity : ComponentActivity() {
                 splashViewModel.userState.value.isLoading
             }
         }
-        Log.e("console log", "main: "+splashViewModel.userState.value.isUserLoggedIn)
-        if (!splashViewModel.userState.value.isUserLoggedIn) {
-            startActivity(
-                Intent(this, LoginActivity::class.java)
-                    .putExtra("error", splashViewModel.errorMessage.value)
-            )
+        CoroutineScope(IO).launch {
+            splashViewModel.isFinishedLoading.collect {
+                if (!splashViewModel.userState.value.isUserLoggedIn) {
+                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                        .putExtra("error", splashViewModel.errorMessage)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent)
+                }
+            }
         }
         /** MainActivity content **/
         setContent {

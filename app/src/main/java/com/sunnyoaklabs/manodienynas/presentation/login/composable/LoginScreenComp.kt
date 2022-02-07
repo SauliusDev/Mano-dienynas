@@ -140,10 +140,10 @@ fun LoginScreenComp(
                         viewModel.insertCredentials(Credentials(username, password))
                         viewModel.getCredentials()
                         viewModel.credentials.collect {
-                            context.startActivity(
-                                Intent(context, MainActivity::class.java)
-                                    .putExtra("initial", "Login from login activity")
-                            )
+                            val intent = Intent(context, MainActivity::class.java)
+                                .putExtra("initial", "Login from login activity")
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            context.startActivity(intent)
                         }
                     }
                 }

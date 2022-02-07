@@ -33,9 +33,24 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 /*
-    todo workflow:
-        <> login works with needed tokens gotten
-        <> get something from
+    todo workflow (main set up):
+        <> get session in mainViewModel
+        <> small height toolbar with username
+        <> bottom navigation with all fragrments
+        <> settings on fragment done, options (all as in login + logout)
+        <> logout works
+
+    todo (session cookies refreshing based on response):
+        <> make it :D
+
+    todo (events screen):
+        <> make events screen lol
+
+    todo (ktor all get requests) for all other fragments:
+        <> make those requests
+
+    todo (jsoup web scrapping) for all other fragments:
+        <> make all web scrapping functions lol
  */
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {

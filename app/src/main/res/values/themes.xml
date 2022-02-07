@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/accent_grey_dark</item>
         <!-- Customize your theme here. -->
+        <item name="statusBarBackground">@color/accent_grey</item>
     </style>
 
     <style name="Theme.ManoDienynas.NoActionBar">
