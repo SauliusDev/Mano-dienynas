@@ -1,4 +1,4 @@
-package com.sunnyoaklabs.manodienynas.presentation.login.composable
+package com.sunnyoaklabs.manodienynas.presentation.login.fragment
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,15 +13,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.R
-import com.sunnyoaklabs.manodienynas.destinations.LoginScreenDestination
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
+import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.LoginFragmentDestination
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 
+@Destination
 @Composable
-fun SettingsScreenComp(
+fun SettingsLoginFragment(
     navigator: DestinationsNavigator,
     modifier: Modifier = Modifier
 ) {
@@ -54,7 +56,7 @@ fun ToolbarSettings(
         navigationIcon = {
             IconButton(
                 onClick = {
-                    navigator.navigate(LoginScreenDestination)
+                    navigator.navigate(LoginFragmentDestination)
                 }
             ) {
                 Icon(

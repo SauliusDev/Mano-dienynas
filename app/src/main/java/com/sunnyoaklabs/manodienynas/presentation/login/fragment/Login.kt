@@ -1,10 +1,8 @@
-package com.sunnyoaklabs.manodienynas.presentation.login.composable
+package com.sunnyoaklabs.manodienynas.presentation.login.fragment
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -15,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,23 +24,24 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.*
 import com.sunnyoaklabs.manodienynas.R
-import com.sunnyoaklabs.manodienynas.destinations.SettingScreenDestination
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
+import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.SettingsLoginFragmentDestination
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
+
+@Destination(start = true)
 @Composable
-fun LoginScreenComp(
+fun LoginFragment(
     navigator: DestinationsNavigator,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
@@ -59,9 +57,7 @@ fun LoginScreenComp(
     var isLoading by remember { mutableStateOf(false) }
 
     ConstraintLayout(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
+        Modifier.fillMaxWidth().fillMaxHeight()
     ) {
         val (button) = createRefs()
 
@@ -184,9 +180,7 @@ fun SettingButton(
     IconButton(
         modifier = modifier.background(Color.Transparent),
         onClick = {
-            navigator.navigate(
-                SettingScreenDestination()
-            )
+            navigator.navigate(SettingsLoginFragmentDestination())
         },
         enabled = !isLoading
     ) {

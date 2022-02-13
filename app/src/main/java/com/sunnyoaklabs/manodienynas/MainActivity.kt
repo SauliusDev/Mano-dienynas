@@ -1,25 +1,51 @@
 package com.sunnyoaklabs.manodienynas
 
+import android.content.Context
 import android.content.Intent
 import androidx.activity.viewModels
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.Screen
 import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.bottomNavigationItems
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.*
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
+import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
+import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -43,26 +69,108 @@ class MainActivity : ComponentActivity() {
                 splashViewModel.userState.value.isLoading
             }
         }
-        CoroutineScope(IO).launch {
-            splashViewModel.isFinishedLoading.collect {
-                if (!splashViewModel.userState.value.isUserLoggedIn) {
-                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
-                        .putExtra("error", splashViewModel.errorMessage)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent)
+        lifecycleScope.launch {
+            splashViewModel.userState.collect {
+                if (!it.isUserLoggedIn && !it.isLoading) {
+                    startActivityLogin(this@MainActivity, splashViewModel.errorMessage)
                 }
             }
         }
         /** MainActivity content **/
         setContent {
             ManoDienynasTheme {
-                Text(text = "This is main activity", modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(horizontal = 100.dp, vertical = 100.dp),
-                    textAlign = TextAlign.Center
-                )
+                val scaffoldState = rememberScaffoldState()
+                val navController = rememberNavController()
+                Scaffold(
+                    topBar = {
+                        ToolbarMain()
+                    },
+                    bottomBar = {
+                        BottomNavigationBar(navController, bottomNavigationItems)
+                    },
+                    scaffoldState = scaffoldState
+                ) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.Events.route
+                    ) {
+                        composable(Screen.Events.route) {
+                            EventsFragment()
+                        }
+                        composable(Screen.Marks.route) {
+                            MarksFragment()
+                        }
+                        composable(Screen.Messages.route) {
+                            MessagesFragment()
+                        }
+                        composable(Screen.More.route) {
+                            MoreFragment()
+                        }
+                        composable(Screen.Settings.route) {
+                            SettingsMainFragment()
+                        }
+                    }
+                }
             }
         }
     }
+}
+
+private fun startActivityLogin(context: Context, message: String) {
+    val intent = Intent(context, LoginActivity::class.java)
+        .putExtra("error", message)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+    context.startActivity(intent)
+}
+
+@Composable
+fun BottomNavigationBar(
+    navController: NavHostController,
+    bottomNavigationItems: List<Screen>
+) {
+    BottomNavigation(
+        backgroundColor = primaryVariantGreenLight,
+    ) {
+        bottomNavigationItems.forEach { screen ->
+            BottomNavigationItem(
+                icon = {
+                    Icon(
+                        painter = painterResource(id = screen.icon),
+                        contentDescription = LocalContext.current.resources.getString(screen.title),
+                        tint = Color.White
+                    )
+                },
+                label = {
+                    Text(
+                        text = LocalContext.current.resources.getString(screen.title),
+                        color = Color.White
+                    )
+                },
+                selected = false,
+                alwaysShowLabel = false,
+                onClick = {
+                    when(screen.route) {
+                        "events" -> navController.navigate(Screen.Events.route)
+                        "marks" -> navController.navigate(Screen.Marks.route)
+                        "messages" -> navController.navigate(Screen.Messages.route)
+                        "more" -> navController.navigate(Screen.More.route)
+                        "settings" -> navController.navigate(Screen.Settings.route)
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun ToolbarMain() {
+    TopAppBar(
+        title = {
+            Text(
+                text = "MainActivity",
+                color = colorResource(id = android.R.color.white)
+            )
+        },
+        backgroundColor = primaryVariantGreenLight,
+    )
 }

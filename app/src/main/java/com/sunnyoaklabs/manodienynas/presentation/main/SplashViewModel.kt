@@ -21,8 +21,8 @@ import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,16 +41,30 @@ class SplashViewModel @Inject constructor(
     private var _errorMessage = ""
     var errorMessage = _errorMessage
 
-    private var _credentials = Credentials("", "")
+    private val _userState = MutableStateFlow(UserState())
 
-    private val _userState = MutableStateFlow(UserState(isLoading = true, isUserLoggedIn = false))
+    private var _credentials = Credentials("", "")
     val userState = _userState.asStateFlow()
 
-    private val _isFinishedLoading = MutableSharedFlow<Boolean>()
-    val isFinishedLoading = _isFinishedLoading.asSharedFlow()
+    private fun testingAutoLogin(doLogin: Boolean) {
+        viewModelScope.launch {
+            _userState.emit(UserState(
+                isLoading = false,
+                isUserLoggedIn = doLogin
+            ))
+        }
+    }
 
     init {
+        // ---- testing lol
+        testingAutoLogin(true)
+
         viewModelScope.launch {
+
+            // ---- testing lol
+            this.cancel()
+            yield()
+
             getKeepSignedIn()
             if (!_keepSignedIn && !isInitialLogin) {
                 _userState.emit(UserState(
@@ -74,19 +88,19 @@ class SplashViewModel @Inject constructor(
                      *  so cookies request will be initiated in SplashViewModel
                      *  (also verifies if credentials are correct)
                     **/
-                    firebaseCrashlytics.log("(MainViewModel) credentials are not null, verifying credentials")
+                    firebaseCrashlytics.log("(SplashViewModel) credentials are not null, verifying credentials")
                     validateNetwork()
                     getSessionCookies().collect { wasSessionCreated ->
                         when (wasSessionCreated) {
                             is Resource.Success -> {
-                                firebaseCrashlytics.log("Success: credentials, sessionCookies")
+                                firebaseCrashlytics.log("(SplashViewModel) Success: credentials, sessionCookies")
                                 _userState.emit(UserState(
                                     isLoading = false,
                                     isUserLoggedIn = true
                                 ))
                             }
                             is Resource.Error -> {
-                                firebaseCrashlytics.log("Error: credentials, sessionCookies")
+                                firebaseCrashlytics.log("(SplashViewModel) Error: credentials, sessionCookies")
                                 _errorMessage = wasSessionCreated.message ?: UNKNOWN_ERROR
                                 _userState.emit(UserState(
                                     isLoading = false,

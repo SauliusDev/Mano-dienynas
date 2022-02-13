@@ -10,10 +10,21 @@
     <string name="app_description">Programos aprašymas</string>
     <string name="app_license">Programos licencija</string>
     <string name="cancel">Atšaukti</string>
+    <string name="ok">Gerai</string>
     <string name="go_to_login_screen">Eiti į prisijungimo ekraną</string>
     <string name="go_to_settings_screen">Eiti į nustatymų ekraną</string>
     <string name="sign_in">Prisijungti</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_test">TestActivity</string>
+
+    <!-- Main activity -->
+    <string name="bottom_nav_events">Įvykiai</string>
+    <string name="bottom_nav_marks">Pažymiai</string>
+    <string name="bottom_nav_messages">Žinutės</string>
+    <string name="bottom_nav_more">Daugiau</string>
+    <string name="bottom_nav_settings">Nustatymai</string>
+    <string name="logout">Atsijungti nuo paskyros</string>
+    <string name="logout_notice">Ar tikrai norite atsijungti nuo paskyros?</string>
+
 
 </resources>

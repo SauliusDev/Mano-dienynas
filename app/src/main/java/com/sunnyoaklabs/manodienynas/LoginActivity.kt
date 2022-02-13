@@ -1,42 +1,30 @@
 package com.sunnyoaklabs.manodienynas
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
-import com.sunnyoaklabs.manodienynas.domain.model.Credentials
-import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
-import com.sunnyoaklabs.manodienynas.presentation.login.composable.LoginScreenComp
-import com.sunnyoaklabs.manodienynas.presentation.login.composable.SettingsScreenComp
-import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
+import com.sunnyoaklabs.manodienynas.presentation.login.fragment.NavGraphs
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
 /*
     todo workflow (main set up):
+        <> add navGraph name (login, main)
+
         <> get session in mainViewModel
         <> small height toolbar with username
-        <> bottom navigation with all fragrments
+        <> bottom navigation with all fragments
         <> settings on fragment done, options (all as in login + logout)
         <> logout works
 
@@ -78,18 +66,6 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Destination(start = true)
-@Composable
-fun LoginScreen(navigator: DestinationsNavigator) {
-    LoginScreenComp(navigator)
-}
-
-@Destination
-@Composable
-fun SettingScreen(navigator: DestinationsNavigator, ) {
-    SettingsScreenComp(navigator)
 }
 
 private suspend fun showErrorSnackbar(
