@@ -1,0 +1,1492 @@
+    <!DOCTYPE HTML>
+<html id="dairyiumLoggedHtmlIndex" lang="lt">
+    <head>
+        <title>Mano dienynas</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="google-site-verification" content="-u8Nc2HBgMbrlhz1Ln4nInjSNUQ4a_PYPsnU5-oIBjk" />
+
+        <link rel="stylesheet" href="/new/layout/css/jquery.smartbanner.css" type="text/css" media="screen">
+
+
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&display=swap&subset=latin,cyrillic-ext,greek-ext,greek,latin-ext,cyrillic' rel='stylesheet' type='text/css'>
+        <link href="/new/layout/images/public_images/favicon.ico" type="image/ico" rel="shortcut icon">
+        <link rel="stylesheet" href="/layout/css/jquery-ui-1.8.14.custom.css" type="text/css"/>
+        <link rel="stylesheet" href="/layout/css/jquery-ui-timepicker-addon.css" type="text/css"/>
+        <link rel="stylesheet" href="/layout/css/style_w.css?v01_16" type="text/css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/new/layout/css/main_slider.css?v4_2017-07-25"/>
+        <link rel="stylesheet" type="text/css" href="/new/layout/css/mailpopup_public.css?v3_2015-12-07"/>
+        <link rel="stylesheet" type="text/css" href="/new/layout/css/animate.css?v3_2015-12-07"/>
+        <link rel="stylesheet" type="text/css" href="/new/layout/css/nouislider.css"/>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <script type="text/javascript" src="/assets/js/password.js"></script>
+        <script src="/layout/js/nouislider.min.js"></script>
+        <script src="https://cdn.rawgit.com/vast-engineering/jquery-popup-overlay/1.7.13/jquery.popupoverlay.js"></script>
+
+                    <link rel="stylesheet" href="/layout/css/newstyle_diaryium_inner.css?v8" type="text/css"/>
+                    <link rel="stylesheet" href="/layout/css/newstyle_public_inner.css?v5" type="text/css"/>
+        <link rel="stylesheet" href="/new/layout/css/control_work.css?v3_2015-12-09" type="text/css" />
+        <!--[if lte IE 7]>
+        <link rel="stylesheet" href="/layout/css/newstyleie7.css" type="text/css" />
+        <![endif]-->
+        <script type="text/javascript" src="/layout/js/jquery-3.4.1.min.js"></script>
+        <!-- idedam per kintamaji, nes darzeliai kitos versijso reik.
+        <script type="text/javascript" src="/layout/js/jquery-ui-1.8.14.custom.min.js"></script>-->
+
+        <script type="text/javascript" src="/layout/js/jquery-ui-1.12.1.custom.min.js"></script>
+        <script type="text/javascript" src="/layout/js/jquery-default-lt.js"></script>
+
+<script type="text/javascript" src="/layout/js/jquery.countdown.min.js"></script>
+<script type="text/javascript" src="/layout/js/inner.js"></script>
+        <script src="/layout/js/jquery.cookie.js"></script>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-444650-27']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+        <meta name="google-site-verification" content="vvxMinGW7wDHUbjY7iJOI8DqLNQvZDdTDjwEyI7wyVw"/>
+        <meta name="verify-paysera" content="1b28796aab1c9d931a92a8fcb549527c">
+        <meta name="verify-paysera" content="8e15df2e19baea3e31469604fc9b622d">
+        <!-- TradeDoubler site verification 2803138 -->
+        <!-- TradeDoubler site verification 1629383 -->
+        <script type="text/javascript" src="/new/layout/js/bx-slider-institutions_public.js"></script>
+        <script type="text/javascript" src="/new/layout/js/bx-slider-location_public.js"></script>
+        <script type="text/javascript" src="/new/layout/js/bx-slider-reviews_public.js"></script>
+        <script type="text/javascript" language="javascript" src="/new/layout/js/f_form_public.js"></script>
+        <script type="text/javascript" src="/new/layout/js/jquery.ui.core.min.js"></script>
+        <script type="text/javascript" src="/new/layout/js/jquery.lightbox_me_public.js"></script>
+        <script type="text/javascript" src="/new/layout/js/validation.core_public.js?l=lt"></script>
+        <script type="text/javascript" src="/new/layout/js/jquery.slimscroll.min.js"></script>
+        <script src="/layout/js/jquery.inputmask.bundle.js"></script>
+        <script type="text/javascript" src="/new/layout/js/control_work.js?v=9"></script>
+                    <script type="text/javascript" src="/layout/js/clock.js?v1"></script>
+        <script type="text/javascript" charset="utf-8">
+            var visibleTooltipIds = [1,6];
+            $(function() {
+            function launch() {
+            $('#sign_up').lightbox_me({centered: true, onLoad: function() {
+                            $('#sign_up').find('input:first').focus();
+            }});
+            }
+
+            $('#try-1').click(function(e) {
+            $("#sign_up").lightbox_me({centered: true, onLoad: function() {
+                            $("#sign_up").find("input:first").focus();
+            }});
+            e.preventDefault();
+            });
+            $('table tr:nth-child(even)').addClass('stripe');
+            });</script>
+
+
+<script type="text/javascript" src="/new/layout/js/default.js?l=lt&v=2"></script>
+        <script type="text/javascript">
+            var lessonTimes = ' { "1": { "lesson_number":1,"lesson_start":"08:00:00","lesson_end":"08:45:00","lesson_start_stamp":1644904800,"lesson_end_stamp":1644907500},"2": { "lesson_number":2,"lesson_start":"08:50:00","lesson_end":"09:35:00","lesson_start_stamp":1644907800,"lesson_end_stamp":1644910500},"3": { "lesson_number":3,"lesson_start":"09:45:00","lesson_end":"10:30:00","lesson_start_stamp":1644911100,"lesson_end_stamp":1644913800},"4": { "lesson_number":4,"lesson_start":"10:55:00","lesson_end":"11:40:00","lesson_start_stamp":1644915300,"lesson_end_stamp":1644918000},"5": { "lesson_number":5,"lesson_start":"12:05:00","lesson_end":"12:50:00","lesson_start_stamp":1644919500,"lesson_end_stamp":1644922200},"6": { "lesson_number":6,"lesson_start":"13:00:00","lesson_end":"13:45:00","lesson_start_stamp":1644922800,"lesson_end_stamp":1644925500},"7": { "lesson_number":7,"lesson_start":"13:55:00","lesson_end":"14:40:00","lesson_start_stamp":1644926100,"lesson_end_stamp":1644928800},"8": { "lesson_number":8,"lesson_start":"14:45:00","lesson_end":"15:30:00","lesson_start_stamp":1644929100,"lesson_end_stamp":1644931800},"9": { "lesson_number":9,"lesson_start":"15:30:00","lesson_end":"16:15:00","lesson_start_stamp":1644931800,"lesson_end_stamp":1644934500},"10": { "lesson_number":10,"lesson_start":"16:15:00","lesson_end":"17:00:00","lesson_start_stamp":1644934500,"lesson_end_stamp":1644937200},"11": { "lesson_number":11,"lesson_start":"17:00:00","lesson_end":"17:45:00","lesson_start_stamp":1644937200,"lesson_end_stamp":1644939900}}';</script>
+
+        <!-- Begin Cookie Consent plugin by Silktide - http://silktide.com/cookieconsent -->
+        <script type="text/javascript">
+            var cookie_url = "/user_agreement/show/7";
+            window.cookieconsent_options = {
+                "message": "Tam, kad užtikrintume Jums kokybišką informacijos pateikimą manodienynas.lt naudojami slapukai (angl. cookies).",
+                "dismiss": "Supratau!",
+                "learnMore": "Daugiau informacijos",
+                "link":  cookie_url,
+                "theme": "light-bottom"
+            };
+        </script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.9/cookieconsent.min.js"></script>
+        <!-- End Cookie Consent plugin -->
+
+
+    <script type="text/javascript" src="/new/layout/js/fundingchoices.min.js"></script>
+
+        <script async src="https://keytarget.adnet.lt/stable/keytarget-manodienynaslt.min.js"></script>
+        <script>
+            var isPaid = 0;
+            window.adnet = window.adnet || [];
+
+            if (isPaid == 0) {
+
+                if (1 == 1) {
+                    if (9 >= 10) {
+                      if (window.innerWidth >= 992) {
+                        window.adnet.push(['MD01_B1_995x250_Mokiniai_Nuo_10kl']);
+                        window.adnet.push(['MD02_B2_995x250_Mokiniai_Nuo_10kl']);
+                        window.adnet.push(['MD03_B3_300x600_Mokiniai_Nuo_10kl']);
+                        window.adnet.push(['MD04_B4_300x250_Mokiniai_Nuo_10kl']);
+                        window.adnet.push(['MD05_B5_1630x650_Mokiniai_Nuo_10kl']);
+                        window.adnet.push(['MD06_B6_757x200_Mokiniai_Nuo_10kl']);
+                        window.adnet.push(['MD07_Outstream_640x480_Mokiniai_nuo_10']);
+                      } else {
+                        window.adnet.push(['MDM00_Mobile_Pixel_Mokiniai_nuo_10kl']);
+                        window.adnet.push(['MDM01_Mobile_300x250_Mokiniai_nuo_10kl']);
+                        window.adnet.push(['MDM00_Mobile_Outstream_Mokiniai_nuo_10kl']);
+                        window.adnet.push(['mdm02_mobile_300x250_mokiniai_nuo_10kl']);
+                      }
+                    } else {
+                      if (window.innerWidth >= 992) {
+                        window.adnet.push(['MD01_B1_995x250_Mokiniai']);
+                        window.adnet.push(['MD02_B2_995x250_Mokiniai']);
+                        window.adnet.push(['MD03_B3_300x600_Mokiniai']);
+                        window.adnet.push(['MD04_B4_300x250_Mokiniai']);
+                        window.adnet.push(['MD05_B5_1630x650_Mokiniai']);
+                        window.adnet.push(['MD06_B6_757x200_Mokiniai']);
+                        window.adnet.push(['MD07_Outstream_640x480_Mokiniai']);
+                        window.adnet.push(['MD07_Outstream_640x480_Mokiniai_iki_10']);
+                      } else {
+                        window.adnet.push(['MDM00_Mobile_Pixel_Mokiniai_iki_10kl']);
+                        window.adnet.push(['MDM01_Mobile_300x250_Mokiniai_iki_10kl']);
+                        window.adnet.push(['MDM01_Mobile_Outstream_Mokiniai']);
+                        window.adnet.push(['MDM01_Mobile_Outstream_Mokiniai_iki_10']);
+                        window.adnet.push(['mdm02_mobile_300x250_mokiniai_iki_10kl']);
+                      }
+                    }
+                } else if (2 == 1 && 2 == 1) {
+                  if (window.innerWidth >= 992) {
+                    window.adnet.push(['MD01_B1_995x250_Moterys']);
+                    window.adnet.push(['MD02_B2_995x250_Moterys']);
+                    window.adnet.push(['MD03_B3_300x600_Moterys']);
+                    window.adnet.push(['MD04_B4_300x250_Moterys']);
+                    window.adnet.push(['MD08_B5_1630x650_Moterys']);
+                    window.adnet.push(['MD09_B6_757x200_Moterys']);
+                    window.adnet.push(['MD10_Outstream_640x480_Moterys']);
+                  } else {
+                    window.adnet.push(['MDM00_Mobile_Pixel_Moterys']);
+                    window.adnet.push(['MDM01_Mobile_300x250_Moterys']);
+                    window.adnet.push(['MDM01_Mobile_Outstream_Moterys']);
+                    window.adnet.push(['mdm02_mobile_300x250_moterys']);
+                  }
+                } else if (2 == 1 && 0 == 1) {
+                  if (window.innerWidth >= 992) {
+                    window.adnet.push(['MD01_B1_995x250']);
+                    window.adnet.push(['MD02_B2_995x250']);
+                    window.adnet.push(['MD03_B3_300x600']);
+                    window.adnet.push(['MD04_B4_300x250']);
+                    window.adnet.push(['MD05_B5_1630x650']);
+                    window.adnet.push(['MD06_B6_757x200']);
+                    window.adnet.push(['MD10_Outstream_640x480_Tevai']);
+                  } else {
+                    window.adnet.push(['MDM00_Mobile_Pixel_Tevai']);
+                    window.adnet.push(['MDM01_Mobile_300x250_Tevai']);
+                    window.adnet.push(['MDM01_Mobile_Outstream_Tevai']);
+                    window.adnet.push(['mdm02_mobile_300x250_tevai']);
+                  }
+                } else if (2 == 1 && 1 == 1) {
+                  if (window.innerWidth >= 992) {
+                    window.adnet.push(['MD01_B1_995x250_Vyrai']);
+                    window.adnet.push(['MD02_B2_995x250_Vyrai']);
+                    window.adnet.push(['MD03_B3_300x600_Vyrai']);
+                    window.adnet.push(['MD04_B4_300x250_Vyrai']);
+                    window.adnet.push(['MD08_B5_1630x650_Vyrai']);
+                    window.adnet.push(['MD09_B6_757x200_Vyrai']);
+                    window.adnet.push(['MD10_outstream_640x480_Vyrai']);
+                  } else {
+                    window.adnet.push(['MDM00_Mobile_Pixel_Vyrai']);
+                    window.adnet.push(['MDM01_Mobile_300x250_Vyrai']);
+                    window.adnet.push(['MDM01_Mobile_Outstream_Vyrai']);
+                    window.adnet.push(['mdm02_mobile_300x250_vyrai']);
+                  }
+                }
+
+                window.adnet.push(['MD01_A1_995x250', '26515.2.1.1']);
+            }
+
+            window.adnet.push(['MD01_A1_1350x744']);
+            window.adnet.push(['_attachData', 'class', '9']);
+            window.adnet.push(['_attachData', 'gender', '1']);
+            window.adnet.push(['_attachData', 'municipality', '23']);
+            window.adnet.push(['_attachData', 'school', '2365']);
+            window.adnet.push(['_attachData', 'userType', '1']);
+            window.adnet.push(['_attachData', 'lessonId', '2;11;15;20;25;26;33;72;151;52897;52898;52899;53204;53241;']);
+            window.adnet.push(['_attachData', 'schoolType', '1']);
+
+            window.adnet.push(['_initialize']);
+        </script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            $(window).on('beforeunload ', function(){
+                setTimeout( function(){
+                    $('.reload-message-container').addClass('active');
+                }, 10000);
+            $(window).on("load", function() {
+            $('.reload-message-container').removeClass('active');
+            });
+            setTimeout(function(){
+            $('.reload-message-container .remove-span').removeClass('off');
+            $('.reload-message-container .remove-span').click(function(){
+            $('.reload-message-container').removeClass('active');
+            });
+            }, 2000);
+            setTimeout(function(){
+            $('.reload-message-container').removeClass('active');
+            }, 6000);
+            });
+        </script>
+        <input type="hidden" id="onlinePanelOnOf" name="onlinePanelOnOf" value="0" />
+        <input type="hidden" id="dPlusNotificationOnOf" name="dPlusNotificationOnOf" value="0" />
+        <input type="hidden" id="onlinePanelGKey" name="onlinePanelGKey" value="" />
+        <input type="hidden" id="onlinePanelupdateMc" name="onlinePanelupdateMc" value="/1/lt/ajax/online_panel/save_online_panel_info" />
+
+
+        <div class="reload-message-container">
+            <div class="reload-message">
+                <span class="remove-span off"><i class="material-icons">close</i></span>
+                Vykdoma užklausa, prašome palaukti...
+            </div>
+        </div>
+
+        <div class="failedlogin__home">
+          <div id="popupMain" role="alert"><span class="closePopup">X</span><span class="status">&nbsp;</span><div class="popupInfo"></div></div>
+        </div>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+<header id="user-logged">
+    <div>
+        <section id="top-header" class="1">
+            <div id="logo">
+                <a href="/1/lt/page/message/message_list" aria-label="Logo"><img src="/new/layout/images/public_images/header-images/logo-green.png" alt="" title=""
+                         ></a>
+            </div>
+
+            <div id="top-header-content">
+            <div class="logged-menu-btn" onclick="toggleLoggedMenu();"></div>
+                <div class="top-menu-container clearfix">
+
+                    <link rel="stylesheet" type="text/css" href="/assets/css/event.css">
+                    <div class="mini-events">
+                        <div class="mini-events-inner">
+
+                        </div>
+                    </div>
+
+
+                        <div id="languages-block" style="display: none;">
+
+
+                            <a class="actL" href="#" title="Kalbos pasirinkimas">
+                                <!-- <img src="/new/layout/images/public_images/lt_new.png" /> -->
+                                <b>  LT</b>
+                            </a>
+                            <span class="link-label">Kalba</span>
+                            <ul class="langBlock">
+                                <li><a href="/1/ru/page/control_work/dates_pupil"><span><!-- <img src="/new/layout/images/public_images/rus_new.png"/> --><b>  RU</b></span></a></li>
+                                <li><a href="/1/de/page/control_work/dates_pupil"><span><!-- <img src="/new/layout/images/public_images/ger_new.png"/> --><b>  DE</b></span></a></li>
+                                <li><a href="/1/en/page/control_work/dates_pupil"><span><!-- <img src="/new/layout/images/public_images/en_new.png"/> --><b>  EN</b></span></a></li>
+                                <li><a href="/1/al/page/control_work/dates_pupil"><span><!-- <img src="/new/layout/images/public_images/alb_new.png"/> --><b>AL</b></span></a></li>
+                                <li><a href="/1/ge/page/control_work/dates_pupil"><span><!-- <img src="/new/layout/images/public_images/geo_new.png"/> --><b>GE</b></span></a></li>
+                                <li style="display: none;"><a href="/1/cz/page/control_work/dates_pupil"><span><!-- <img src="/new/layout/images/public_images/chech_new.png"/> --><b>CZ</b></span></a></li>
+                            </ul>
+
+
+
+
+
+
+
+
+                        </div>
+
+                    <div id="main-menu">
+                        <!-- BEGIN school_logo_style_custom_tpl -->
+
+                        <!-- END school_logo_style_custom_tpl -->
+
+
+                        <!--<a href="/1/lt/public/public/systemguide" >Instrukcija</a> -->
+
+
+                        <!--<a href="/1/lt/public/public/faq" >D.U.K.</a> -->
+
+
+                        <a href="#" id="try-1" title="Parašykite mums">
+                            <i class="material-icons">&#xE0BF;</i>
+                        </a>
+
+
+                        <a href="/1/lt/page/message_new/message_list" class="link messages-link">
+                            <i class="material-icons">email</i>
+                            <span class="link-label">Pranešimai</span>
+                        </a>
+                        <a href="/1/lt/page/marks_pupil/marks" class="link marks-link" style="">
+                            <i class="material-icons" style="transform:rotate(90deg);">label_important</i>
+                            <span class="link-label">Pažymiai</span>
+                        </a>
+
+                    </div>
+                    <div class="mini-ev-top">
+                        <a class="mini-event-holder" href="/1/lt/page/sf/resolve_post/event/list" class="link events-link" title="Įvykiai" aria-label="Įvykiai">
+                            <i class="material-icons" aria-hidden="true">notifications_active</i>
+                            <span class="new-count" aria-hidden="true"></span>
+                            <span class="link-label">Įvykiai</span>
+                        </a>
+                    </div>
+                    <div class="user_manual">
+                        <a class="user_manual-holder" href="/new/vartotojo-vadovas/1/index.php" target="_blank" class="link events-link" title="Vartotojo vadovas" aria-label="Vartotojo vadovas">
+                            <i class="material-icons" aria-hidden="true">contact_support</i>
+                            <span class="link-label" aria-hidden="true">Vartotojo vadovas</span>
+                        </a>
+                    </div>
+                    <div class="site_map">
+                        <a class="site_map-holder" href="/1/lt/page/sf/resolve/site_map/site_map" class="link events-link" title="Svetainės medis" aria-label="Svetainės medis">
+                            <img src="/new/layout/images/svetaines-medis.png" aria-hidden="true" style="max-width: 18px;vertical-align: inherit;">
+                            <span class="link-label" aria-hidden="true"></span>
+                        </a>
+                    </div>
+
+
+
+                            <div class="premium-info-block-top">
+
+
+                                <div class="left-block">
+                                    <a class="order-button-premium-top" href="https://www.manodienynas.lt/1/lt/action/lostandfound/click/508" ></a>
+                                </div>
+                                <div class="right-block">
+                                    <div class="main-info">
+                                        Planas
+                                        <span class="not-activated-info">
+                                            Startas
+                                        </span>
+                                    </div>
+                                    <div class="order_controls">
+                                        <div class="price_days_header">
+                                            <div class="">
+                                                <a class="order-button-premium-top"  href="/1/lt/page/payment/diaryiumplus" >
+                                                    Išbandykite<br />
+
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <a class="order-button-premium-top" href="/1/lt/page/payment/diaryiumplus" >
+                                                <img src="/new/layout/images/dashboard/premium-color.png">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    (function() {
+                                        $('.d_block.d_mdplus').addClass('activatedMdPlus').addClass('notactivatedMdPlus');
+                                    })();
+                                </script>
+
+                            </div>
+
+
+                </div>
+                <script>
+    if (typeof lan_local_module_name === 'undefined') {
+        lan_local_module_name = 'none';
+    }
+
+    $(function() {
+        jQuery.fn.scrollTo = function(elem) {
+            if ($(elem).length > 0) {
+                $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
+            }
+            return this;
+        };
+
+
+        $('.search_roles').keyup(function() {
+            var inputText = $(this).val();
+            $('#active-user-wrapper').addClass('expanded');
+            $('#userblock_extended').find('.school-wrapper, .child-item').each(function() {
+                $(this).removeClass('hidden');
+                if (inputText != '') {
+                    if (($(this).text().toUpperCase().indexOf(inputText.toUpperCase())) <= 0) {
+                        $(this).addClass('hidden');
+                    }
+                }
+            });
+        });
+
+
+        $('.additional-school-name.expandable').click(function() {
+            $(this).next('.school-users-types').toggleClass('collapsed');
+        });
+
+        $('.child-info-wrapper-in-list.current_child').parent().prependTo('.childrens-list');
+
+        var current_role = $('#user-info-wrapper.1 .additional-school-user-type.current_role');
+
+        current_role.prependTo('.schools-block');
+        current_role.css('list-style', 'none');
+    })
+
+</script>
+<div id="user-info-wrapper" class="role_controls  1">
+    <style>
+        div.avatar, div.small_avatar {
+            background-image: url("/new/layout/images/avatar.jpg");
+        }
+        .child-info-wrapper-in-list.current_child .mini-event-holder {
+            display: none;
+        }
+    </style>
+
+
+
+    <div id="user-info-block">
+        <div id="active-user-wrapper">
+                <!--<a id="to-left" class="user-changer-pointer" href="/1/lt/action/user/change_role/1-2158-23/1"></a>-->
+            <div id="active-user-info">
+                <div id="act-user-info-text">
+                    <a title="Ąžuolas Saulius&nbsp;Balbieris" class="name overflowed-text" href="/1/lt/page/user/user_info">Ąžuolas Saulius&nbsp;Balbieris</a>
+                    <span title="Mokinys" class="current-role-type overflowed-text">Mokinys</span>
+
+                </div>
+                <a href="/1/lt/page/user/user_info" aria-hidden="true">
+                    <div class="avatar" data-user_id="1574"></div>
+                </a>
+                <!-- <a id="to-down-or-up" class="user-changer-pointer" ></a> -->
+            </div>
+            <!-- <a id="to-right" class="user-changer-pointer" href="/1/lt/action/user/change_role/1-2158-23/1"></a>	-->
+        </div>
+
+    </div>
+    <div id="logout-settings-links">
+        <span role="button" aria-label="roles" class="dropdown-user-menu">
+            <div class="logout-settings-links-container">
+                <div class="arrow"></div>
+                <div id="userblock_extended">
+
+
+                    <div class="schools-block">
+                        <!-- BEGIN search_roles -->
+                        <input class="search_roles" placeholder="Įveskite darželio pavadinimą">
+                        <!-- END search_roles -->
+
+                        <div class="school-wrapper" data-school_id="2158">
+                            <ul class="school-users-types">
+
+                                <li class="additional-school-user-type " onClick="window.location.href = '/1/lt/action/user/change_role/1-2158-23/1'">
+                                    <div class="school_avatar" style="background-image: url(/new/layout/images/school-logo.png);" data-user_id="1574"></div>
+                                    <div class="additional-school-user-details">
+                                        <span class="role-name">Mokinys</span>
+
+                                        <span class="classes" title=""></span>
+
+                                        <span title="Kauno 1-oji muzikos mokykla" class="additional-school-name overflowed-text ">Kauno 1-oji muzikos mokykla</span>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <div class="school-wrapper" data-school_id="2365">
+                            <ul class="school-users-types">
+
+                                <li class="additional-school-user-type current_role" onClick="window.location.href = '/1/lt/action/user/change_role/1-2365-23/1'">
+                                    <div class="school_avatar" style="background-image: url(/new/uploaded_files/school_logos/_2365_86782138854_20210903_154529_school_logos.png);" data-user_id="1574"></div>
+                                    <div class="additional-school-user-details">
+                                        <span class="role-name">Mokinys</span>
+
+                                        <span class="classes" title=""></span>
+
+                                        <span title="Kauno „Saulės“ gimnazija" class="additional-school-name overflowed-text ">Kauno „Saulės“ gimnazija</span>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+                <a title="Nustatymai" id="user-settings" class="user-right-link" href="/1/lt/page/user/user_info">Nustatymai</a>
+                <a title="Atsijungti" id="user-logout" class="user-right-link" href="/1/lt/action/user/logout">Atsijungti</a>
+            </div>
+        </span>
+    </div>
+</div>
+<div class="currentUserRole" data-id="1" hidden></div>
+<script>
+    var currentRole = $('.currentUserRole').attr('data-id');
+
+    if (currentRole == 2) {
+        $('.children-block').insertBefore($('.schools-block'));
+    } else {
+        $('.schools-block').insertBefore($('.children-block'));
+    }
+</script>
+
+            </div>
+
+
+        </section>
+    </div>
+
+    <script>
+        function toggleLoggedMenu() {
+            $('.logged-menu-btn').toggleClass('change');
+            $('.side-container').toggleClass('menu-open');
+            $("#top-header-content").find('.sub-open').removeClass('sub-open');
+        };
+
+        $(window).ready(function () {
+            var bodyColor = $('body').css('background-color');
+            if (bodyColor !== "rgb(255, 255, 255)" && bodyColor !== "transparent" && bodyColor !== "rgba(0, 0, 0, 0)") {
+                $('#school-name').css('background-color', 'transparent')
+                $('#act-user-info-text').css('background-color', 'transparent')
+            }
+        });
+        (function() {
+            var topCountDownWidth = $('#top-header-content').innerWidth();
+
+            var countedPos = (topCountDownWidth / 2) - topCountDownWidth;
+
+            $('#top-header-content').css('margin-left', countedPos);
+        })();
+
+        $(document).ready(function () {
+            var path = window.location.pathname;
+            path = path.replace(/\/$/, "");
+            path = decodeURIComponent(path);
+
+            $(".top-menu-container a.link").each(function () {
+                var href = $(this).attr('href');
+                if (path.substring(0, href.length) === href) {
+                    $(this).css('background', 'darkgray');
+                    $(this).children('i').css('color', '#fff');
+                    $(this).find('.inactive_menu_item').hide();
+                    $(this).find('.active_menu_item').show();
+                }
+            });
+        });
+    </script>
+
+    <!-- <section id="bottom-header">
+
+     </section>-->
+
+    <span class="ads-main"></span>
+    <script>
+    $( document ).ready(function() {
+      if( !$('.ads-main').is(':visible')) {
+        $('#marksTableDiv').html('<img src="/new/layout/images/public_images/adblockas.png" width="100%" alt="Disable AdBlock" style="max-width: 1000px; display: block; margin: 0 auto;">');
+      }
+    });
+    </script>
+
+    <script type="text/javascript">
+        var timer;
+        $("#languages-block").on("mouseover", function() {
+            $("#top-header-content").find('.active-li').removeClass('active-li');
+            clearTimeout(timer);
+            openSubmenu($(this));
+        }).on("mouseleave", function() {
+            timer = setTimeout(
+                    closeSubmenu, 300, ($(this)));
+        });
+        $(".dropdown-user-menu").on("mouseover click", function() {
+            $("#top-header-content").find('.active-li').removeClass('active-li');
+            clearTimeout(timer);
+            openSubmenu($(this));
+        }).on("mouseleave", function() {
+            timer = setTimeout(
+                    closeSubmenu, 300, ($(this)));
+        });
+        function openSubmenu(n) {
+            $(n).addClass('active-li');
+
+        }
+        function closeSubmenu(t) {
+            $(t).removeClass('active-li');
+        }
+        $(".dropdown-user-menu").on("click", function() {
+            $(this).toggleClass('sub-open');
+            $('.logged-menu-btn').removeClass('change');
+            $('.side-container').removeClass('menu-open');
+        });
+    </script>
+    <script>
+        if ($('.mini').length > 0) {
+            if ($('.new').length > 0) {
+                var newEventsCount = $('.new').length;
+                $(this).show();
+                $('.new-count').text(newEventsCount);
+            }
+
+        $('.mini-ev-top, .mini-events').hover(
+            function() {
+                var newEvArr = [];
+                $('.mini-events').show();
+                $('.mini-events-inner').find('.new').each(function( index ) {
+                    newEvArr.push($(this).parent().attr('data-id'));
+                });
+
+                $.ajax({
+                    url: "/event/view",
+                    data: { 'events': JSON.stringify(newEvArr) }
+                }).done(function( msg ) {
+                    if (true == msg) {
+                        $('.new-count').remove();
+                        $('.mini-events-inner').find('.new').each(function( index ) {
+                            $(this).removeClass("new");
+                        });
+                    }
+                });
+            }, function() {
+                $('.mini-events').hide();
+            }
+        );
+
+        $('.mini-text').each(function(index) {
+            getUrl($(this));
+        });
+    }
+
+    function getUrl(elem) {
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
+        if (exp.test(elem.html())) {
+            var url = elem.html();
+            elem.parent().parent().parent().attr('href', url);
+        }
+    }
+    </script>
+</header>
+
+
+
+
+
+
+
+
+        <!-- Adform DMP -->
+        <!-- Tag for Profiling Pixel -->
+        <!-- Please refer to manual if you want to modify this tag -->
+        <!--<script type="text/javascript">
+            (function(p){
+                p.src = "//dmp.adform.net/dmp/profile/?pid=10591&sg=1";
+            })(document.createElement("img"));
+        </script>
+        <noscript>
+            <img src="//dmp.adform.net/dmp/profile/?pid=10591&sg=1" style="display:none !important">
+        </noscript>-->
+
+
+
+
+
+<div class="side-container">
+    <div class="side">
+        <!-- BEGIN school_logo_style_custom_tpl -->
+        <style>
+            #school-avatar {background-image: url(/new/uploaded_files/school_logos/_2365_86782138854_20210903_154529_school_logos.png) !important;background-position: center;background-size: contain;background-repeat: no-repeat;cursor:pointer;margin: auto;border-radius: 50%;}
+        </style>
+        <!-- END school_logo_style_custom_tpl -->
+        <div class="school-info-wrapper">
+            <div id="school-avatar" class="avatar-in-menu"
+                 >
+        </div>
+        <div class="school-name">Kauno „Saulės“ gimnazija</div>
+
+
+            <div class="lesson_countdown"></div>
+
+    </div>
+</div>
+
+
+
+<script>
+    window.onload = function() {
+        var currentMenu = $('#navlist li a.current');
+        if (!currentMenu.parents('.meniu_li_f').children('.menu_sub').hasClass('opened')) {
+            currentMenu.parents('.meniu_li_f').children('.menu_sub').addClass('opened');
+        }
+
+        $("#49").click(function(event) {
+            const integrra = document.getElementById('49').getAttribute('data-integrra');
+            event.preventDefault();
+
+            if (integrra == 0) {
+                $(".rights-popup-wrapper").css('display', 'block');
+                $(".rights-popup-bg").fadeIn(500);
+            } else {
+                window.open('https://www.integrra.com/edvs/subsystems/wp/md.php', '_blank');
+            }
+        });
+        $(".rights-reject").click(function() {
+            $(".rights-popup-bg").fadeOut(500);
+            $(".rights-popup-wrapper2").css('display', 'none');
+        });
+        document.getElementById('checkIfAgreeWithIntegrra').addEventListener('click', function(e) {
+            document.getElementById('btnAgreeWithIntegrra').disabled = !e.target.checked;
+        });
+        $('#btnAgreeWithIntegrra').click(function() {
+            window.open('https://www.integrra.com/edvs/subsystems/wp/md.php', '_blank');
+            $(".rights-popup-bg").fadeOut(500);
+            $("#49").attr('data-integrra', '1');
+        });
+    }
+</script>
+
+<ul id="navlist">
+
+    <li class="navParentLi menu_img_events"><div class="meniu_li_f">
+            <a  title="Įvykiai" href="/1/lt/page/sf/resolve_post/event/list"  class="navParentA menu_no_sub" id="67" accesskey="v" role="link" tabindex="0"><span class="navParentASpan">Įvykiai</span></a>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_payment"><div class="meniu_li_f">
+            <a  title="Premium" href="/1/lt/page/payment/diaryiumplus"  class="navParentA menu_no_sub" id="30" accesskey="p" role="link" tabindex="0"><span class="navParentASpan">Premium</span></a>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_analytics"><div class="meniu_li_f">
+            <span  title="Analitika"   class="navParentA menu_sub" id="68" accesskey="a" role="link" tabindex="0"><span class="navParentASpan">Analitika</span></span>
+
+            <ul class="subnavlist">
+
+                <li>
+                    <a title="Individuali pažanga" href="/1/lt/page/dashboard/dashboard"  >
+                        Individuali pažanga
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Fizinis pajėgumas" href="/1/lt/page/dashboard/physical"  >
+                        Fizinis pajėgumas
+
+                    </a>
+
+
+                </li>
+
+            </ul>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_marks_pupil"><div class="meniu_li_f">
+            <span  title="Pažymių knygelė"   class="navParentA menu_sub" id="37" accesskey="y" role="link" tabindex="0"><span class="navParentASpan">Pažymių knygelė</span></span>
+
+            <ul class="subnavlist">
+
+                <li>
+                    <a title="Pažymiai" href="/1/lt/page/marks_pupil/marks"  >
+                        Pažymiai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Mokinio reitingas" href="/1/lt/page/ratio/show"  >
+                        Mokinio reitingas
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Lankomumas" href="/1/lt/page/marks_pupil/pupil_attendance"  >
+                        Lankomumas
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Tvarkaraštis" href="/1/lt/page/schedule/view"  >
+                        Tvarkaraštis
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Klasės darbai" href="/1/lt/page/classhomework/class_work"  >
+                        Klasės darbai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Namų darbai" href="/1/lt/page/classhomework/home_work"  >
+                        Namų darbai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Pagyrimai ir pastabos" href="/1/lt/page/remark/pupil_parent_list"  >
+                        Pagyrimai ir pastabos
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Atsiskaitomieji darbai" href="/1/lt/page/control_work/dates_pupil"  >
+                        Atsiskaitomieji darbai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Trimestrai, pusmečiai" href="/1/lt/page/termmark/pupil_term"  >
+                        Trimestrai, pusmečiai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Tėvų susirinkimai" href="/1/lt/page/sf/resolve_post/parent/meetings/list"  >
+                        Tėvų susirinkimai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Video pamokos" href="/1/lt/page/sf/resolve/video_lessons_pupil"  >
+                        Video pamokos
+
+                    </a>
+
+
+                </li>
+
+            </ul>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_messages"><div class="meniu_li_f">
+            <span  title="Pranešimai"   class="navParentA menu_sub" id="45" accesskey="r" role="link" tabindex="0"><span class="navParentASpan">Pranešimai <span class="menu_new_inf">20</span></span><span class="newMenuParent"><img alt="" src="/layout/images/new-banner_2.png" /></span></span>
+
+            <ul class="subnavlist">
+
+                <li>
+                    <a title="Rašyti naują pranešimą" href="/1/lt/page/message_new/new_message"  >
+                        Rašyti naują pranešimą
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Gauti pranešimai" href="/1/lt/page/message_new/message_list"  >
+                        Gauti pranešimai <span id="mes_menu">20</span>
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Išsiųsti pranešimai" href="/1/lt/page/message_new/sent_list"  >
+                        Išsiųsti pranešimai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Svarbūs pranešimai" href="/1/lt/page/message_new/starred_list"  >
+                        Svarbūs pranešimai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Ištrinti pranešimai" href="/1/lt/page/message_new/deleted_list"  >
+                        Ištrinti pranešimai
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Kontaktų grupės" href="/1/lt/page/message_new/group_list"  >
+                        Kontaktų grupės
+
+                    </a>
+
+
+                </li>
+
+            </ul>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_important_info"><div class="meniu_li_f">
+            <span  title="Svarbi informacija"   class="navParentA menu_sub" id="48" accesskey="s" role="link" tabindex="0"><span class="navParentASpan">Svarbi informacija</span></span>
+
+            <ul class="subnavlist">
+
+                <li>
+                    <a title="Atostogų grafikas" href="/1/lt/page/atostogos/atostogu_rodymas"  >
+                        Atostogų grafikas
+
+                    </a>
+
+
+                </li>
+
+                <li>
+                    <a title="Mokyklos failai" href="/1/lt/page/file_storage/show"  >
+                        Mokyklos failai
+
+                    </a>
+
+
+                </li>
+
+            </ul>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_apklausa"><div class="meniu_li_f">
+            <a  title="Apklausos" href="/1/lt/page/sf/resolve/survey"  class="navParentA menu_no_sub" id="50" accesskey="k" role="link" tabindex="0"><span class="navParentASpan">Apklausos</span></a>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_calendar"><div class="meniu_li_f">
+            <a  title="Kalendorius" href="/1/lt/page/sf/resolve/calendar/show"  class="navParentA menu_no_sub" id="65" accesskey="l" role="link" tabindex="0"><span class="navParentASpan">Kalendorius</span></a>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_user_info"><div class="meniu_li_f">
+            <a  title="Nustatymai" href="/1/lt/page/user/user_info"  class="navParentA menu_no_sub" id="56" accesskey="n" role="link" tabindex="0"><span class="navParentASpan">Nustatymai</span></a>
+
+        </div>
+    </li>
+
+    <li class="navParentLi menu_img_archive"><div class="meniu_li_f">
+            <a  title="Archyvas" href="/1/lt/page/lostandfound/archive"  class="navParentA menu_no_sub" id="66" accesskey="c" role="link" tabindex="0"><span class="navParentASpan">Archyvas</span></a>
+
+        </div>
+    </li>
+
+</ul>
+</div>
+</div>
+
+
+<script>
+    var blockTitleWrapper = $('.menu_sub, .menu_no_sub');
+    var menuBlocksWithSubsCount = blockTitleWrapper.length;
+    (function() {
+        /*CLICKS ON MENU BLOCKS TITLES*/
+        blockTitleWrapper.on('click', function(e) {
+            $(this).toggleClass('opened');
+            if ($(this).hasClass('opened')) {
+                unpinPinMenuBlock($(this).attr('id'), true);
+            } else {
+                unpinPinMenuBlock($(this).attr('id'), false);
+            }
+        });
+        /*IF EXIST COOKIE AND MENU BLOCKS WITH SUBMENU*/
+        if (document.cookie.indexOf("activesMenuBlocks") >= 0 && menuBlocksWithSubsCount > 0) {
+            var cookie = getCookieUnlimited('activesMenuBlocks');
+            if (cookie != "") {
+                var arr = cookie.split(',');
+                /*               $('ul.subnavlist li a').each(function() {
+                 if (location.pathname.indexOf($(this).attr('href')) == 0) {
+                 console.log(arr);
+                 $('.navParentA.menu_sub#' + arr[arr.length - 2]).addClass('opened');
+                 } else {
+                 console.log('aa');
+                 }
+                 });*/
+                for (var i = 0; i < arr.length; i++) {
+                    blockTitleWrapper.each(function(index, element) {
+                        if ($(element).attr('id') == arr[arr.length - 2]) {
+                            $(element).addClass('opened');
+                        }
+                    });
+                }
+            }
+        } else {
+            setCookieUnlimited('activesMenuBlocks', '', 365);
+        }
+    })();
+    function setMenuHeight() {
+        $(document).ready(function() {
+            if (null !== document.getElementById("navlist")) {
+                var headerHeight = $('header').outerHeight(true);
+                var infoWrapperHeight = $('.school-info-wrapper').outerHeight(true);
+                var topPosition = headerHeight + infoWrapperHeight + 45;
+                document.getElementById("navlist").style.height = "calc(100vh - " + topPosition + "px)";
+                $('#navlist').css({"height": "calc(100vh - "+topPosition+"px)", "height": "-moz-calc(100vh - "+topPosition+"px)", "height": "-webkit-calc(100vh - "+topPosition+"px)"});
+            }
+        });
+    }
+    setMenuHeight();
+
+</script>
+<script>
+  $(document).on("click",".burger__bars",function() {
+    $( "#main-menu" ).toggle();
+  });
+  if($(window).width() <= 1033) {
+    $(document).on("click","#main-menu li",function() {
+      $( "#main-menu" ).hide();
+    });
+  }
+</script>
+
+    <div id="banner_in_system" class="banner_in_system_vissible">
+        <div class="ban_script_code">
+            <div class="banner_inner">
+                <div id="MD01_B1_995x250_Mokiniai"></div>
+                <div id="MD01_B1_995x250"></div>
+                <div id="MD01_B1_995x250_Moterys"></div>
+                <div id="MD01_B1_995x250_Vyrai"></div>
+                <div id='MD01_B1_995x250_Mokiniai_Nuo_10kl'></div>
+                <div id='MDM01_Mobile_300x250_Mokiniai_iki_10kl'></div>
+                <div id='MDM00_Mobile_Pixel_Mokiniai_iki_10kl'></div>
+                <div id='MDM00_Mobile_Pixel_Vyrai'></div>
+                <div id='MDM01_Mobile_300x250_Vyrai'></div>
+                <div id='MDM00_Mobile_Pixel_Mokiniai_nuo_10kl'></div>
+                <div id='MDM01_Mobile_300x250_Mokiniai_nuo_10kl'></div>
+                <div id='MDM00_Mobile_Pixel_Moterys'></div>
+                <div id='MDM01_Mobile_300x250_Moterys'></div>
+                <div id='MDM00_Mobile_Pixel_Tevai'></div>
+                <div id='MDM01_Mobile_300x250_Tevai'></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="container_main">
+        <div id="container_main_inner" class="diaryiumOnly">
+
+            <!--
+                <div class="register_today_img">
+                        <img src="/new/layout/images/public_images/_diaryium_web-03E_03_1.png" alt="" title="" width="84" height="112">
+                </div>-->
+
+
+
+
+
+            <!--***********Mail popup**************-->
+            <div id="sign_up">
+                <a class="close form_button sprited" id="cancel" href="#"><i class="material-icons">cancel</i></a>
+
+                <div id="sign_up_form">
+                    <span class="title_popup">Parašykite mums</span>
+                    <font id="sent" style="color:#00CC00;"></font>
+                    <label>Jeigu iškilo neaiškumų, turite klausimų, pastabų ar pasiūlymų mums, užpildykite ir išsiųskite:</label>
+                    <form method="post" action="/1/lt/action/public/sendmail" enctype="multipart/form-data">
+                        <input type="hidden" name="cur_view" value="page">
+                        <input type="hidden" name="cur_module" value="control_work">
+                        <input type="hidden" name="cur_action" value="dates_pupil">
+
+                        <strong>Žinutės tekstas:</strong>
+                        <textarea name="text" id="field2" class="header_mail_box" style="resize:none;"></textarea>
+                        <input type="file" class="header_mail_file h-file-1" data-num="h-file-1" name="header_mail_file[]" style="display:none;">
+                        <input type="file" class="header_mail_file h-file-2" data-num="h-file-2" name="header_mail_file[]" style="display:none;">
+                        <input type="file" class="header_mail_file h-file-3" data-num="h-file-3" name="header_mail_file[]" style="display:none;">
+                        <input type="file" class="header_mail_file h-file-4" data-num="h-file-4" name="header_mail_file[]" style="display:none;">
+                        <input type="file" class="header_mail_file h-file-5" data-num="h-file-5" name="header_mail_file[]" style="display:none;">
+                        <div id="uploaded-files"></div>
+                        <div id="actions">
+                            <!--<a class="form_button sprited" id="log_in" href="#">Siųsti</a>-->
+                            <button type="submit" class="form_button whiteButton" id="log_in">
+                                <i class="material-icons mdGreenText icon-with-span">send</i>
+                                <span>Siųsti</span>
+                            </button>
+                            <a class="whiteButton" id="help-msg-attach-file"><i class="material-icons icon-only">attach_file</i></a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <script type="text/javascript">
+
+
+                var field2 = new LiveValidation('field2', {onlyOnSubmit: true});
+                field2.add(Validate.Presence);
+                var automaticOnSubmit = field2.form.onsubmit;
+                field2.form.onsubmit = function() {
+                var valid = automaticOnSubmit();
+                if (valid) {
+                document.getElementById("sent").innerHTML = "Laiškas išsiųstas";
+                document.getElementById('log_in').style = 'display: none;';
+                form.action = "/action/public/sendmail"
+                }
+
+                return false;
+                }
+            </script>
+
+            <!--*************************-->
+            <div id="main_middle">
+                <div id="main-cnt-id" class="main-content">
+
+                    <div id="main_ghost_message">
+
+                    </div>
+
+                    <div id="main" class="diaryiumOnly clearfix banner_in_system_vissible">
+
+                         <h2 class="title">Ąžuolas Saulius Balbieris - atsiskaitomieji darbai</h2>
+
+<input type="hidden" name="baseUrl" id="baseUrl" value="/1/lt/page/control_work/dates_pupil" />
+<input type="hidden" name="groupId" id="groupId" value="0" />
+<div class="toolhead">
+    <form action="/1/lt/page/control_work/dates_pupil" id="changeDateForm" name="changeDateForm" method="post">
+        <div style="float:left;">
+            <span class="from">Nuo</span>
+            <input type="text" name="datepickerFrom" class="datepickerFrom" id="datepickerFrom" value="2022-02-15" size="10"/>
+            <span class="to">Iki</span>
+            <input type="text" name="datepickerTo" class="datepickerTo" id="datepickerTo" value="2022-03-15" size="10"/>
+            <button type="submit" name="changeDate" id="changeDate" class="whiteButton" aria-label="Pirmyn"><i class="material-icons mdGreenText icon-only" aria-hidden="true">keyboard_arrow_right</i></button>
+        </div>
+        <select id="selectGroupDatePupil" name="selectGroup" style="float:right">
+            <option value="0">-- Pasirinkite grupę --</option>
+
+            <option value="92" >Lietuvių kalbos modulis  (-) IIIB</option>
+
+            <option value="674" >Anglų kalbos modulis  (-) IIIB</option>
+
+            <option value="823" >Dorinis ugdymas (etika)  (B) IIIB</option>
+
+            <option value="245" >Fizika  (A) IIIA, IIIB</option>
+
+            <option value="783" >Fizinis ugdymas  (B) IIIB</option>
+
+            <option value="986" >Informacinės technologijos (Programavimas)  (A) IIIB, IIIF</option>
+
+            <option value="1064" >Informacinių technologijų modulis  (-) IIIB, IIIF</option>
+
+            <option value="849" >Istorija  (B) IIIA, IIIB, IIIC</option>
+
+            <option value="70" >Lietuvių kalba ir literatūra  (A) IIIB</option>
+
+            <option value="151" >Matematika  (A) IIIB</option>
+
+            <option value="969" >Matematikos modulis  (-) IIIB</option>
+
+            <option value="770" >Muzika  (B) IIIA, IIIB, IIIC, IIID, IIIE, IIIF</option>
+
+            <option value="668" >Užsienio kalba (anglų)  (B2) IIIB</option>
+
+            <option value="642" >Užsienio kalba (rusų)  (-) IIIB</option>
+
+        </select>
+    </form>
+</div>
+
+
+
+<div class="cWorksList">
+    <table id="cWorksListTable" class="fullWidth hoverTr hover-table">
+        <tr>
+            <th>Eil. Nr.</th>
+            <th>Data</th>
+            <th width="150">Atsiskaitomojo darbo tipas</th>
+            <th>Grupė</th>
+            <!--<th>Trumpas pavadinimas</th>-->
+            <th>Atsiskaitomojo darbo tema</th>
+            <th>Įvesta</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>2022-02-22</td>
+            <td>Kontrolinis darbas</td>
+            <td>Fizika  (A) IIIA, IIIB</td>
+            <!--<td class="alignLeft">Uždavinių sprendimo patikra</td>-->
+            <td class="cw-desc">Uždavinių sprendimo patikra</td>
+            <td>2022-02-01</td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>2022-02-21</td>
+            <td>Kontrolinis darbas</td>
+            <td>Matematika  (A) IIIB</td>
+            <!--<td class="alignLeft">Kontrolinis darbas "Nelyg...</td>-->
+            <td class="cw-desc">Kontrolinis darbas "Nelygybės. Lygčių sistemos"</td>
+            <td>2022-02-10</td>
+        </tr>
+
+    </table>
+</div>
+<br />
+
+
+
+
+                    </div>
+                </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div id="banner_in_system_bottom" class="banner_in_system_vissible">
+        <div class="ban_script_code">
+            <div class="banner_inner">
+                <div id='MD02_B2_995x250_Vyrai'></div>
+                <div id='MD02_B2_995x250_Moterys'></div>
+                <div id='MD02_B2_995x250'></div>
+                <div id='MD02_B2_995x250_Mokiniai'></div>
+                <div id='MD02_B2_995x250_Mokiniai_Nuo_10kl'></div>
+                <div id='mdm02_mobile_300x250_vyrai'></div>
+                <div id='mdm02_mobile_300x250_moterys'></div>
+                <div id='mdm02_mobile_300x250_tevai'></div>
+                <div id='mdm02_mobile_300x250_mokiniai_nuo_10kl'></div>
+                <div id='mdm02_mobile_300x250_mokiniai_iki_10kl'></div>
+            </div>
+        </div>
+    </div>
+    <div class="custom_confirm_modal" role="dialog" style="display: none;">
+        <div class="custom_confirm_modal-dialog">
+            <div class="custom_confirm_modal-content">
+                <div class="custom_confirm_modal-header"></div>
+                <div class="custom_confirm_modal-body">
+                    <a href="#" class="whiteButton confirm_custom_modal">
+                        <i class="material-icons mdGreenText" aria-hidden="true">check</i>
+                        <span>Patvirtinti</span>
+                    </a>
+                    <a href="#" class="whiteButton cancel_custom_modal">
+                        <i class="material-icons mdRed" aria-hidden="true">cancel</i>
+                        <span>Atšaukti</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="custom_confirm_modal-modal-backdrop" style="opacity: 0.5; display: none;"></div>
+    <!-- popup for agreement to transfer data -->
+
+    <div class="rights-popup-bg" style="display: none;">
+        <div class="rights-popup-wrapper">
+            <div class="rights-logo-block">
+                <img src="/new/layout/images/public_images/menu_icons/integrra.png">
+            </div>
+            <p class="desc">Elektroninė dokumentų ir užduočių valdymo sistema INTEGRRA yra puikus sprendimas optimizuoti įstaigų ir įmonių dokumentų srautus bei elektronizuoti informacijos perdavimą.</p>
+            <div class="icon-wrapper-block">
+                <div class="icon-wrapper"><i class="fas fa-file-alt"></i><span class="tooltiptext">Valdykite popierinių dokumentų srautą</span></div>
+                <div class="icon-wrapper"><i class="fas fa-file-invoice-dollar"></i><span class="tooltiptext">Sumažinkite spausdinimo išlaidas</span></div>
+                <div class="icon-wrapper"><i class="far fa-clock"></i><span class="tooltiptext">Nebegaiškite laiko ieškant dokumentų</span></div>
+                <div class="icon-wrapper"><i class="fas fa-tasks"></i><span class="tooltiptext">Valdykite užduočių srautą</span></div>
+                <div class="icon-wrapper"><i class="fas fa-file-signature"></i><span class="tooltiptext">Pasirašyti dokumentus užtruksite tik akimirką</span></div>
+            </div>
+            <div id="next-rights">Toliau</div>
+        </div><!-- /.rights-popup-wrapper -->
+        <div class="rights-popup-wrapper2">
+            <div class="rights-question-header">Ar sutinkate perduoti <span>Integrra sistemai</span></div>
+            <div class="rights-question-text">El. pašto adresą, mokyklos pavadinimą</div>
+            <div class="rights-checkbox-block">
+                <input id="checkIfAgreeWithIntegrra" type="checkbox" value="1" spellcheck="true">
+                <span class="rights-question-approve">sutinku su asmens duomenų tvarkymu<br> identifikavimo tikslu</span>
+            </div>
+
+            <input id="btnAgreeWithIntegrra" class="rights-btn" type="submit" alt="priimti" onclick="toggleAgreeWithIntegrra()" disabled="disabled" value="Priimti">
+
+            <a class="rights-reject">Atmesti</a>
+
+        </div>
+    </div><!-- /.rights-popup-bg -->
+
+    <script type="text/javascript">
+        $(".rights-popup-bg, #passwordChangeBlock").click(function(){
+        $(this).fadeOut(500);
+        $(this).children().css('display', 'none');
+        }).children().click(function(e) {
+        e.stopPropagation();
+        });
+        $("#next-rights").click(function() {
+        $(".rights-popup-wrapper").fadeOut(500);
+        $(".rights-popup-wrapper2").fadeIn(500);
+        });
+    </script>
+    <!-- end popup for agreement to transfer data -->
+
+
+    <script src="/new/layout/js/ads.js" type="text/javascript"></script><script type="text/javascript">// <![CDATA[
+        jQuery(document).ready(checkAds()); function checkAds(){if (document.getElementById('adsense')!=undefined){document.write("<script>_gaq.push(['_trackEvent', 'Adblock', 'Unblocked', 'false',,true]);</sc" + "ript>");}else{document.write("<script>_gaq.push(['_trackEvent', 'Adblock', 'Blocked', 'true',,true]);</sc" + "ript>");}}
+        // ]]></script>
+
+
+
+    <script src="/new/layout/js/jquery.smartbanner.js"></script>
+    <script type="text/javascript">
+        // iOS suggestion one app or schema from iOS
+        // var timeout;
+
+        // function preventPopup() {
+        //     clearTimeout(timeout);
+        //     timeout = null;
+        //     window.removeEventListener('pagehide', preventPopup);
+        // }
+
+        // function openApp() {
+        //     $('<iframe />')
+        //     .attr('src', 'mdapp://')
+        //     .attr('style', 'display:none;')
+        //     .appendTo('body');
+
+        //     timeout = setTimeout(function() {
+        //             window.location = 'htpp://facebook.com';
+        //     }, 100);
+        //     window.addEventListener('pagehide', preventPopup);
+        // }
+        // var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+        // if(iOS) {
+        //     openApp();
+        // }
+
+        $.smartbanner({
+        title: 'Mano dienynas',
+                price: 'Get',
+                author: ' ',
+                icon: '/new/layout/images/md_icon.png',
+                layer: true,
+                button: 'View'
+        });
+    </script>
+
+
+    <!-- script for popup for agreement to transfer data -->
+    <script type="text/javascript">
+        function closePopup() {
+        $(".rights-reject").on("click", function() {
+        $("rights-popup-bg").hide();
+        });
+        }
+    </script>
+    <!-- end script for popup for agreement to transfer data -->
+
+    <script type="text/javascript">
+
+        $(document).on('click', '#help-msg-attach-file', function(e) {
+            e.preventDefault();
+
+            $( ".header_mail_file" ).each(function() {
+                if (!$(this).val()) {
+                    $(this).trigger('click');
+
+                    return false;
+                }
+            });
+
+            return false;
+        });
+
+        $( ".header_mail_file" ).change(function() {
+            var fullname = $(this)[0].files[0].name;
+            var fileType = fullname.slice((Math.max(0, fullname.lastIndexOf(".")) || Infinity) + 1);
+            var name = fullname.substr(0, 25) + "...";
+            var src = '';
+
+            if ((fileType == "docx") || (fileType == "doc")) {
+                src="/layout/images/document-word.png";
+            } else if ((fileType == "jpg") || (fileType == "gif") || (fileType == "png")) {
+                src="/layout/images/document-image.png";
+            } else if ((fileType == "xls") || (fileType == "xlsx")) {
+                src="/layout/images/document-excel.png";
+            } else if ((fileType == "pdf")) {
+                src="/layout/images/document-pdf.png";
+            } else {
+                src="/layout/images/document.png";
+            }
+
+            $('#uploaded-files').append('<div style="font-size: 14px;"><img src="' + src + '">' + name +
+                '<a href="#" class="remove-file" data-remove="' + $(this).attr('data-num') + '"><i class="material-icons" style="font-size: 16px;">highlight_off</i></a></div>');
+        });
+
+        $(document).on('click', '.remove-file', function() {
+            $('.' + $(this).attr('data-remove')).val('');
+            $(this).parent().remove();
+        });
+
+        $("#new-pass1").focus(function() {
+        $(".passInfo").slideDown();
+        });
+        $('#new-pass1').keyup(function() {
+        var password = $(this).val();
+        var validation = 0;
+        if ((password.length >= 8)) {
+        validation = validation + 1;
+        }
+        if (password.match(/[0-9]/)) {
+        validation = validation + 1;
+        }
+        if (password.match(/[A-Z]/)) {
+        validation = validation + 1;
+        }
+        if (validation <= 1) {
+        $('.progressBarVal').css({'background': 'red', 'width': '30%','transition': 'width 1s ease-in,background 1s'});
+        $('#new-pass1').removeClass('greenBorder');
+        }
+        if (validation == 2) {
+        $('.progressBarVal').css({'background-image': 'linear-gradient(to right, red , yellow)', 'width': '65%','transition': 'width 1s ease-in'});
+        $('#new-pass1').removeClass('greenBorder');
+        }
+        if (validation == 3) {
+        $('.progressBarVal').css({'background': 'green', 'width': '100%','transition': 'width 1s ease-in,background 1s'});
+        $('#new-pass1').addClass('greenBorder');
+        $('#new-pass1').on('focusout', function() {
+        $(".passInfo").slideUp();
+        });
+        }
+
+        });
+    </script>
+    <script>
+        if (location.search.split('redirectFrom=')[1] == "toggleEmailSubscription") {
+            $('#container_main_inner')
+                .append('<ul class="message-list" id="r4" style="display: none;"><li class="message-success">Gaunamų pranešimų siuntimas iš "Manodienynas.lt" sistemos Jums yra išjungtas.</li></ul>');
+        }
+
+    </script>
+    <script>
+        $(document).on('click', '.homepage_banner-close', function() {
+            $('.homepage_banner').slideUp();
+        });
+        $(document).on('click', '#history_go_back', function() {
+            window.history.go(-1);
+        });
+    </script>
+    <script src="/new/layout/js/ResizeSensor-ElementQueries.min.js"></script>
+</body>
+</html>

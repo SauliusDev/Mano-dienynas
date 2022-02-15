@@ -3,10 +3,12 @@ package com.sunnyoaklabs.manodienynas.data.repository
 import com.sunnyoaklabs.manodienynas.core.util.*
 import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.remote.dto.*
+import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +18,8 @@ import java.lang.Exception
 
 class RepositoryImpl(
     private val api: BackendApi,
-    private val dataSource: DataSource
+    private val dataSource: DataSource,
+    private val converter: Converter
 ) : Repository {
 
     override suspend fun getSettings(): Settings {
@@ -34,7 +37,8 @@ class RepositoryImpl(
                     credentials.password,
                     1
                 ))
-            emit(Resource.Success(message))
+            if (message == SessionValidationJsonResponses.CREDENTIALS_CORRECT) emit(Resource.Success(message))
+            else emit(Resource.Error(Errors.INCORRECT_CREDENTIALS))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
@@ -47,88 +51,99 @@ class RepositoryImpl(
         return credentials.toCredentials()
     }
 
-    override fun getEvents(): Flow<Resource<List<Event>>> = flow {
+    override fun getEvents(): Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+        try {
+            val message = api.getEvents()
+            val user = converter.toUser(message)
+            if (user.name.isNotBlank()) emit(Resource.Success(message))
+            else emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
+        }
+    }
+
+    override fun getMarks(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getMarks(): Flow<Resource<List<Mark>>> {
+    override fun getAttendance(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getAttendance(): Flow<Resource<List<Attendance>>> {
+    override fun getClassWork(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getClassWork(): Flow<Resource<List<ClassWork>>> {
+    override fun getClassWorkByCondition(payload: PostClassWork): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getClassWorkByCondition(payload: PostClassWork): Flow<Resource<List<ClassWork>>> {
+    override fun getHomeWork(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getHomeWork(): Flow<Resource<List<HomeWork>>> {
+    override fun getHomeWorkByCondition(payload: PostHomeWork): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getHomeWorkByCondition(payload: PostHomeWork): Flow<Resource<List<HomeWork>>> {
+    override fun getControlWork(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getControlWork(): Flow<Resource<List<ControlWork>>> {
+    override fun getControlWorkByCondition(payload: PostControlWork): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getControlWorkByCondition(payload: PostControlWork): Flow<Resource<List<ControlWork>>> {
+    override fun getTerm(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getTerm(): Flow<Resource<List<Term>>> {
+    override fun getTermLegend(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getTermLegend(): Flow<Resource<TermLegend>> {
+    override fun getMessagesGotten(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getMessagesGotten(): Flow<Resource<List<Message>>> {
+    override fun getMessagesSent(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getMessagesSent(): Flow<Resource<List<Message>>> {
+    override fun getMessagesStarred(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getMessagesStarred(): Flow<Resource<List<Message>>> {
+    override fun getMessagesDeleted(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getMessagesDeleted(): Flow<Resource<List<Message>>> {
+    override fun getMessageIndividual(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getMessageIndividual(): Flow<Resource<List<MessageIndividual>>> {
+    override fun getHoliday(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getHoliday(): Flow<Resource<List<Holiday>>> {
+    override fun getParentMeetings(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getParentMeetings(): Flow<Resource<List<ParentMeeting>>> {
+    override fun getSchedule(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getSchedule(): Flow<Resource<List<Schedule>>> {
+    override fun getCalendar(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getCalendar(): Flow<Resource<List<Calendar>>> {
+    override fun getCalendarDate(payload: GetCalendar): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun getCalendarDate(payload: GetCalendar): Flow<Resource<List<Calendar>>> {
-        TODO("Not yet implemented")
-    }
 
 }

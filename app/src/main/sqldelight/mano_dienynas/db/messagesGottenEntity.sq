@@ -26,5 +26,4 @@ DELETE FROM messageGottenEntity
 WHERE id = :id;
 
 deleteAllMessagesGotten:
-DELETE FROM messageGottenEntity
-WHERE id = :id;
+DELETE FROM messageGottenEntity;

@@ -14,8 +14,9 @@ import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.repository.RepositoryImpl
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.data.util.GsonParser
-import com.sunnyoaklabs.manodienynas.data.util.JsonFormatterImpl
+import com.sunnyoaklabs.manodienynas.data.util.JsoupWebScrapper
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
+import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
 import dagger.Module
 import dagger.Provides
@@ -35,17 +36,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGetSessionCookiesUseCase(repository: Repository): GetSessionCookies {
-        return GetSessionCookies(repository)
-    }
-
-    @Provides
-    @Singleton
     fun provideRepository(
         dataSource: DataSource,
-        api: BackendApi
+        api: BackendApi,
+        converter: Converter
     ): Repository {
-        return RepositoryImpl(api, dataSource)
+        return RepositoryImpl(api, dataSource, converter)
     }
 
     @Provides
@@ -66,7 +62,7 @@ object AppModule {
     @Singleton
     fun provideConverter(): Converter {
         return Converter(
-            jsonFormatter = JsonFormatterImpl(),
+            webScrapper = JsoupWebScrapper(),
             jsonParser = GsonParser(Gson())
         )
     }
@@ -89,5 +85,17 @@ object AppModule {
         converter: Converter
     ): DataSource {
         return DataSourceImpl(ManoDienynasDatabase(driver), provider, converter)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetSessionCookiesUseCase(repository: Repository): GetSessionCookies {
+        return GetSessionCookies(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetEventsUseCase(repository: Repository, converter: Converter): GetEvents {
+        return GetEvents(repository, converter)
     }
 }

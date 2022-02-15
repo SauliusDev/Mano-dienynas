@@ -25,5 +25,4 @@ DELETE FROM calendarEntity
 WHERE id = :id;
 
 deleteAllCalendar:
-DELETE FROM calendarEntity
-WHERE id = :id;
+DELETE FROM calendarEntity;

@@ -1,30 +1,28 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
-import android.media.metrics.Event
 import com.google.gson.reflect.TypeToken
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostLogin
 import com.sunnyoaklabs.manodienynas.domain.model.*
-import org.jsoup.nodes.Document
 
 class Converter(
-    private val jsonFormatter: JsonFormatter,
+    private val webScrapper: WebScrapper,
     private val jsonParser: JsonParser,
 ) {
 
-    fun toAttendanceJson(list: List<AttendanceItem>): String {
+    fun toAttendanceJson(list: List<Int>): String {
         return jsonParser.toJson(
             list,
-            object : TypeToken<ArrayList<AttendanceItem>>(){}.type
+            object : TypeToken<ArrayList<Int>>(){}.type
         ) ?: "[]"
     }
 
-    fun fromAttendanceJson(json: String): List<AttendanceItem> {
-        return jsonParser.fromJson<ArrayList<AttendanceItem>>(
+    fun fromAttendanceJson(json: String): List<Int> {
+        return jsonParser.fromJson<ArrayList<Int>>(
             json,
-            object : TypeToken<ArrayList<AttendanceItem>>(){}.type
+            object : TypeToken<ArrayList<Int>>(){}.type
         ) ?: emptyList()
     }
 
@@ -84,60 +82,60 @@ class Converter(
         ) ?: "[]"
     }
 
-    fun toEvents(html: Document): List<Event> {
-        return jsonFormatter.toEvents(html = html)
+    fun toUser(html: String): User {
+        return webScrapper.toUser(html = html)
     }
 
-    fun toMarks(html: Document): List<Mark> {
-        return jsonFormatter.toMarks(html = html)
+    fun toEvents(html: String): List<Event> {
+        return webScrapper.toEvents(html = html)
     }
 
-    fun toAttendance(html: Document): List<Attendance> {
-        return jsonFormatter.toAttendance(html = html)
+    fun toMarks(html: String): List<Mark> {
+        return webScrapper.toMarks(html = html)
     }
 
-    fun toClassWork(html: Document): List<ClassWork> {
-        return jsonFormatter.toClassWork(html = html)
+    fun toAttendance(html: String): List<Attendance> {
+        return webScrapper.toAttendance(html = html)
     }
 
-    fun toHomeWork(html: Document): List<HomeWork> {
-        return jsonFormatter.toHomeWork(html = html)
+    fun toClassWork(html: String): List<ClassWork> {
+        return webScrapper.toClassWork(html = html)
     }
 
-    fun toControlWork(html: Document): List<ControlWork> {
-        return jsonFormatter.toControlWork(html = html)
+    fun toHomeWork(html: String): List<HomeWork> {
+        return webScrapper.toHomeWork(html = html)
     }
 
-    fun toTerm(html: Document): List<Term> {
-        return jsonFormatter.toTerm(html = html)
+    fun toControlWork(html: String): List<ControlWork> {
+        return webScrapper.toControlWork(html = html)
     }
 
-    fun toTermLegend(html: Document): TermLegend {
-        return jsonFormatter.toTermLegend(html = html)
+    fun toTerm(html: String): List<Term> {
+        return webScrapper.toTerm(html = html)
     }
 
-    fun toMessages(html: Document): List<Message> {
-        return jsonFormatter.toMessages(html = html)
+    fun toMessages(html: String): List<Message> {
+        return webScrapper.toMessages(html = html)
     }
 
-    fun toMessagesIndividual(html: Document): List<MessageIndividual> {
-        return jsonFormatter.toMessagesIndividual(html = html)
+    fun toMessagesIndividual(html: String): List<MessageIndividual> {
+        return webScrapper.toMessagesIndividual(html = html)
     }
 
-    fun toHoliday(html: Document): List<Holiday> {
-        return jsonFormatter.toHoliday(html = html)
+    fun toHoliday(html: String): List<Holiday> {
+        return webScrapper.toHoliday(html = html)
     }
 
-    fun toParentMeeting(html: Document): List<ParentMeeting> {
-        return jsonFormatter.toParentMeeting(html = html)
+    fun toParentMeeting(html: String): List<ParentMeeting> {
+        return webScrapper.toParentMeeting(html = html)
     }
 
-    fun toSchedule(html: Document): List<Schedule> {
-        return jsonFormatter.toSchedule(html = html)
+    fun toSchedule(html: String): List<Schedule> {
+        return webScrapper.toSchedule(html = html)
     }
 
-    fun toCalendar(html: Document): List<Calendar> {
-        return jsonFormatter.toCalendar(html = html)
+    fun toCalendar(html: String): List<Calendar> {
+        return webScrapper.toCalendar(html = html)
     }
 
 }

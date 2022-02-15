@@ -20,13 +20,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 /*
     todo workflow (main set up):
-        <> add navGraph name (login, main)
-
-        <> get session in mainViewModel
-        <> small height toolbar with username
-        <> bottom navigation with all fragments
-        <> settings on fragment done, options (all as in login + logout)
-        <> logout works
+        <> finish all webscrapping https://html.onlineviewer.net/
+        <> toolbar
+            -small height toolbar with username
+            -clickable icon which brings up dialog with user details
+        <> logout
 
     todo (session cookies refreshing based on response):
         <> make it :D
@@ -38,6 +36,9 @@ import dagger.hilt.android.AndroidEntryPoint
         <> make those requests
 
     todo (jsoup web scrapping) for all other fragments:
+        <> make all web scrapping functions lol
+
+    todo (paging) for some fragments
         <> make all web scrapping functions lol
  */
 @AndroidEntryPoint

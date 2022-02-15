@@ -25,5 +25,4 @@ DELETE FROM markEntity
 WHERE id = :id;
 
 deleteAllMarks:
-DELETE FROM markEntity
-WHERE id = :id;
+DELETE FROM markEntity;

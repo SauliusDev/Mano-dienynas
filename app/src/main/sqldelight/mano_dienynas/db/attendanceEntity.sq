@@ -25,7 +25,6 @@ DELETE FROM attendanceEntity
 WHERE id = :id;
 
 deleteAllAttendance:
-DELETE FROM attendanceEntity
-WHERE id = :id;
+DELETE FROM attendanceEntity;
 
 

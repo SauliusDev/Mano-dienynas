@@ -21,7 +21,6 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_STARRED_LIST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.PARENT_MEETINGS_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.SCHEDULE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.TERM_GET
-import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.TERM_LEGEND_GET
 import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import io.ktor.client.*
@@ -95,10 +94,6 @@ class BackendApiImpl(
 
     override suspend fun getTerm(): String {
         return client.get { url(TERM_GET) }
-    }
-
-    override suspend fun getTermLegend(): String {
-        return client.get { url(TERM_LEGEND_GET) }
     }
 
     override suspend fun getMessagesGotten(): String {

@@ -24,5 +24,4 @@ DELETE FROM scheduleEntity
 WHERE id = :id;
 
 deleteAllSchedule:
-DELETE FROM scheduleEntity
-WHERE id = :id;
+DELETE FROM scheduleEntity;

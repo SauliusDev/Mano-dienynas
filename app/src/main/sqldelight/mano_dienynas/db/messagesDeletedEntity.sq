@@ -26,5 +26,4 @@ DELETE FROM messageDeletedEntity
 WHERE id = :id;
 
 deleteAllMessagesDeleted:
-DELETE FROM messageDeletedEntity
-WHERE id = :id;
+DELETE FROM messageDeletedEntity;

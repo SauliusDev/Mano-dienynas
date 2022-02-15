@@ -29,5 +29,4 @@ DELETE FROM homeworkEntity
 WHERE id = :id;
 
 deleteAllHomework:
-DELETE FROM homeworkEntity
-WHERE id = :id;
+DELETE FROM homeworkEntity;

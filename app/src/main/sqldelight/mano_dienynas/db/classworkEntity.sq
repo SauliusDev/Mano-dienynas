@@ -28,5 +28,4 @@ DELETE FROM classworkEntity
 WHERE id = :id;
 
 deleteAllClasswork:
-DELETE FROM classworkEntity
-WHERE id = :id;
+DELETE FROM classworkEntity;

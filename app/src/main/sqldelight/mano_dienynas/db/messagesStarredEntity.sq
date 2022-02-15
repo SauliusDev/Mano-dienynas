@@ -26,5 +26,4 @@ DELETE FROM messageStartedEntity
 WHERE id = :id;
 
 deleteAllMessagesStarted:
-DELETE FROM messageStartedEntity
-WHERE id = :id;
+DELETE FROM messageStartedEntity;

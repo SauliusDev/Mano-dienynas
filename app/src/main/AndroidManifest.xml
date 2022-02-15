@@ -14,18 +14,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ManoDienynas">
         <activity
-            android:name=".LoginActivity"
+            android:name=".TestActivity"
             android:exported="true"
-            android:theme="@style/Theme.ManoDienynas"/>
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.App.Starting">
+            android:label="@string/title_activity_test"
+            android:theme="@style/Theme.ManoDienynas">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ManoDienynas" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App.Starting">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
     </application>
 

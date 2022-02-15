@@ -24,5 +24,4 @@ DELETE FROM holidayEntity
 WHERE id = :id;
 
 deleteAllHoliday:
-DELETE FROM holidayEntity
-WHERE id = :id;
+DELETE FROM holidayEntity;

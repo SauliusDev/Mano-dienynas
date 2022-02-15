@@ -16,6 +16,7 @@ import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,42 +30,46 @@ class MainViewModel @Inject constructor(
     private val firebaseCrashlytics: FirebaseCrashlytics
 ) : AndroidViewModel(app) {
 
-    private val _userState = MutableStateFlow(UserState(isLoading = true, isUserLoggedIn = false))
+    private val _userState = MutableStateFlow(UserState())
     val userState = _userState.asStateFlow()
-
-    private val _isFinishedLoading = MutableSharedFlow<Boolean>()
-    val isFinishedLoading = _isFinishedLoading.asSharedFlow()
 
     private val _notifier = MutableSharedFlow<Resource<String>>()
     val notifier = _notifier.asSharedFlow()
 
     init {
-//        viewModelScope.launch {
-//            getSessionCookies().collect { wasSessionCreated ->
-//                when (wasSessionCreated) {
-//                    is Resource.Success -> {
-//                        firebaseCrashlytics.log("Success: credentials, sessionCookies")
-//                        _userState.emit(
-//                            UserState(
-//                                isLoading = false,
-//                                isUserLoggedIn = true
-//                            )
-//                        )
-//                    }
-//                    is Resource.Error -> {
-//                        firebaseCrashlytics.log("Error: credentials, sessionCookies")
-//                        _notifier.emit(Resource.Error(wasSessionCreated.message ?: Errors.UNKNOWN_ERROR))
-//                        _userState.emit(
-//                            UserState(
-//                                isLoading = false,
-//                                isUserLoggedIn = false
-//                            )
-//                        )
-//                    }
-//                    else -> {}
-//                }
-//            }
-//        }
+        viewModelScope.launch {
+            // TODO testing
+            this.cancel()
+
+            getSessionCookies().collect { wasSessionCreated ->
+                when (wasSessionCreated) {
+                    is Resource.Success -> {
+                        firebaseCrashlytics.log("(MainViewModel) Success: credentials, sessionCookies")
+                        _userState.emit(
+                            UserState(
+                                isLoading = false,
+                                isUserLoggedIn = true,
+                                isSessionGotten = true,
+                                triedGettingSession = true
+                            )
+                        )
+                    }
+                    is Resource.Error -> {
+                        firebaseCrashlytics.log("(MainViewModel) Error: credentials, sessionCookies")
+                        _notifier.emit(Resource.Error(wasSessionCreated.message ?: Errors.UNKNOWN_ERROR))
+                        _userState.emit(
+                            UserState(
+                                isLoading = false,
+                                isUserLoggedIn = true,
+                                isSessionGotten = false,
+                                triedGettingSession = true
+                            )
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     private fun hasInternetConnection(): Boolean {

@@ -27,5 +27,4 @@ DELETE FROM parentMeetingEntity
 WHERE id = :id;
 
 deleteAllParentMeetings:
-DELETE FROM parentMeetingEntity
-WHERE id = :id;
+DELETE FROM parentMeetingEntity;

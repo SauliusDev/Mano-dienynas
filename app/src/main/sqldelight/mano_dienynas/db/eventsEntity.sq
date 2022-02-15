@@ -28,5 +28,4 @@ DELETE FROM eventEntity
 WHERE id = :id;
 
 deleteAllEvents:
-DELETE FROM eventEntity
-WHERE id = :id;
+DELETE FROM eventEntity;

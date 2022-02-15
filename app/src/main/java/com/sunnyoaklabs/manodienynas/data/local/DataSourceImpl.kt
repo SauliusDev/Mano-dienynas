@@ -87,16 +87,16 @@ class DataSourceImpl @Inject constructor(
         return db.eventsEntityQueries.getAllEvents().asFlow().mapToList()
     }
 
-    override suspend fun deleteEventById(id: Long) {
+    override suspend fun deleteAllEvents() {
         withContext(dispatchers.io) {
-            db.eventsEntityQueries.deleteEventById(id)
+            db.eventsEntityQueries.deleteAllEvents()
         }
     }
 
     override suspend fun insertEvent(event: Event) {
         return withContext(dispatchers.io) {
             db.eventsEntityQueries.insertEvent(
-                event.id,
+                null,
                 event.title,
                 event.pupilInfo,
                 event.createDate,
@@ -118,9 +118,9 @@ class DataSourceImpl @Inject constructor(
         return db.marksEntityQueries.getAllMarks().asFlow().mapToList()
     }
 
-    override suspend fun deleteMarkById(id: Long) {
+    override suspend fun deleteAllMarks() {
         withContext(dispatchers.io) {
-            db.marksEntityQueries.deleteMarkById(id)
+            db.marksEntityQueries.deleteAllMarks()
         }
     }
 
@@ -146,15 +146,15 @@ class DataSourceImpl @Inject constructor(
         return db.attendanceEntityQueries.getAllAttendance().asFlow().mapToList()
     }
 
-    override suspend fun deleteAttendanceById(id: Long) {
+    override suspend fun deleteAllAttendance() {
         withContext(dispatchers.io) {
-            db.attendanceEntityQueries.deleteAttendanceById(id)
+            db.attendanceEntityQueries.deleteAllAttendance()
         }
     }
 
     override suspend fun insertAttendance(attendance: Attendance) {
         return withContext(dispatchers.io) {
-            db.marksEntityQueries.insertMark(
+            db.attendanceEntityQueries.insertAttendance(
                 attendance.id,
                 attendance.lessonTitle,
                 attendance.teacher,
@@ -174,9 +174,9 @@ class DataSourceImpl @Inject constructor(
         return db.classworkEntityQueries.getAllClasswork().asFlow().mapToList()
     }
 
-    override suspend fun deleteClassWorkById(id: Long) {
+    override suspend fun deleteAllClassWork() {
         withContext(dispatchers.io) {
-            db.classworkEntityQueries.deleteClassworkById(id)
+            db.classworkEntityQueries.deleteAllClasswork()
         }
     }
 
@@ -205,9 +205,9 @@ class DataSourceImpl @Inject constructor(
         return db.homeworkEntityQueries.getAllHomework().asFlow().mapToList()
     }
 
-    override suspend fun deleteHomeWorkById(id: Long) {
+    override suspend fun deleteAllHomeWork() {
         withContext(dispatchers.io) {
-            db.homeworkEntityQueries.deleteHomeworkById(id)
+            db.homeworkEntityQueries.deleteAllHomework()
         }
     }
 
@@ -237,9 +237,9 @@ class DataSourceImpl @Inject constructor(
         return db.controlWorkEntityQueries.getAllControlWork().asFlow().mapToList()
     }
 
-    override suspend fun deleteControlWorkById(id: Long) {
+    override suspend fun deleteAllControlWork() {
         withContext(dispatchers.io) {
-            db.controlWorkEntityQueries.deleteControlWorkById(id)
+            db.controlWorkEntityQueries.deleteAllControlWork()
         }
     }
 
@@ -266,9 +266,9 @@ class DataSourceImpl @Inject constructor(
         return db.termEntityQueries.getAllTerm().asFlow().mapToList()
     }
 
-    override suspend fun deleteTermById(id: Long) {
+    override suspend fun deleteAllTerm() {
         withContext(dispatchers.io) {
-            db.termEntityQueries.deleteTermById(id)
+            db.termEntityQueries.deleteAllTerm()
         }
     }
 
@@ -302,9 +302,9 @@ class DataSourceImpl @Inject constructor(
         return db.termLegendEntityQueries.getAllTermLegend().asFlow().mapToList()
     }
 
-    override suspend fun deleteTermLegendById(id: Long) {
+    override suspend fun deleteAllTermLegend() {
         withContext(dispatchers.io) {
-            db.termLegendEntityQueries.deleteTermLegendById(id)
+            db.termLegendEntityQueries.deleteAllTermLegend()
         }
     }
 
@@ -328,9 +328,9 @@ class DataSourceImpl @Inject constructor(
         return db.messagesGottenEntityQueries.getAllMessagesGotten().asFlow().mapToList()
     }
 
-    override suspend fun deleteMessageGottenById(id: Long) {
+    override suspend fun deleteAllMessageGotten() {
         withContext(dispatchers.io) {
-            db.messagesGottenEntityQueries.deleteMessageGottenById(id)
+            db.messagesGottenEntityQueries.deleteAllMessagesGotten()
         }
     }
 
@@ -357,9 +357,9 @@ class DataSourceImpl @Inject constructor(
         return db.messagesSentEntityQueries.getAllMessagesSent().asFlow().mapToList()
     }
 
-    override suspend fun deleteMessageSentById(id: Long) {
+    override suspend fun deleteAllMessageSent() {
         withContext(dispatchers.io) {
-            db.messagesSentEntityQueries.deleteMessageSentById(id)
+            db.messagesSentEntityQueries.deleteAllMessagesSent()
         }
     }
 
@@ -386,9 +386,9 @@ class DataSourceImpl @Inject constructor(
         return db.messagesStarredEntityQueries.getAllMessagesStarted().asFlow().mapToList()
     }
 
-    override suspend fun deleteMessageStarredById(id: Long) {
+    override suspend fun deleteAllMessageStarred() {
         withContext(dispatchers.io) {
-            db.messagesStarredEntityQueries.deleteMessageStartedById(id)
+            db.messagesStarredEntityQueries.deleteAllMessagesStarted()
         }
     }
 
@@ -415,9 +415,9 @@ class DataSourceImpl @Inject constructor(
         return db.messagesDeletedEntityQueries.getAllMessagesDeleted().asFlow().mapToList()
     }
 
-    override suspend fun deleteMessageDeletedById(id: Long) {
+    override suspend fun deleteAllMessageDeleted() {
         withContext(dispatchers.io) {
-            db.messagesDeletedEntityQueries.deleteMessageDeletedById(id)
+            db.messagesDeletedEntityQueries.deleteAllMessagesDeleted()
         }
     }
 
@@ -444,9 +444,9 @@ class DataSourceImpl @Inject constructor(
         return db.messagesIndividualEntityQueries.getAllMessagesIndividual().asFlow().mapToList()
     }
 
-    override suspend fun deleteMessageIndividualById(id: Long) {
+    override suspend fun deleteAllMessageIndividual() {
         withContext(dispatchers.io) {
-            db.messagesIndividualEntityQueries.deleteMessageIndividualById(id)
+            db.messagesIndividualEntityQueries.deleteAllMessagesIndividual()
         }
     }
 
@@ -473,9 +473,9 @@ class DataSourceImpl @Inject constructor(
         return db.holidayEntityQueries.getAllHoliday().asFlow().mapToList()
     }
 
-    override suspend fun deleteHolidayById(id: Long) {
+    override suspend fun deleteAllHoliday() {
         withContext(dispatchers.io) {
-            db.holidayEntityQueries.deleteHolidayById(id)
+            db.holidayEntityQueries.deleteAllHoliday()
         }
     }
 
@@ -500,9 +500,9 @@ class DataSourceImpl @Inject constructor(
         return db.parentMeetingsEntityQueries.getAllParentMeetings().asFlow().mapToList()
     }
 
-    override suspend fun deleteParentMeetingById(id: Long) {
+    override suspend fun deleteAllParentMeeting() {
         withContext(dispatchers.io) {
-            db.parentMeetingsEntityQueries.deleteParentMeetingById(id)
+            db.parentMeetingsEntityQueries.deleteAllParentMeetings()
         }
     }
 
@@ -530,9 +530,9 @@ class DataSourceImpl @Inject constructor(
         return db.scheduleEntityQueries.getAllSchedule().asFlow().mapToList()
     }
 
-    override suspend fun deleteScheduleById(id: Long) {
+    override suspend fun deleteAllSchedule() {
         withContext(dispatchers.io) {
-            db.scheduleEntityQueries.deleteScheduleById(id)
+            db.scheduleEntityQueries.deleteAllSchedule()
         }
     }
 
@@ -557,9 +557,9 @@ class DataSourceImpl @Inject constructor(
         return db.calendarEntityQueries.getAllCalendar().asFlow().mapToList()
     }
 
-    override suspend fun deleteCalendarById(id: Long) {
+    override suspend fun deleteAllCalendar() {
         withContext(dispatchers.io) {
-            db.calendarEntityQueries.deleteCalendarById(id)
+            db.calendarEntityQueries.deleteAllCalendar()
         }
     }
 

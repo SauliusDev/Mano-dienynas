@@ -26,5 +26,4 @@ DELETE FROM controlWorkEntity
 WHERE id = :id;
 
 deleteAllControlWork:
-DELETE FROM controlWorkEntity
-WHERE id = :id;
+DELETE FROM controlWorkEntity;

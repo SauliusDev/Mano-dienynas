@@ -33,5 +33,4 @@ DELETE FROM termEntity
 WHERE id = :id;
 
 deleteAllTerm:
-DELETE FROM termEntity
-WHERE id = :id;
+DELETE FROM termEntity;

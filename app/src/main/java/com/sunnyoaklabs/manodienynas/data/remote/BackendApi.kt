@@ -31,8 +31,6 @@ interface BackendApi {
 
     suspend fun getTerm(): String
 
-    suspend fun getTermLegend(): String
-
     suspend fun getMessagesGotten(): String
 
     suspend fun getMessagesSent(): String

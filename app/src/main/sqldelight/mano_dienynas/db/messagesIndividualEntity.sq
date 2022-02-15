@@ -26,5 +26,4 @@ DELETE FROM messageIndividualEntity
 WHERE id = :id;
 
 deleteAllMessagesIndividual:
-DELETE FROM messageIndividualEntity
-WHERE id = :id;
+DELETE FROM messageIndividualEntity;

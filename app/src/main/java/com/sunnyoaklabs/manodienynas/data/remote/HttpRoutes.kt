@@ -6,6 +6,14 @@ object HttpRoutes {
    
     const val LOGIN_POST = "$BASE_URL/1/lt/ajax/user/login"
 
+    const val LOGOUT_POST = "$BASE_URL/1/lt/action/user/logout"
+
+    /**
+     * 1-2365-23/1 - saules
+     * 1-2158-23/1 - muzikos
+     * **/
+    const val CHANGE_ROLE = "$BASE_URL/1/lt/action/user/change_role/" // 1-school_id-23/1
+
     const val EVENTS_GET = "$BASE_URL/1/lt/page/sf/resolve_post/event/list"
 
     const val MARKS_GET = "$BASE_URL/1/lt/page/marks_pupil/marks"
@@ -22,7 +30,6 @@ object HttpRoutes {
     const val CONTROL_WORK_POST = "$BASE_URL/1/lt/page/control_work/dates_pupil/{group_id}"
 
     const val TERM_GET = "$BASE_URL/1/lt/page/termmark/pupil_term"
-    const val TERM_LEGEND_GET = "$BASE_URL/1/lt/ajax/popup/show_term_legend"
 
     const val MESSAGE_GOTTEN_LIST_GET = "$BASE_URL/1/lt/page/message_new/message_list"
     const val MESSAGE_SENT_LIST_GET = "$BASE_URL/1/lt/page/message_new/sent_list"

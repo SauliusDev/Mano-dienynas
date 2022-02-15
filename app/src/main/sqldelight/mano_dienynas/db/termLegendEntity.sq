@@ -23,5 +23,4 @@ DELETE FROM termLegendEntity
 WHERE id = :id;
 
 deleteAllTermLegend:
-DELETE FROM termLegendEntity
-WHERE id = :id;
+DELETE FROM termLegendEntity;
