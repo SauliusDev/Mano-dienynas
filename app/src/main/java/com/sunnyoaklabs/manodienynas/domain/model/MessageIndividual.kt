@@ -6,5 +6,7 @@ data class MessageIndividual(
     val sender: String,
     val date: String,
     val content: String,
+    val recipients: String,
+    val files: List<MessageFile>,
     val id: Long? = null
 )

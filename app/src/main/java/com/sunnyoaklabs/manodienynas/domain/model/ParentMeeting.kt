@@ -5,7 +5,7 @@ data class ParentMeeting(
     val description: String,
     val date: String,
     val location: String,
-    val attachmentUrl: String,
+    val attachmentUrls: List<ParentMeetingFile>,
     val creationDate: String,
     val id: Long? = null
 )

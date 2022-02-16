@@ -2,6 +2,7 @@ CREATE TABLE messageGottenEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     messageId TEXT,
     isStarred TEXT,
+    wasSeen TEXT,
     date TEXT,
     theme TEXT,
     sender TEXT
@@ -19,7 +20,7 @@ FROM messageGottenEntity;
 insertMessageGotten:
 INSERT OR REPLACE
 INTO messageGottenEntity
-VALUES(?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?);
 
 deleteMessageGottenById:
 DELETE FROM messageGottenEntity

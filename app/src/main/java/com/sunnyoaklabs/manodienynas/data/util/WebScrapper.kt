@@ -22,14 +22,12 @@ interface WebScrapper {
 
     fun toMessages(html: String): List<Message>
 
-    fun toMessagesIndividual(html: String): List<MessageIndividual>
+    fun toMessagesIndividual(html: String): MessageIndividual
 
     fun toHoliday(html: String): List<Holiday>
 
-    fun toParentMeeting(html: String): List<ParentMeeting>
+    fun toParentMeetings(html: String): List<ParentMeeting>
 
     fun toSchedule(html: String): List<Schedule>
-
-    fun toCalendar(html: String): List<Calendar>
 
 }

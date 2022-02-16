@@ -14,6 +14,10 @@ interface BackendApi {
 
     suspend fun postLogin(payload: PostLogin): String
 
+    suspend fun getLogout(): String
+
+    suspend fun getChangeRole(schoolId: String): String
+
     suspend fun getEvents(): String
 
     suspend fun getMarks(): String
@@ -21,10 +25,10 @@ interface BackendApi {
     suspend fun getAttendance(): String
 
     suspend fun getClassWork(): String
-    suspend fun postClassWork(payload: PostClassWork): String
+    suspend fun postClassWork(payload: PostClassWork, page: Int): String
 
     suspend fun getHomeWork(): String
-    suspend fun postHomeWork(payload: PostHomeWork): String
+    suspend fun postHomeWork(payload: PostHomeWork, page: Int): String
 
     suspend fun getControlWork(): String
     suspend fun postControlWork(payload: PostControlWork): String
@@ -39,7 +43,11 @@ interface BackendApi {
 
     suspend fun getMessagesDeleted(): String
 
-    suspend fun getMessageIndividual(): String
+    suspend fun getMessageIndividual(id: String): String
+
+    //suspend fun getMessageDelete(id: String): String
+    //suspend fun getMessageReply(id: String): String
+    //suspend fun getMessageForward(id: String): String
 
     suspend fun getHoliday(): String
 
@@ -48,7 +56,10 @@ interface BackendApi {
     suspend fun getSchedule(): String
 
     suspend fun getCalendar(): String
+
     suspend fun getCalendarDate(payload: GetCalendar): String
+
+    suspend fun getCalendarEvent(id: String): String
 
     companion object {
         fun create(converter: Converter): BackendApi {

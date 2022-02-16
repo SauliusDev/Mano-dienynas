@@ -23,17 +23,15 @@ interface Repository {
     fun getAttendance(): Flow<Resource<String>>
 
     fun getClassWork(): Flow<Resource<String>>
-    fun getClassWorkByCondition(payload: PostClassWork): Flow<Resource<String>>
+    fun getClassWorkByCondition(payload: PostClassWork, page: Int): Flow<Resource<String>>
 
     fun getHomeWork(): Flow<Resource<String>>
-    fun getHomeWorkByCondition(payload: PostHomeWork): Flow<Resource<String>>
+    fun getHomeWorkByCondition(payload: PostHomeWork, page: Int): Flow<Resource<String>>
 
     fun getControlWork(): Flow<Resource<String>>
-    fun getControlWorkByCondition(payload: PostControlWork): Flow<Resource<String>>
+    fun getControlWorkByCondition(payload: PostControlWork, page: Int): Flow<Resource<String>>
 
     fun getTerm(): Flow<Resource<String>>
-
-    fun getTermLegend(): Flow<Resource<String>>
 
     fun getMessagesGotten(): Flow<Resource<String>>
 
@@ -43,7 +41,7 @@ interface Repository {
 
     fun getMessagesDeleted(): Flow<Resource<String>>
 
-    fun getMessageIndividual(): Flow<Resource<String>>
+    fun getMessageIndividual(id: String): Flow<Resource<String>>
 
     fun getHoliday(): Flow<Resource<String>>
 
@@ -52,6 +50,9 @@ interface Repository {
     fun getSchedule(): Flow<Resource<String>>
 
     fun getCalendar(): Flow<Resource<String>>
+
     fun getCalendarDate(payload: GetCalendar): Flow<Resource<String>>
-    
+
+    fun getCalendarEvent(id: String): Flow<Resource<String>>
+
 }

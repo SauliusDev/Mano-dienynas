@@ -2,7 +2,8 @@ package com.sunnyoaklabs.manodienynas.domain.model
 
 data class Message(
     val messageId: String,
-    val isStarred: String,
+    val isStarred: Boolean,
+    val wasSeen: Boolean,
     val date: String,
     val theme: String,
     val sender: String,

@@ -1,5 +1,6 @@
 CREATE TABLE scheduleEntity (
     id INTEGER NOT NULL PRIMARY KEY,
+    weekDay INTEGER,
     timeRange TEXT,
     lessonOrder INTEGER,
     lesson TEXT
@@ -17,7 +18,7 @@ FROM scheduleEntity;
 insertSchedule:
 INSERT OR REPLACE
 INTO scheduleEntity
-VALUES(?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?);
 
 deleteScheduleById:
 DELETE FROM scheduleEntity

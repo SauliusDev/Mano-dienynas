@@ -53,11 +53,6 @@ interface DataSource {
     suspend fun deleteAllTerm()
     suspend fun insertTerm(term: Term)
 
-    suspend fun getTermLegendById(id: Long): TermLegendEntity?
-    fun getAllTermLegend(): Flow<List<TermLegendEntity>>
-    suspend fun deleteAllTermLegend()
-    suspend fun insertTermLegend(termLegend: TermLegend)
-
     suspend fun getMessageGottenById(id: Long): MessageGottenEntity?
     fun getAllMessagesGotten(): Flow<List<MessageGottenEntity>>
     suspend fun deleteAllMessageGotten()

@@ -1,9 +1,10 @@
 CREATE TABLE calendarEntity (
     id INTEGER NOT NULL PRIMARY KEY,
-    allDay INTEGER,
-    type TEXT,
+    title TEXT,
     start TEXT,
-    title TEXT
+    url TEXT,
+    type TEXT,
+    allDay INTEGER
 );
 
 getCalendarById:
@@ -18,7 +19,7 @@ FROM calendarEntity;
 insertCalendar:
 INSERT OR REPLACE
 INTO calendarEntity
-VALUES(?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?);
 
 deleteCalendarById:
 DELETE FROM calendarEntity

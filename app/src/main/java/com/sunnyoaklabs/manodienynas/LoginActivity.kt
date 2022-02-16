@@ -17,30 +17,6 @@ import com.sunnyoaklabs.manodienynas.presentation.login.fragment.NavGraphs
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-
-/*
-    todo workflow (main set up):
-        <> finish all webscrapping https://html.onlineviewer.net/
-        <> toolbar
-            -small height toolbar with username
-            -clickable icon which brings up dialog with user details
-        <> logout
-
-    todo (session cookies refreshing based on response):
-        <> make it :D
-
-    todo (events screen):
-        <> make events screen lol
-
-    todo (ktor all get requests) for all other fragments:
-        <> make those requests
-
-    todo (jsoup web scrapping) for all other fragments:
-        <> make all web scrapping functions lol
-
-    todo (paging) for some fragments
-        <> make all web scrapping functions lol
- */
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

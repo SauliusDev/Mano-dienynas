@@ -1,6 +1,6 @@
 package com.sunnyoaklabs.manodienynas.domain.model
 
-data class AttendanceRange(
+data class ParentMeetingFile(
     val title: String,
-    val date: String?
+    val url: String
 )

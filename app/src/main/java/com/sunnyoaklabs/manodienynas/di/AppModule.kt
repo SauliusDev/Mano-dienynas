@@ -14,6 +14,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.repository.RepositoryImpl
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.data.util.GsonParser
+import com.sunnyoaklabs.manodienynas.data.util.JsonFormattedImpl
 import com.sunnyoaklabs.manodienynas.data.util.JsoupWebScrapper
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
@@ -63,7 +64,8 @@ object AppModule {
     fun provideConverter(): Converter {
         return Converter(
             webScrapper = JsoupWebScrapper(),
-            jsonParser = GsonParser(Gson())
+            jsonParser = GsonParser(Gson()),
+            jsonFormatter = JsonFormattedImpl()
         )
     }
 

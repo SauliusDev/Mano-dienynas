@@ -4,7 +4,9 @@ CREATE TABLE messageIndividualEntity (
     title TEXT,
     sender TEXT,
     date TEXT,
-    content TEXT
+    content TEXT,
+    recipients TEXT,
+    files TEXT
 );
 
 getMessageIndividualById:
@@ -19,7 +21,7 @@ FROM messageIndividualEntity;
 insertMessageIndividual:
 INSERT OR REPLACE
 INTO messageIndividualEntity
-VALUES(?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteMessageIndividualById:
 DELETE FROM messageIndividualEntity

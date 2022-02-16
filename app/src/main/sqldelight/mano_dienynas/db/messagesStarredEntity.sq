@@ -2,6 +2,7 @@ CREATE TABLE messageStartedEntity (
     id INTEGER NOT NULL PRIMARY KEY,
     messageId TEXT,
     isStarred TEXT,
+    wasSeen TEXT,
     date TEXT,
     theme TEXT,
     sender TEXT
@@ -19,7 +20,7 @@ FROM messageStartedEntity;
 insertMessageStarted:
 INSERT OR REPLACE
 INTO messageStartedEntity
-VALUES(?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?);
 
 deleteMessageStartedById:
 DELETE FROM messageStartedEntity

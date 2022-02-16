@@ -77,7 +77,7 @@ class RepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun getClassWorkByCondition(payload: PostClassWork): Flow<Resource<String>> {
+    override fun getClassWorkByCondition(payload: PostClassWork, page: Int): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
@@ -85,7 +85,7 @@ class RepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun getHomeWorkByCondition(payload: PostHomeWork): Flow<Resource<String>> {
+    override fun getHomeWorkByCondition(payload: PostHomeWork, page: Int): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
@@ -93,15 +93,11 @@ class RepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun getControlWorkByCondition(payload: PostControlWork): Flow<Resource<String>> {
+    override fun getControlWorkByCondition(payload: PostControlWork, page: Int): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
     override fun getTerm(): Flow<Resource<String>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getTermLegend(): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
@@ -121,7 +117,7 @@ class RepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun getMessageIndividual(): Flow<Resource<String>> {
+    override fun getMessageIndividual(id: String): Flow<Resource<String>> {
         TODO("Not yet implemented")
     }
 
@@ -145,5 +141,7 @@ class RepositoryImpl(
         TODO("Not yet implemented")
     }
 
-
+    override fun getCalendarEvent(id: String): Flow<Resource<String>> {
+        TODO("Not yet implemented")
+    }
 }

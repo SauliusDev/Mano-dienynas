@@ -2,7 +2,9 @@ package com.sunnyoaklabs.manodienynas.data.remote
 
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.ATTENDANCE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_DATE_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_EVENT_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CHANGE_ROLE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CLASS_WORK_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CLASS_WORK_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CONTROL_WORK_GET
@@ -12,6 +14,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOLIDAY_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOME_WORK_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOME_WORK_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.LOGIN_POST
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.LOGOUT_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MARKS_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_DELETED_LIST_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_GOTTEN_LIST_GET
@@ -44,6 +47,14 @@ class BackendApiImpl(
         }
     }
 
+    override suspend fun getLogout(): String {
+        return client.get { url(LOGOUT_GET) }
+    }
+
+    override suspend fun getChangeRole(schoolId: String): String {
+        return client.get { url(CHANGE_ROLE_GET.replace("{school_id}", schoolId)) }
+    }
+
     override suspend fun getEvents(): String {
         return client.get { url(EVENTS_GET) }
     }
@@ -60,9 +71,9 @@ class BackendApiImpl(
         return client.get { url(CLASS_WORK_GET) }
     }
 
-    override suspend fun postClassWork(payload: PostClassWork): String {
+    override suspend fun postClassWork(payload: PostClassWork, page: Int): String {
         return client.post {
-            url(CLASS_WORK_POST)
+            url(CLASS_WORK_POST.replace("{page}", page.toString()))
             contentType(ContentType.Application.FormUrlEncoded)
             body = converter.toPostClassWorkJson(payload)
         }
@@ -72,9 +83,9 @@ class BackendApiImpl(
         return client.get { url(HOME_WORK_GET) }
     }
 
-    override suspend fun postHomeWork(payload: PostHomeWork): String {
+    override suspend fun postHomeWork(payload: PostHomeWork, page: Int): String {
         return client.post {
-            url(HOME_WORK_POST)
+            url(HOME_WORK_POST.replace("{page}", page.toString()))
             contentType(ContentType.Application.FormUrlEncoded)
             body = converter.toPostHomeWorkJson(payload)
         }
@@ -86,7 +97,7 @@ class BackendApiImpl(
 
     override suspend fun postControlWork(payload: PostControlWork): String {
         return client.post {
-            url(CONTROL_WORK_POST)
+            url(CONTROL_WORK_POST.replace("{group_id}", payload.selectedGroup.toString()))
             contentType(ContentType.Application.FormUrlEncoded)
             body = converter.toPostControlWorkJson(payload)
         }
@@ -112,8 +123,8 @@ class BackendApiImpl(
         return client.get { url(MESSAGE_DELETED_LIST_GET) }
     }
 
-    override suspend fun getMessageIndividual(): String {
-        return client.get { url(MESSAGE_INDIVIDUAL_GET) }
+    override suspend fun getMessageIndividual(id: String): String {
+        return client.get { url(MESSAGE_INDIVIDUAL_GET.replace("{message_id}", id)) }
     }
 
     override suspend fun getHoliday(): String {
@@ -134,6 +145,10 @@ class BackendApiImpl(
 
     override suspend fun getCalendarDate(payload: GetCalendar): String {
         return client.get { url(CALENDAR_DATE_GET) }
+    }
+
+    override suspend fun getCalendarEvent(id: String): String {
+        return client.get { url(CALENDAR_EVENT_GET.replace("{event_id}", id)) }
     }
 
 }

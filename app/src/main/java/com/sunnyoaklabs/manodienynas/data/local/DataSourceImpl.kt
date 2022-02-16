@@ -277,43 +277,17 @@ class DataSourceImpl @Inject constructor(
             db.termEntityQueries.insertTerm(
                 term.id,
                 term.subject,
-                term.abbreviationMarks,
-                term.abbreviationMissedLessons,
-                term.average,
-                term.derived,
-                term.credit,
-                term.additionalWorks,
-                term.exams,
+                converter.toStringListJson(term.abbreviationMarks),
+                converter.toStringListJson(term.abbreviationMissedLessons),
+                converter.toStringListJson(term.average),
+                converter.toStringListJson(term.derived),
+                converter.toStringListJson(term.credit),
+                converter.toStringListJson(term.additionalWorks),
+                converter.toStringListJson(term.exams),
                 term.yearDescription,
                 term.yearMark,
                 term.yearAdditionalWorks,
                 term.yearExams
-            )
-        }
-    }
-
-    override suspend fun getTermLegendById(id: Long): TermLegendEntity? {
-        return withContext(dispatchers.io) {
-            db.termLegendEntityQueries.getTermLegendById(id).executeAsOneOrNull()
-        }
-    }
-
-    override fun getAllTermLegend(): Flow<List<TermLegendEntity>> {
-        return db.termLegendEntityQueries.getAllTermLegend().asFlow().mapToList()
-    }
-
-    override suspend fun deleteAllTermLegend() {
-        withContext(dispatchers.io) {
-            db.termLegendEntityQueries.deleteAllTermLegend()
-        }
-    }
-
-    override suspend fun insertTermLegend(termLegend: TermLegend) {
-        return withContext(dispatchers.io) {
-            db.termLegendEntityQueries.insertTermLegend(
-                termLegend.id,
-                termLegend.abbreviation,
-                termLegend.description
             )
         }
     }
@@ -339,7 +313,8 @@ class DataSourceImpl @Inject constructor(
             db.messagesGottenEntityQueries.insertMessageGotten(
                 message.id,
                 message.messageId,
-                message.isStarred,
+                message.isStarred.toString(),
+                message.wasSeen.toString(),
                 message.date,
                 message.theme,
                 message.sender
@@ -368,7 +343,8 @@ class DataSourceImpl @Inject constructor(
             db.messagesSentEntityQueries.insertMessageSent(
                 message.id,
                 message.messageId,
-                message.isStarred,
+                message.isStarred.toString(),
+                message.wasSeen.toString(),
                 message.date,
                 message.theme,
                 message.sender
@@ -397,7 +373,8 @@ class DataSourceImpl @Inject constructor(
             db.messagesStarredEntityQueries.insertMessageStarted(
                 message.id,
                 message.messageId,
-                message.isStarred,
+                message.isStarred.toString(),
+                message.wasSeen.toString(),
                 message.date,
                 message.theme,
                 message.sender
@@ -426,7 +403,8 @@ class DataSourceImpl @Inject constructor(
             db.messagesDeletedEntityQueries.insertMessageDeleted(
                 message.id,
                 message.messageId,
-                message.isStarred,
+                message.isStarred.toString(),
+                message.wasSeen.toString(),
                 message.date,
                 message.theme,
                 message.sender
@@ -458,7 +436,9 @@ class DataSourceImpl @Inject constructor(
                 messageIndividual.title,
                 messageIndividual.sender,
                 messageIndividual.date,
-                messageIndividual.content
+                messageIndividual.content,
+                messageIndividual.recipients,
+                converter.toMessageFilesJson(messageIndividual.files)
             )
         }
     }
@@ -514,7 +494,7 @@ class DataSourceImpl @Inject constructor(
                 parentMeeting.description,
                 parentMeeting.creationDate,
                 parentMeeting.location,
-                parentMeeting.attachmentUrl,
+                converter.toParentMeetingFilesJson(parentMeeting.attachmentUrls),
                 parentMeeting.creationDate
             )
         }
@@ -540,6 +520,7 @@ class DataSourceImpl @Inject constructor(
         return withContext(dispatchers.io) {
             db.scheduleEntityQueries.insertSchedule(
                 schedule.id,
+                schedule.weekDay,
                 schedule.timeRange,
                 schedule.lessonOrder,
                 schedule.lesson
@@ -567,10 +548,11 @@ class DataSourceImpl @Inject constructor(
         return withContext(dispatchers.io) {
             db.calendarEntityQueries.insertCalendar(
                 calendar.id,
-                calendar.allDay.toLong(),
-                calendar.type,
+                calendar.title,
                 calendar.start,
-                calendar.title
+                calendar.url,
+                calendar.type,
+                calendar.allDay.toLong()
             )
         }
     }
