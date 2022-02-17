@@ -30,6 +30,9 @@ class MainViewModel @Inject constructor(
     private val firebaseCrashlytics: FirebaseCrashlytics
 ) : AndroidViewModel(app) {
 
+    private val _isUserDataGotten = MutableStateFlow(false)
+    val isUserDataGotten = _isUserDataGotten.asStateFlow()
+
     private val _userState = MutableStateFlow(UserState())
     val userState = _userState.asStateFlow()
 

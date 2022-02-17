@@ -6,7 +6,8 @@ CREATE TABLE classworkEntity (
     lesson TEXT,
     teacher TEXT,
     description TEXT,
-    dateAddition TEXT
+    dateAddition TEXT,
+    attachmentsUrl TEXT
 );
 
 getClassworkById:
@@ -21,7 +22,7 @@ FROM classworkEntity;
 insertClasswork:
 INSERT OR REPLACE
 INTO classworkEntity
-VALUES(?, ?, ?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteClassworkById:
 DELETE FROM classworkEntity

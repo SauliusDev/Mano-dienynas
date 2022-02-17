@@ -5,13 +5,16 @@ CREATE TABLE termEntity (
     abbreviationMissedLessons TEXT,
     average TEXT,
     derived TEXT,
+    derivedInfoUrl TEXT,
     credit TEXT,
+    creditInfoUrl TEXT,
     additionalWorks TEXT,
     exams TEXT,
     yearDescription TEXT,
     yearMark TEXT,
     yearAdditionalWorks TEXT,
-    yearExams TEXT
+    yearExams TEXT,
+    termRange TEXT
 );
 
 getTermById:
@@ -26,7 +29,7 @@ FROM termEntity;
 insertTerm:
 INSERT OR REPLACE
 INTO termEntity
-VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteTermById:
 DELETE FROM termEntity

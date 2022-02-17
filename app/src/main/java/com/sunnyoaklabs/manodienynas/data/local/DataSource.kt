@@ -6,6 +6,10 @@ import manodienynas.db.*
 
 interface DataSource {
 
+    suspend fun getUser(): UserEntity?
+    suspend fun deleteUser()
+    suspend fun insertUser(user: User)
+
     suspend fun getSettings(): SettingsEntity?
     suspend fun deleteSettings()
     suspend fun insertSettings(settings: Settings)
@@ -19,82 +23,83 @@ interface DataSource {
     suspend fun insertCredentials(credentials: Credentials)
 
     suspend fun getEventById(id: Long): EventEntity?
-    fun getAllEvents(): Flow<List<EventEntity>>
+    fun getAllEvents(): List<EventEntity>
     suspend fun deleteAllEvents()
     suspend fun insertEvent(event: Event)
 
     suspend fun getMarkById(id: Long): MarkEntity?
-    fun getAllMarks(): Flow<List<MarkEntity>>
+    fun getAllMarks(): List<MarkEntity>
     suspend fun deleteAllMarks()
     suspend fun insertMark(mark: Mark)
 
     suspend fun getAttendanceById(id: Long): AttendanceEntity?
-    fun getAllAttendances(): Flow<List<AttendanceEntity>>
+    fun getAllAttendances(): List<AttendanceEntity>
     suspend fun deleteAllAttendance()
     suspend fun insertAttendance(attendance: Attendance)
 
     suspend fun getClassWorkById(id: Long): ClassworkEntity?
-    fun getAllClassWorks(): Flow<List<ClassworkEntity>>
+    fun getAllClassWorks(): List<ClassworkEntity>
     suspend fun deleteAllClassWork()
     suspend fun insertClassWork(classWork: ClassWork)
 
     suspend fun getHomeWorkById(id: Long): HomeworkEntity?
-    fun getAllHomeWorks(): Flow<List<HomeworkEntity>>
+    fun getAllHomeWorks(): List<HomeworkEntity>
     suspend fun deleteAllHomeWork()
     suspend fun insertHomeWork(homeWork: HomeWork)
 
     suspend fun getControlWorkById(id: Long): ControlWorkEntity?
-    fun getAllControlWorks(): Flow<List<ControlWorkEntity>>
+    fun getAllControlWorks(): List<ControlWorkEntity>
     suspend fun deleteAllControlWork()
     suspend fun insertControlWork(controlWork: ControlWork)
 
     suspend fun getTermById(id: Long): TermEntity?
-    fun getAllTerms(): Flow<List<TermEntity>>
+    fun getAllTerms(): List<TermEntity>
     suspend fun deleteAllTerm()
     suspend fun insertTerm(term: Term)
 
     suspend fun getMessageGottenById(id: Long): MessageGottenEntity?
-    fun getAllMessagesGotten(): Flow<List<MessageGottenEntity>>
+    fun getAllMessagesGotten(): List<MessageGottenEntity>
     suspend fun deleteAllMessageGotten()
     suspend fun insertMessageGotten(message: Message)
 
     suspend fun getMessageSentById(id: Long): MessageSentEntity?
-    fun getAllMessagesSent(): Flow<List<MessageSentEntity>>
+    fun getAllMessagesSent(): List<MessageSentEntity>
     suspend fun deleteAllMessageSent()
     suspend fun insertMessageSent(message: Message)
 
     suspend fun getMessageStarredById(id: Long): MessageStartedEntity?
-    fun getAllMessagesStarred(): Flow<List<MessageStartedEntity>>
+    fun getAllMessagesStarred(): List<MessageStartedEntity>
     suspend fun deleteAllMessageStarred()
     suspend fun insertMessageStarred(message: Message)
 
     suspend fun getMessageDeletedById(id: Long): MessageDeletedEntity?
-    fun getAllMessagesDeleted(): Flow<List<MessageDeletedEntity>>
+    fun getAllMessagesDeleted(): List<MessageDeletedEntity>
     suspend fun deleteAllMessageDeleted()
     suspend fun insertMessageDeleted(message: Message)
 
     suspend fun getMessageIndividualById(id: Long): MessageIndividualEntity?
-    fun getAllMessagesIndividual(): Flow<List<MessageIndividualEntity>>
+    fun getAllMessagesIndividual(): List<MessageIndividualEntity>
     suspend fun deleteAllMessageIndividual()
+    suspend fun deleteMessageIndividualById(id: Long)
     suspend fun insertMessageIndividual(messageIndividual: MessageIndividual)
 
     suspend fun getHolidayById(id: Long): HolidayEntity?
-    fun getAllHolidays(): Flow<List<HolidayEntity>>
+    fun getAllHolidays(): List<HolidayEntity>
     suspend fun deleteAllHoliday()
     suspend fun insertHoliday(holiday: Holiday)
 
     suspend fun getParentMeetingById(id: Long): ParentMeetingEntity?
-    fun getAllParentMeetings(): Flow<List<ParentMeetingEntity>>
+    fun getAllParentMeetings(): List<ParentMeetingEntity>
     suspend fun deleteAllParentMeeting()
     suspend fun insertParentMeeting(parentMeeting: ParentMeeting)
 
     suspend fun getScheduleById(id: Long): ScheduleEntity?
-    fun getAllSchedule(): Flow<List<ScheduleEntity>>
+    fun getAllSchedule(): List<ScheduleEntity>
     suspend fun deleteAllSchedule()
     suspend fun insertSchedule(schedule: Schedule)
 
     suspend fun getCalendarById(id: Long): CalendarEntity?
-    fun getAllCalendars(): Flow<List<CalendarEntity>>
+    fun getAllCalendars(): List<CalendarEntity>
     suspend fun deleteAllCalendar()
     suspend fun insertCalendar(calendar: Calendar)
 }

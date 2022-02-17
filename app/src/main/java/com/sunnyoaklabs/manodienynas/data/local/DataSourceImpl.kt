@@ -16,7 +16,29 @@ class DataSourceImpl @Inject constructor(
     private val db: ManoDienynasDatabase,
     private val dispatchers: DispatcherProvider,
     private val converter: Converter
-): DataSource {
+) : DataSource {
+
+    override suspend fun getUser(): UserEntity? {
+        return withContext(dispatchers.io) {
+            db.userEntityQueries.getUser().executeAsOneOrNull()
+        }
+    }
+
+    override suspend fun deleteUser() {
+        return withContext(dispatchers.io) {
+            db.userEntityQueries.deleteUser()
+        }
+    }
+
+    override suspend fun insertUser(user: User) {
+        return withContext(dispatchers.io) {
+            db.userEntityQueries.insertUser(
+                user.name,
+                user.role,
+                converter.toSchoolNamesJson(user.schoolsNames)
+            )
+        }
+    }
 
     override suspend fun getSettings(): SettingsEntity? {
         return withContext(dispatchers.io) {
@@ -83,8 +105,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllEvents(): Flow<List<EventEntity>> {
-        return db.eventsEntityQueries.getAllEvents().asFlow().mapToList()
+    override fun getAllEvents(): List<EventEntity> {
+        return db.eventsEntityQueries.getAllEvents().executeAsList()
     }
 
     override suspend fun deleteAllEvents() {
@@ -114,8 +136,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllMarks(): Flow<List<MarkEntity>> {
-        return db.marksEntityQueries.getAllMarks().asFlow().mapToList()
+    override fun getAllMarks(): List<MarkEntity> {
+        return db.marksEntityQueries.getAllMarks().executeAsList()
     }
 
     override suspend fun deleteAllMarks() {
@@ -142,8 +164,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllAttendances(): Flow<List<AttendanceEntity>> {
-        return db.attendanceEntityQueries.getAllAttendance().asFlow().mapToList()
+    override fun getAllAttendances(): List<AttendanceEntity> {
+        return db.attendanceEntityQueries.getAllAttendance().executeAsList()
     }
 
     override suspend fun deleteAllAttendance() {
@@ -170,8 +192,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllClassWorks(): Flow<List<ClassworkEntity>> {
-        return db.classworkEntityQueries.getAllClasswork().asFlow().mapToList()
+    override fun getAllClassWorks(): List<ClassworkEntity> {
+        return db.classworkEntityQueries.getAllClasswork().executeAsList()
     }
 
     override suspend fun deleteAllClassWork() {
@@ -190,7 +212,8 @@ class DataSourceImpl @Inject constructor(
                 classWork.lesson,
                 classWork.teacher,
                 classWork.description,
-                classWork.dateAddition
+                classWork.dateAddition,
+                classWork.attachmentsUrl
             )
         }
     }
@@ -201,8 +224,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllHomeWorks(): Flow<List<HomeworkEntity>> {
-        return db.homeworkEntityQueries.getAllHomework().asFlow().mapToList()
+    override fun getAllHomeWorks(): List<HomeworkEntity> {
+        return db.homeworkEntityQueries.getAllHomework().executeAsList()
     }
 
     override suspend fun deleteAllHomeWork() {
@@ -233,8 +256,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllControlWorks(): Flow<List<ControlWorkEntity>> {
-        return db.controlWorkEntityQueries.getAllControlWork().asFlow().mapToList()
+    override fun getAllControlWorks(): List<ControlWorkEntity> {
+        return db.controlWorkEntityQueries.getAllControlWork().executeAsList()
     }
 
     override suspend fun deleteAllControlWork() {
@@ -251,6 +274,7 @@ class DataSourceImpl @Inject constructor(
                 controlWork.date,
                 controlWork.group,
                 controlWork.theme,
+                controlWork.description,
                 controlWork.dateAddition
             )
         }
@@ -262,8 +286,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllTerms(): Flow<List<TermEntity>> {
-        return db.termEntityQueries.getAllTerm().asFlow().mapToList()
+    override fun getAllTerms(): List<TermEntity> {
+        return db.termEntityQueries.getAllTerm().executeAsList()
     }
 
     override suspend fun deleteAllTerm() {
@@ -281,13 +305,16 @@ class DataSourceImpl @Inject constructor(
                 converter.toStringListJson(term.abbreviationMissedLessons),
                 converter.toStringListJson(term.average),
                 converter.toStringListJson(term.derived),
+                converter.toStringListJson(term.derivedInfoUrl),
                 converter.toStringListJson(term.credit),
+                converter.toStringListJson(term.creditInfoUrl),
                 converter.toStringListJson(term.additionalWorks),
                 converter.toStringListJson(term.exams),
                 term.yearDescription,
                 term.yearMark,
                 term.yearAdditionalWorks,
-                term.yearExams
+                term.yearExams,
+                converter.toTermRangeJson(term.termRange)
             )
         }
     }
@@ -298,8 +325,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllMessagesGotten(): Flow<List<MessageGottenEntity>> {
-        return db.messagesGottenEntityQueries.getAllMessagesGotten().asFlow().mapToList()
+    override fun getAllMessagesGotten(): List<MessageGottenEntity> {
+        return db.messagesGottenEntityQueries.getAllMessagesGotten().executeAsList()
     }
 
     override suspend fun deleteAllMessageGotten() {
@@ -328,8 +355,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllMessagesSent(): Flow<List<MessageSentEntity>> {
-        return db.messagesSentEntityQueries.getAllMessagesSent().asFlow().mapToList()
+    override fun getAllMessagesSent(): List<MessageSentEntity> {
+        return db.messagesSentEntityQueries.getAllMessagesSent().executeAsList()
     }
 
     override suspend fun deleteAllMessageSent() {
@@ -358,8 +385,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllMessagesStarred(): Flow<List<MessageStartedEntity>> {
-        return db.messagesStarredEntityQueries.getAllMessagesStarted().asFlow().mapToList()
+    override fun getAllMessagesStarred(): List<MessageStartedEntity> {
+        return db.messagesStarredEntityQueries.getAllMessagesStarted().executeAsList()
     }
 
     override suspend fun deleteAllMessageStarred() {
@@ -388,8 +415,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllMessagesDeleted(): Flow<List<MessageDeletedEntity>> {
-        return db.messagesDeletedEntityQueries.getAllMessagesDeleted().asFlow().mapToList()
+    override fun getAllMessagesDeleted(): List<MessageDeletedEntity> {
+        return db.messagesDeletedEntityQueries.getAllMessagesDeleted().executeAsList()
     }
 
     override suspend fun deleteAllMessageDeleted() {
@@ -418,13 +445,19 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllMessagesIndividual(): Flow<List<MessageIndividualEntity>> {
-        return db.messagesIndividualEntityQueries.getAllMessagesIndividual().asFlow().mapToList()
+    override fun getAllMessagesIndividual(): List<MessageIndividualEntity> {
+        return db.messagesIndividualEntityQueries.getAllMessagesIndividual().executeAsList()
     }
 
     override suspend fun deleteAllMessageIndividual() {
         withContext(dispatchers.io) {
             db.messagesIndividualEntityQueries.deleteAllMessagesIndividual()
+        }
+    }
+
+    override suspend fun deleteMessageIndividualById(id: Long) {
+        withContext(dispatchers.io) {
+            db.messagesIndividualEntityQueries.deleteMessageIndividualById(id)
         }
     }
 
@@ -449,8 +482,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllHolidays(): Flow<List<HolidayEntity>> {
-        return db.holidayEntityQueries.getAllHoliday().asFlow().mapToList()
+    override fun getAllHolidays(): List<HolidayEntity> {
+        return db.holidayEntityQueries.getAllHoliday().executeAsList()
     }
 
     override suspend fun deleteAllHoliday() {
@@ -476,8 +509,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllParentMeetings(): Flow<List<ParentMeetingEntity>> {
-        return db.parentMeetingsEntityQueries.getAllParentMeetings().asFlow().mapToList()
+    override fun getAllParentMeetings(): List<ParentMeetingEntity> {
+        return db.parentMeetingsEntityQueries.getAllParentMeetings().executeAsList()
     }
 
     override suspend fun deleteAllParentMeeting() {
@@ -506,8 +539,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllSchedule(): Flow<List<ScheduleEntity>> {
-        return db.scheduleEntityQueries.getAllSchedule().asFlow().mapToList()
+    override fun getAllSchedule(): List<ScheduleEntity> {
+        return db.scheduleEntityQueries.getAllSchedule().executeAsList()
     }
 
     override suspend fun deleteAllSchedule() {
@@ -534,8 +567,8 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllCalendars(): Flow<List<CalendarEntity>> {
-        return db.calendarEntityQueries.getAllCalendar().asFlow().mapToList()
+    override fun getAllCalendars(): List<CalendarEntity> {
+        return db.calendarEntityQueries.getAllCalendar().executeAsList()
     }
 
     override suspend fun deleteAllCalendar() {

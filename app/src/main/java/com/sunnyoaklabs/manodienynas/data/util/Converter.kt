@@ -6,25 +6,34 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostLogin
 import com.sunnyoaklabs.manodienynas.domain.model.*
+import manodienynas.db.*
 
 class Converter(
     private val webScrapper: WebScrapper,
     private val jsonParser: JsonParser,
-    private val jsonFormatter: JsonFormatter
+    private val jsonFormatter: JsonFormatter,
+    private val dataSourceObjectParser: DataSourceObjectParser
 ) {
+
+    fun toSchoolNamesJson(list: List<SchoolInfo>): String {
+        return jsonParser.toJson(
+            list,
+            object : TypeToken<ArrayList<SchoolInfo>>(){}.type
+        ) ?: "[]"
+    }
+
+    fun toTermRangeJson(list: List<TermRange>): String {
+        return jsonParser.toJson(
+            list,
+            object : TypeToken<ArrayList<TermRange>>(){}.type
+        ) ?: "[]"
+    }
 
     fun toParentMeetingFilesJson(list: List<ParentMeetingFile>): String {
         return jsonParser.toJson(
             list,
             object : TypeToken<ArrayList<ParentMeetingFile>>(){}.type
         ) ?: "[]"
-    }
-
-    fun fromParentMeetingFilesJson(json: String): List<ParentMeetingFile> {
-        return jsonParser.fromJson<ArrayList<ParentMeetingFile>>(
-            json,
-            object : TypeToken<ArrayList<ParentMeetingFile>>(){}.type
-        ) ?: emptyList()
     }
 
     fun toMessageFilesJson(list: List<MessageFile>): String {
@@ -34,25 +43,11 @@ class Converter(
         ) ?: "[]"
     }
 
-    fun fromMessageFilesJson(json: String): List<MessageFile> {
-        return jsonParser.fromJson<ArrayList<MessageFile>>(
-            json,
-            object : TypeToken<ArrayList<MessageFile>>(){}.type
-        ) ?: emptyList()
-    }
-
     fun toStringListJson(list: List<String>): String {
         return jsonParser.toJson(
             list,
             object : TypeToken<ArrayList<String>>(){}.type
         ) ?: "[]"
-    }
-
-    fun fromStringListJson(json: String): List<String> {
-        return jsonParser.fromJson<ArrayList<String>>(
-            json,
-            object : TypeToken<ArrayList<String>>(){}.type
-        ) ?: emptyList()
     }
 
     fun toAttendanceJson(list: List<Int>): String {
@@ -62,13 +57,6 @@ class Converter(
         ) ?: "[]"
     }
 
-    fun fromAttendanceJson(json: String): List<Int> {
-        return jsonParser.fromJson<ArrayList<Int>>(
-            json,
-            object : TypeToken<ArrayList<Int>>(){}.type
-        ) ?: emptyList()
-    }
-
     fun toAttendanceRangeJson(list: List<AttendanceRange>): String {
         return jsonParser.toJson(
             list,
@@ -76,25 +64,11 @@ class Converter(
         ) ?: "[]"
     }
 
-    fun fromAttendanceRangeJson(json: String): List<AttendanceRange> {
-        return jsonParser.fromJson<ArrayList<AttendanceRange>>(
-            json,
-            object : TypeToken<ArrayList<AttendanceRange>>(){}.type
-        ) ?: emptyList()
-    }
-
     fun toMarkEventJson(list: List<MarkEvent>): String {
         return jsonParser.toJson(
             list,
             object : TypeToken<ArrayList<MarkEvent>>(){}.type
         ) ?: "[]"
-    }
-
-    fun fromMarkEventJson(json: String): List<MarkEvent> {
-        return jsonParser.fromJson<ArrayList<MarkEvent>>(
-            json,
-            object : TypeToken<ArrayList<MarkEvent>>(){}.type
-        ) ?: emptyList()
     }
 
     fun toPostLogin(payload: PostLogin): String {
@@ -179,6 +153,82 @@ class Converter(
 
     fun toCalendar(json: String): List<Calendar> {
         return jsonFormatter.toCalendar(json = json)
+    }
+
+    fun toSettingsFromEntity(settingsEntity: SettingsEntity?): Settings {
+        return dataSourceObjectParser.toSettingsFromEntity(settingsEntity)
+    }
+    
+    fun toSessionIdFromEntity(sessionIdEntity: SessionIdEntity?): String {
+        return dataSourceObjectParser.toSessionIdFromEntity(sessionIdEntity)
+    }
+
+    fun toCredentialsFromEntity(credentialsEntity: CredentialsEntity?): Credentials {
+        return dataSourceObjectParser.toCredentialsFromEntity(credentialsEntity)
+    }
+
+    fun toEventFromEntity(eventEntity: EventEntity?): Event {
+        return dataSourceObjectParser.toEventFromEntity(eventEntity)
+    }
+
+    fun toMarkFromEntity(markEntity: MarkEntity?): Mark {
+        return dataSourceObjectParser.toMarkFromEntity(markEntity)
+    }
+
+    fun toAttendanceFromEntity(attendanceEntity: AttendanceEntity?): Attendance {
+        return dataSourceObjectParser.toAttendanceFromEntity(attendanceEntity)
+    }
+
+    fun toClassWorkFromEntity(classworkEntity: ClassworkEntity?): ClassWork {
+        return dataSourceObjectParser.toClassWorkFromEntity(classworkEntity)
+    }
+
+    fun toHomeWorkFromEntity(homeworkEntity: HomeworkEntity?): HomeWork {
+        return dataSourceObjectParser.toHomeWorkFromEntity(homeworkEntity)
+    }
+
+    fun toControlWorkFromEntity(controlWorkEntity: ControlWorkEntity?): ControlWork {
+        return dataSourceObjectParser.toControlWorkFromEntity(controlWorkEntity)
+    }
+
+    fun toTermFromEntity(termEntity: TermEntity?): Term {
+        return dataSourceObjectParser.toTermFromEntity(termEntity)
+    }
+
+    fun toMessageGottenFromEntity(messageGottenEntity: MessageGottenEntity?): Message {
+        return dataSourceObjectParser.toMessageGottenFromEntity(messageGottenEntity)
+    }
+
+    fun toMessageSentFromEntity(messageSentEntity: MessageSentEntity?): Message {
+        return dataSourceObjectParser.toMessageSentFromEntity(messageSentEntity)
+    }
+
+    fun toMessageStarredFromEntity(messageStartedEntity: MessageStartedEntity?): Message {
+        return dataSourceObjectParser.toMessageStarredFromEntity(messageStartedEntity)
+    }
+
+    fun toMessageDeletedFromEntity(messageDeletedEntity: MessageDeletedEntity?): Message {
+        return dataSourceObjectParser.toMessageDeletedFromEntity(messageDeletedEntity)
+    }
+
+    fun toMessageIndividualFromEntity(messageIndividualEntity: MessageIndividualEntity?): MessageIndividual {
+        return dataSourceObjectParser.toMessageIndividualFromEntity(messageIndividualEntity)
+    }
+
+    fun toHolidayFromEntity(holidayEntity: HolidayEntity?): Holiday {
+        return dataSourceObjectParser.toHolidayFromEntity(holidayEntity)
+    }
+
+    fun toParentMeetingFromEntity(parentMeetingEntity: ParentMeetingEntity?): ParentMeeting {
+        return dataSourceObjectParser.toParentMeetingFromEntity(parentMeetingEntity)
+    }
+
+    fun toScheduleFromEntity(scheduleEntity: ScheduleEntity?): Schedule {
+        return dataSourceObjectParser.toScheduleFromEntity(scheduleEntity)
+    }
+
+    fun toCalendarFromEntity(calendarEntity: CalendarEntity?): Calendar {
+        return dataSourceObjectParser.toCalendarFromEntity(calendarEntity)
     }
 
 }

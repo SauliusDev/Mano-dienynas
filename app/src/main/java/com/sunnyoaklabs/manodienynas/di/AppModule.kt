@@ -12,10 +12,7 @@ import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.local.DataSourceImpl
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.repository.RepositoryImpl
-import com.sunnyoaklabs.manodienynas.data.util.Converter
-import com.sunnyoaklabs.manodienynas.data.util.GsonParser
-import com.sunnyoaklabs.manodienynas.data.util.JsonFormattedImpl
-import com.sunnyoaklabs.manodienynas.data.util.JsoupWebScrapper
+import com.sunnyoaklabs.manodienynas.data.util.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
@@ -65,7 +62,8 @@ object AppModule {
         return Converter(
             webScrapper = JsoupWebScrapper(),
             jsonParser = GsonParser(Gson()),
-            jsonFormatter = JsonFormattedImpl()
+            jsonFormatter = JsonFormattedImpl(),
+            dataSourceObjectParser = DataSourceObjectParserImpl(GsonParser(Gson()))
         )
     }
 

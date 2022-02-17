@@ -3,6 +3,7 @@ CREATE TABLE controlWorkEntity (
     field_index TEXT,
     date TEXT,
     field_group TEXT,
+    description TEXT,
     theme TEXT,
     dateAddition TEXT
 );
@@ -19,7 +20,7 @@ FROM controlWorkEntity;
 insertControlWork:
 INSERT OR REPLACE
 INTO controlWorkEntity
-VALUES(?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?);
 
 deleteControlWorkById:
 DELETE FROM controlWorkEntity
