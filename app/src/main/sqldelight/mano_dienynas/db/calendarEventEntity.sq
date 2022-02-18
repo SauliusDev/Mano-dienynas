@@ -1,0 +1,22 @@
+CREATE TABLE calendarEventEntity (
+    url TEXT,
+    teacher TEXT,
+    theme TEXT
+);
+
+getCalendarEventByUrl:
+SELECT *
+FROM calendarEventEntity
+WHERE url = :url;
+
+insertCalendarEvent:
+INSERT OR REPLACE
+INTO calendarEventEntity
+VALUES(?, ?, ?);
+
+deleteCalendarEventByUrl:
+DELETE FROM calendarEventEntity
+WHERE url = :url;
+
+deleteAllCalendarEvent:
+DELETE FROM calendarEventEntity;

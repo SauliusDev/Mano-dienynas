@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sunnyoaklabs.manodienynas.core.util.*
@@ -66,7 +67,8 @@ class RepositoryImpl(
                 dataSource.insertUser(user)
                 val eventsApi = converter.toEvents(response)
                 dataSource.deleteAllEvents()
-                eventsApi.forEach { dataSource.insertEvent(it) }
+                eventsApi.forEach {
+                    dataSource.insertEvent(it) }
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
@@ -513,32 +515,7 @@ class RepositoryImpl(
         emit(Resource.Success(newSchedule))
     }
 
-    override fun getCalendar(): Flow<Resource<List<Calendar>>> = flow {
-        emit(Resource.Loading())
-        val calendarLocal = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
-        emit(Resource.Loading(data = calendarLocal))
-        try {
-            val response = api.getCalendar()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
-                val calendarApi = converter.toCalendar(response)
-                dataSource.deleteAllCalendar()
-                calendarApi.forEach { dataSource.insertCalendar(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
-            }
-        } catch (e: IOException) {
-            emit(Resource.Error(message = IO_ERROR))
-        } catch (e: Exception) {
-            emit(Resource.Error(message = UNKNOWN_ERROR))
-        }
-        val newCalendar = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
-        emit(Resource.Success(newCalendar))
-    }
-
-    override fun getCalendarDate(payload: GetCalendar): Flow<Resource<List<Calendar>>> = flow {
+    override fun getCalendar(payload: GetCalendar): Flow<Resource<List<Calendar>>> = flow {
         emit(Resource.Loading())
         val calendarDateLocal = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
         emit(Resource.Loading(data = calendarDateLocal))
@@ -563,9 +540,9 @@ class RepositoryImpl(
         emit(Resource.Success(newCalendar))
     }
 
-    override fun getCalendarEvent(id: String): Flow<Resource<List<Calendar>>> = flow {
+    override fun getCalendarEvent(id: String): Flow<Resource<Calendar>> = flow {
         emit(Resource.Loading())
-        val calendarEventLocal = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
+        val calendarEventLocal = converter.toCalendarFromEntity(dataSource.getCalendarById(id.toLong()))
         emit(Resource.Loading(data = calendarEventLocal))
         try {
             val response = api.getCalendarEvent(id)
@@ -574,7 +551,7 @@ class RepositoryImpl(
                 dataSource.deleteUser()
                 dataSource.insertUser(user)
                 val calendarEventApi = converter.toCalendar(response)
-                dataSource.deleteAllCalendar()
+                dataSource.deleteCalendarById(id.toLong())
                 calendarEventApi.forEach { dataSource.insertCalendar(it) }
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
@@ -584,7 +561,7 @@ class RepositoryImpl(
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newCalendarEvent = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
+        val newCalendarEvent = converter.toCalendarFromEntity(dataSource.getCalendarById(id.toLong()))
         emit(Resource.Success(newCalendarEvent))
     }
 

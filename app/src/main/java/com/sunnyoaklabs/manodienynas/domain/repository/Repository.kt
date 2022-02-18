@@ -49,10 +49,8 @@ interface Repository {
 
     fun getSchedule(): Flow<Resource<List<Schedule>>>
 
-    fun getCalendar(): Flow<Resource<List<Calendar>>>
+    fun getCalendar(payload: GetCalendar): Flow<Resource<List<Calendar>>>
 
-    fun getCalendarDate(payload: GetCalendar): Flow<Resource<List<Calendar>>>
-
-    fun getCalendarEvent(id: String): Flow<Resource<List<Calendar>>>
+    fun getCalendarEvent(id: String): Flow<Resource<Calendar>>
 
 }

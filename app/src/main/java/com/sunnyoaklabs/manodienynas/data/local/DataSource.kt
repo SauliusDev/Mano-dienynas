@@ -1,10 +1,13 @@
 package com.sunnyoaklabs.manodienynas.data.local
 
 import com.sunnyoaklabs.manodienynas.domain.model.*
-import kotlinx.coroutines.flow.Flow
 import manodienynas.db.*
 
 interface DataSource {
+
+    suspend fun getState(): StateEntity?
+    suspend fun deleteState()
+    suspend fun insertState(state: State)
 
     suspend fun getUser(): UserEntity?
     suspend fun deleteUser()
@@ -13,10 +16,6 @@ interface DataSource {
     suspend fun getSettings(): SettingsEntity?
     suspend fun deleteSettings()
     suspend fun insertSettings(settings: Settings)
-
-    suspend fun getSessionId(): SessionIdEntity?
-    suspend fun deleteSessionId()
-    suspend fun insertSessionId(sessionId: String)
 
     suspend fun getCredentials(): CredentialsEntity?
     suspend fun deleteCredentials()
@@ -101,5 +100,11 @@ interface DataSource {
     suspend fun getCalendarById(id: Long): CalendarEntity?
     fun getAllCalendars(): List<CalendarEntity>
     suspend fun deleteAllCalendar()
+    suspend fun deleteCalendarById(id: Long)
     suspend fun insertCalendar(calendar: Calendar)
+
+    suspend fun getCalendarEventByUrl(url: String): CalendarEventEntity?
+    suspend fun deleteAllCalendarEvent()
+    suspend fun deleteCalendarEventByUrl(url: String)
+    suspend fun insertCalendarEvent(calendarEvent: CalendarEvent)
 }

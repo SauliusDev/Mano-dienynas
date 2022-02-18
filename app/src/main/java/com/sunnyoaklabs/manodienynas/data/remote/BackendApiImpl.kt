@@ -1,7 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.remote
 
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.ATTENDANCE_GET
-import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_DATE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_EVENT_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CHANGE_ROLE_GET
@@ -139,12 +138,8 @@ class BackendApiImpl(
         return client.get { url(SCHEDULE_GET) }
     }
 
-    override suspend fun getCalendar(): String {
-        return client.get { url(CALENDAR_GET) }
-    }
-
     override suspend fun getCalendarDate(payload: GetCalendar): String {
-        return client.get { url(CALENDAR_DATE_GET) }
+        return client.get { url(CALENDAR_GET) }
     }
 
     override suspend fun getCalendarEvent(id: String): String {

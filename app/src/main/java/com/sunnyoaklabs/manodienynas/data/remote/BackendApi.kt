@@ -55,8 +55,6 @@ interface BackendApi {
 
     suspend fun getSchedule(): String
 
-    suspend fun getCalendar(): String
-
     suspend fun getCalendarDate(payload: GetCalendar): String
 
     suspend fun getCalendarEvent(id: String): String
@@ -65,9 +63,9 @@ interface BackendApi {
         fun create(converter: Converter): BackendApi {
             return BackendApiImpl(
                 client = HttpClient(Android) {
-                    install(Logging) {
-                        level = LogLevel.ALL
-                    }
+                    //install(Logging) {
+                    //    level = LogLevel.ALL
+                    //}
                     install(JsonFeature) {
                         serializer = KotlinxSerializer()
                     }

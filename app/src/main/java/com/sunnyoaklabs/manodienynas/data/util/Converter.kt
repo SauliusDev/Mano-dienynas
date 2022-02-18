@@ -158,10 +158,6 @@ class Converter(
     fun toSettingsFromEntity(settingsEntity: SettingsEntity?): Settings {
         return dataSourceObjectParser.toSettingsFromEntity(settingsEntity)
     }
-    
-    fun toSessionIdFromEntity(sessionIdEntity: SessionIdEntity?): String {
-        return dataSourceObjectParser.toSessionIdFromEntity(sessionIdEntity)
-    }
 
     fun toCredentialsFromEntity(credentialsEntity: CredentialsEntity?): Credentials {
         return dataSourceObjectParser.toCredentialsFromEntity(credentialsEntity)

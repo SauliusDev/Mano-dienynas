@@ -46,8 +46,7 @@ object HttpRoutes {
 
     const val SCHEDULE_GET = "$BASE_URL/1/lt/page/schedule/view"
 
-    const val CALENDAR_GET = "$BASE_URL/1/lt/page/sf/resolve/calendar/show"
-    const val CALENDAR_DATE_GET = "$BASE_URL/fc-load-events"
+    const val CALENDAR_GET = "$BASE_URL/fc-load-events"
     const val CALENDAR_EVENT_GET = "$BASE_URL/calendar/show/{event_id}" // 3/88190
 
 }

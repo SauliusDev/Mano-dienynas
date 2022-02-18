@@ -9,8 +9,6 @@ interface DataSourceObjectParser {
 
     fun toSettingsFromEntity(settingsEntity: SettingsEntity?): Settings
 
-    fun toSessionIdFromEntity(sessionIdEntity: SessionIdEntity?): String
-
     fun toCredentialsFromEntity(credentialsEntity: CredentialsEntity?): Credentials
 
     fun toEventFromEntity(eventEntity: EventEntity?): Event

@@ -14,8 +14,11 @@ import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.repository.RepositoryImpl
 import com.sunnyoaklabs.manodienynas.data.util.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
-import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
-import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
+import com.sunnyoaklabs.manodienynas.domain.use_case.*
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +28,82 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideEventsFragmentViewModel(
+        app: Application,
+        getEvents: GetEvents,
+        getTerm: GetTerm
+    ): EventsFragmentViewModel {
+        return EventsFragmentViewModel(app, getEvents, getTerm)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMarksFragmentViewModel(
+        app: Application,
+        getMarks: GetMarks,
+        getAttendance: GetAttendance,
+        getClassWork: GetClassWork,
+        getClassWorkByCondition: GetClassWorkByCondition,
+        getHomeWork: GetHomeWork,
+        getHomeWorkByCondition: GetHomeWorkByCondition,
+        getControlWork: GetControlWork,
+        getControlWorkByCondition: GetControlWorkByCondition
+    ): MarksFragmentViewModel {
+        return MarksFragmentViewModel(
+            app,
+            getMarks,
+            getAttendance,
+            getClassWork,
+            getClassWorkByCondition,
+            getHomeWork,
+            getHomeWorkByCondition,
+            getControlWork,
+            getControlWorkByCondition
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessagesFragmentViewModel(
+        app: Application,
+        getMessagesGotten: GetMessagesGotten,
+        getMessagesSent: GetMessagesSent,
+        getMessagesStarred: GetMessagesStarred,
+        getMessagesDeleted: GetMessagesDeleted,
+        getMessageIndividual: GetMessageIndividual
+    ): MessagesFragmentViewModel {
+        return MessagesFragmentViewModel(
+            app,
+            getMessagesGotten,
+            getMessagesSent,
+            getMessagesStarred,
+            getMessagesDeleted,
+            getMessageIndividual
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideMoreFragmentViewModel(
+        app: Application,
+        getHoliday: GetHoliday,
+        getParentMeetings: GetParentMeetings,
+        getSchedule: GetSchedule,
+        getCalendar: GetCalendar,
+        getCalendarEvent: GetCalendarEvent
+    ): MoreFragmentViewModel {
+        return MoreFragmentViewModel(
+            app,
+            getHoliday,
+            getParentMeetings,
+            getSchedule,
+            getCalendar,
+            getCalendarEvent
+        )
+    }
 
     @Provides
     @Singleton
@@ -95,7 +174,122 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGetEventsUseCase(repository: Repository, converter: Converter): GetEvents {
-        return GetEvents(repository, converter)
+    fun provideGetEventsUseCase(repository: Repository): GetEvents {
+        return GetEvents(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAttendanceUseCase(repository: Repository): GetAttendance {
+        return GetAttendance(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetCalendarUseCase(repository: Repository): GetCalendar {
+        return GetCalendar(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetCalendarEventUseCase(repository: Repository): GetCalendarEvent {
+        return GetCalendarEvent(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetClassWorkUseCase(repository: Repository): GetClassWork {
+        return GetClassWork(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetClassWorkByConditionUseCase(repository: Repository): GetClassWorkByCondition {
+        return GetClassWorkByCondition(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetControlWorkUseCase(repository: Repository): GetControlWork {
+        return GetControlWork(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetControlWorkByConditionUseCase(repository: Repository): GetControlWorkByCondition {
+        return GetControlWorkByCondition(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetHolidayUseCase(repository: Repository): GetHoliday {
+        return GetHoliday(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetHomeWorkUseCase(repository: Repository): GetHomeWork {
+        return GetHomeWork(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetHomeWorkByConditionUseCase(repository: Repository): GetHomeWorkByCondition {
+        return GetHomeWorkByCondition(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMarksUseCase(repository: Repository): GetMarks {
+        return GetMarks(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessageIndividualUseCase(repository: Repository): GetMessageIndividual {
+        return GetMessageIndividual(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesDeletedUseCase(repository: Repository): GetMessagesDeleted {
+        return GetMessagesDeleted(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesGottenUseCase(repository: Repository): GetMessagesGotten {
+        return GetMessagesGotten(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesSentUseCase(repository: Repository): GetMessagesSent {
+        return GetMessagesSent(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesStarredUseCase(repository: Repository): GetMessagesStarred {
+        return GetMessagesStarred(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetParentMeetingsUseCase(repository: Repository): GetParentMeetings {
+        return GetParentMeetings(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetScheduleUseCase(repository: Repository): GetSchedule {
+        return GetSchedule(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetTermUseCase(repository: Repository): GetTerm {
+        return GetTerm(repository)
     }
 }
+

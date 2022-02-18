@@ -57,13 +57,13 @@ class SplashViewModel @Inject constructor(
 
     init {
         // ---- testing lol
-        testingAutoLogin(true)
+//        testingAutoLogin(true)
 
         viewModelScope.launch {
 
             // ---- testing lol
-            this.cancel()
-            yield()
+//            this.cancel()
+//            yield()
 
             getKeepSignedIn()
             if (!_keepSignedIn && !isInitialLogin) {

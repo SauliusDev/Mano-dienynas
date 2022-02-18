@@ -24,6 +24,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
 import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.LoginFragmentDestination
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.SettingsMainFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 
@@ -286,6 +287,7 @@ fun TextDialogLogout(
     title: String,
     setShowDialog: (Boolean) -> Unit
 ) {
+    val settingsMainFragmentViewModel: SettingsMainFragmentViewModel = hiltViewModel()
     if (showDialog) {
         AlertDialog(
             modifier = Modifier.padding(0.dp),
@@ -303,7 +305,7 @@ fun TextDialogLogout(
                             .padding(top = 2.dp, bottom = 2.dp, start = 2.dp, end = 2.dp),
                         colors = ButtonDefaults.buttonColors(primaryGreenAccent),
                         onClick = {
-                            /* TODO logout */
+                            settingsMainFragmentViewModel.logout()
                         },
                     ) {
                         Text(stringResource(id = R.string.ok))

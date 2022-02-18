@@ -18,6 +18,26 @@ class DataSourceImpl @Inject constructor(
     private val converter: Converter
 ) : DataSource {
 
+    override suspend fun getState(): StateEntity? {
+        return withContext(dispatchers.io) {
+            db.stateEntityQueries.getState().executeAsOneOrNull()
+        }
+    }
+
+    override suspend fun deleteState() {
+        return withContext(dispatchers.io) {
+            db.stateEntityQueries.deleteState()
+        }
+    }
+
+    override suspend fun insertState(state: State) {
+        return withContext(dispatchers.io) {
+            db.stateEntityQueries.insertState(
+                state.isLoggingOut.toLong()
+            )
+        }
+    }
+
     override suspend fun getUser(): UserEntity? {
         return withContext(dispatchers.io) {
             db.userEntityQueries.getUser().executeAsOneOrNull()
@@ -55,26 +75,6 @@ class DataSourceImpl @Inject constructor(
     override suspend fun insertSettings(settings: Settings) {
         return withContext(dispatchers.io) {
             db.settingsEntityQueries.insertSettings(settings.keepSignedIn.toLong())
-        }
-    }
-
-    override suspend fun getSessionId(): SessionIdEntity? {
-        return withContext(dispatchers.io) {
-            db.sessionIdEntityQueries.getSessionId().executeAsOneOrNull()
-        }
-    }
-
-    override suspend fun deleteSessionId() {
-        withContext(dispatchers.io) {
-            db.sessionIdEntityQueries.deleteSessionId()
-        }
-    }
-
-    override suspend fun insertSessionId(sessionId: String) {
-        return withContext(dispatchers.io) {
-            db.sessionIdEntityQueries.insertSessionId(
-                sessionId
-            )
         }
     }
 
@@ -577,6 +577,12 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteCalendarById(id: Long) {
+        withContext(dispatchers.io) {
+            db.calendarEntityQueries.deleteCalendarById(id)
+        }
+    }
+
     override suspend fun insertCalendar(calendar: Calendar) {
         return withContext(dispatchers.io) {
             db.calendarEntityQueries.insertCalendar(
@@ -586,6 +592,34 @@ class DataSourceImpl @Inject constructor(
                 calendar.url,
                 calendar.type,
                 calendar.allDay.toLong()
+            )
+        }
+    }
+
+    override suspend fun getCalendarEventByUrl(url: String): CalendarEventEntity? {
+        return withContext(dispatchers.io) {
+            db.calendarEventEntityQueries.getCalendarEventByUrl(url).executeAsOneOrNull()
+        }
+    }
+
+    override suspend fun deleteAllCalendarEvent() {
+        withContext(dispatchers.io) {
+            db.calendarEventEntityQueries.deleteAllCalendarEvent()
+        }
+    }
+
+    override suspend fun deleteCalendarEventByUrl(url: String) {
+        withContext(dispatchers.io) {
+            db.calendarEventEntityQueries.deleteCalendarEventByUrl(url)
+        }
+    }
+
+    override suspend fun insertCalendarEvent(calendarEvent: CalendarEvent) {
+        return withContext(dispatchers.io) {
+            db.calendarEventEntityQueries.insertCalendarEvent(
+                calendarEvent.url,
+                calendarEvent.teacher,
+                calendarEvent.theme
             )
         }
     }

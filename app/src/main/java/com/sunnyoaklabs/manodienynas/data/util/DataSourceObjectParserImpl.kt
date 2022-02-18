@@ -23,10 +23,6 @@ class DataSourceObjectParserImpl(
         )
     }
 
-    override fun toSessionIdFromEntity(sessionIdEntity: SessionIdEntity?): String {
-        return sessionIdEntity?.sessionId ?: ""
-    }
-
     override fun toCredentialsFromEntity(credentialsEntity: CredentialsEntity?): Credentials {
         return Credentials(
             credentialsEntity?.username ?: "",
