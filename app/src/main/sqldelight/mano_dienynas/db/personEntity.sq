@@ -1,0 +1,17 @@
+CREATE TABLE personEntity (
+    name TEXT,
+    role TEXT,
+    schoolsNames TEXT
+);
+
+getPerson:
+SELECT *
+FROM personEntity;
+
+insertPerson:
+INSERT OR REPLACE
+INTO personEntity
+VALUES(?, ?, ?);
+
+deletePerson:
+DELETE FROM personEntity;

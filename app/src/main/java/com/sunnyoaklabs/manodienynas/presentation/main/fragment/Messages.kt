@@ -16,7 +16,6 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.Messa
 
 @Composable
 fun MessagesFragment() {
-    val messagesFragmentViewModel: MessagesFragmentViewModel = hiltViewModel()
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,

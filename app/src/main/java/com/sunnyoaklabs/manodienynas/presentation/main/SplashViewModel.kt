@@ -41,9 +41,9 @@ class SplashViewModel @Inject constructor(
     private var _errorMessage = ""
     var errorMessage = _errorMessage
 
-    private val _userState = MutableStateFlow(UserState())
-
     private var _credentials = Credentials("", "")
+
+    private val _userState = MutableStateFlow(UserState())
     val userState = _userState.asStateFlow()
 
     private fun testingAutoLogin(doLogin: Boolean) {
@@ -57,14 +57,11 @@ class SplashViewModel @Inject constructor(
 
     init {
         // ---- testing lol
-//        testingAutoLogin(true)
-
+        // testingAutoLogin(true)
         viewModelScope.launch {
-
             // ---- testing lol
-//            this.cancel()
-//            yield()
-
+            //  this.cancel()
+            //  yield()
             getKeepSignedIn()
             if (!_keepSignedIn && !isInitialLogin) {
                 _userState.emit(UserState(

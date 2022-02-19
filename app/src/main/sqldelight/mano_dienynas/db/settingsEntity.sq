@@ -1,5 +1,6 @@
 CREATE TABLE settingsEntity (
-    keepSignedIn INTEGER
+    keepSignedIn INTEGER,
+    selectedSchoolInfo TEXT
 );
 
 getSettings:
@@ -9,7 +10,7 @@ FROM settingsEntity;
 insertSettings:
 INSERT OR REPLACE
 INTO settingsEntity
-VALUES(?);
+VALUES(?, ?);
 
 deleteSettings:
 DELETE FROM settingsEntity;

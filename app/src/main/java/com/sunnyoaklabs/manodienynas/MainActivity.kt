@@ -77,6 +77,8 @@ class MainActivity : ComponentActivity() {
             splashViewModel.userState.collect {
                 if (!it.isUserLoggedIn && !it.isLoading) {
                     startActivityLogin(this@MainActivity, splashViewModel.errorMessage)
+                } else if(!it.isLoading) {
+                    mainViewModel.initSessionCookies()
                 }
             }
         }
@@ -116,7 +118,7 @@ class MainActivity : ComponentActivity() {
                             MoreFragment()
                         }
                         composable(Screen.Settings.route) {
-                            SettingsMainFragment()
+                            SettingsMainFragment(mainViewModel)
                         }
                     }
                 }

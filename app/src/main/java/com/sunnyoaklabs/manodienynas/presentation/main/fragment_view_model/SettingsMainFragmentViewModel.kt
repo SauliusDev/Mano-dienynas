@@ -1,34 +1,39 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
-import com.sunnyoaklabs.manodienynas.domain.model.State
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.sunnyoaklabs.manodienynas.domain.model.Settings
+import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
 class SettingsMainFragmentViewModel @Inject constructor(
-    app: Application,
+    private val repository: Repository,
     private val backendApi: BackendApi,
     private val dataSource: DataSource,
-) : AndroidViewModel(app) {
+) : ViewModel() {
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    private val _settingsState = mutableStateOf(Settings())
+    val settingsState: State<Settings> = _settingsState
+
+    init {
+        getSetting()
+    }
+
     fun logout() {
         viewModelScope.launch {
-            dataSource.deleteState()
-            dataSource.insertState(State(true))
-            deleteEverythingInCache()
             backendApi.getLogout()
+            deleteEverythingInCache()
         }
     }
 
@@ -53,4 +58,21 @@ class SettingsMainFragmentViewModel @Inject constructor(
         dataSource.deleteAllCalendarEvent()
     }
 
+    fun getSetting() {
+        viewModelScope.launch {
+            _settingsState.value = repository.getSettings().copy()
+        }
+    }
+
+    fun deleteSetting() {
+        viewModelScope.launch {
+            dataSource.deleteSettings()
+        }
+    }
+
+    fun insertSettings(settings: Settings) {
+        viewModelScope.launch {
+            dataSource.insertSettings(settings)
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package com.sunnyoaklabs.manodienynas.domain.repository
 
 import com.sunnyoaklabs.manodienynas.core.util.Resource
-import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendar
+import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
@@ -15,6 +15,8 @@ interface Repository {
     suspend fun getSessionCookies(): Flow<Resource<String>>
 
     suspend fun getCredentials(): Credentials
+
+    suspend fun getPerson(): Person
 
     fun getEvents(): Flow<Resource<List<Event>>>
 
@@ -49,8 +51,8 @@ interface Repository {
 
     fun getSchedule(): Flow<Resource<List<Schedule>>>
 
-    fun getCalendar(payload: GetCalendar): Flow<Resource<List<Calendar>>>
+    fun getCalendar(payload: GetCalendarDto): Flow<Resource<List<Calendar>>>
 
-    fun getCalendarEvent(id: String): Flow<Resource<Calendar>>
+    fun getCalendarEvent(url: String): Flow<Resource<CalendarEvent>>
 
 }

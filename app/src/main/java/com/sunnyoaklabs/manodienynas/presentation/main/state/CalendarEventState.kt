@@ -5,6 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.CalendarEvent
 import com.sunnyoaklabs.manodienynas.domain.model.Event
 
 data class CalendarEventState(
-    val calendar: List<CalendarEvent> = emptyList(),
+    val calendar: CalendarEvent? = null,
     val isLoading: Boolean = false
 )

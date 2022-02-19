@@ -16,7 +16,6 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.Marks
 
 @Composable
 fun MarksFragment() {
-    val marksFragmentViewModel: MarksFragmentViewModel = hiltViewModel()
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,

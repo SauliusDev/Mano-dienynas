@@ -1,13 +1,10 @@
 package com.sunnyoaklabs.manodienynas.data.local
 
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.sunnyoaklabs.manodienynas.ManoDienynasDatabase
 import com.sunnyoaklabs.manodienynas.core.util.DispatcherProvider
 import com.sunnyoaklabs.manodienynas.core.util.toLong
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import manodienynas.db.*
 import javax.inject.Inject
@@ -18,44 +15,24 @@ class DataSourceImpl @Inject constructor(
     private val converter: Converter
 ) : DataSource {
 
-    override suspend fun getState(): StateEntity? {
+    override suspend fun getPerson(): PersonEntity? {
         return withContext(dispatchers.io) {
-            db.stateEntityQueries.getState().executeAsOneOrNull()
+            db.personEntityQueries.getPerson().executeAsOneOrNull()
         }
     }
 
-    override suspend fun deleteState() {
+    override suspend fun deletePerson() {
         return withContext(dispatchers.io) {
-            db.stateEntityQueries.deleteState()
+            db.personEntityQueries.deletePerson()
         }
     }
 
-    override suspend fun insertState(state: State) {
+    override suspend fun insertPerson(person: Person) {
         return withContext(dispatchers.io) {
-            db.stateEntityQueries.insertState(
-                state.isLoggingOut.toLong()
-            )
-        }
-    }
-
-    override suspend fun getUser(): UserEntity? {
-        return withContext(dispatchers.io) {
-            db.userEntityQueries.getUser().executeAsOneOrNull()
-        }
-    }
-
-    override suspend fun deleteUser() {
-        return withContext(dispatchers.io) {
-            db.userEntityQueries.deleteUser()
-        }
-    }
-
-    override suspend fun insertUser(user: User) {
-        return withContext(dispatchers.io) {
-            db.userEntityQueries.insertUser(
-                user.name,
-                user.role,
-                converter.toSchoolNamesJson(user.schoolsNames)
+            db.personEntityQueries.insertPerson(
+                person.name,
+                person.role,
+                converter.toSchoolNamesJson(person.schoolsNames)
             )
         }
     }
@@ -74,7 +51,10 @@ class DataSourceImpl @Inject constructor(
 
     override suspend fun insertSettings(settings: Settings) {
         return withContext(dispatchers.io) {
-            db.settingsEntityQueries.insertSettings(settings.keepSignedIn.toLong())
+            db.settingsEntityQueries.insertSettings(
+                settings.keepSignedIn.toLong(),
+                converter.toSchoolInfoJson(settings.selectedSchool)
+            )
         }
     }
 

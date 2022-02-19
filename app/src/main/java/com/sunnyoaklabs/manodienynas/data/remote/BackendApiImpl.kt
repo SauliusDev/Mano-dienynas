@@ -138,7 +138,7 @@ class BackendApiImpl(
         return client.get { url(SCHEDULE_GET) }
     }
 
-    override suspend fun getCalendarDate(payload: GetCalendar): String {
+    override suspend fun getCalendarDate(payload: GetCalendarDto): String {
         return client.get { url(CALENDAR_GET) }
     }
 

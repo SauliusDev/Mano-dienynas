@@ -1,10 +1,7 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
 import android.util.Log
-import androidx.activity.viewModels
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.sunnyoaklabs.manodienynas.core.util.*
-import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
@@ -14,7 +11,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
-import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
@@ -27,8 +24,8 @@ class RepositoryImpl(
 ) : Repository {
 
     override suspend fun getSettings(): Settings {
-        val userSettings = dataSource.getSettings()
-        return converter.toSettingsFromEntity(userSettings)
+        val settings = dataSource.getSettings()
+        return converter.toSettingsFromEntity(settings)
     }
 
     override suspend fun getSessionCookies(): Flow<Resource<String>> = flow {
@@ -55,20 +52,23 @@ class RepositoryImpl(
         return converter.toCredentialsFromEntity(credentials)
     }
 
+    override suspend fun getPerson(): Person {
+        return converter.toPersonFromEntity(dataSource.getPerson())
+    }
+
     override fun getEvents(): Flow<Resource<List<Event>>> = flow {
         emit(Resource.Loading())
         val eventsLocal = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
         emit(Resource.Loading(data = eventsLocal))
         try {
             val response = api.getEvents()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
+                dataSource.deletePerson()
+                dataSource.insertPerson(person)
                 val eventsApi = converter.toEvents(response)
                 dataSource.deleteAllEvents()
-                eventsApi.forEach {
-                    dataSource.insertEvent(it) }
+                eventsApi.forEach { dataSource.insertEvent(it) }
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
@@ -87,10 +87,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = marksLocal))
         try {
             val response = api.getMarks()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val marksApi = converter.toMarks(response)
                 dataSource.deleteAllMarks()
                 marksApi.forEach { dataSource.insertMark(it) }
@@ -112,10 +110,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = attendanceLocal))
         try {
             val response = api.getAttendance()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val attendanceApi = converter.toAttendance(response)
                 dataSource.deleteAllAttendance()
                 attendanceApi.forEach { dataSource.insertAttendance(it) }
@@ -137,10 +133,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = classWorkLocal))
         try {
             val response = api.getClassWork()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val classWorkApi = converter.toClassWork(response)
                 dataSource.deleteAllClassWork()
                 classWorkApi.forEach { dataSource.insertClassWork(it) }
@@ -165,10 +159,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = classWorkLocal))
         try {
             val response = api.postClassWork(payload, page)
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val classWorkApi = converter.toClassWork(response)
                 dataSource.deleteAllClassWork()
                 classWorkApi.forEach { dataSource.insertClassWork(it) }
@@ -190,10 +182,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = homeWorkLocal))
         try {
             val response = api.getHomeWork()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val homeWorkApi = converter.toHomeWork(response)
                 dataSource.deleteAllHomeWork()
                 homeWorkApi.forEach { dataSource.insertHomeWork(it) }
@@ -218,10 +208,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = homeWorkLocal))
         try {
             val response = api.postHomeWork(payload, page)
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val homeWorkApi = converter.toHomeWork(response)
                 dataSource.deleteAllHomeWork()
                 homeWorkApi.forEach { dataSource.insertHomeWork(it) }
@@ -243,10 +231,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = controlWorkLocal))
         try {
             val response = api.getControlWork()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val controlWorkApi = converter.toControlWork(response)
                 dataSource.deleteAllControlWork()
                 controlWorkApi.forEach { dataSource.insertControlWork(it) }
@@ -271,10 +257,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = controlWorkLocal))
         try {
             val response = api.postControlWork(payload)
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val controlWorkApi = converter.toControlWork(response)
                 dataSource.deleteAllControlWork()
                 controlWorkApi.forEach { dataSource.insertControlWork(it) }
@@ -296,10 +280,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = termsLocal))
         try {
             val response = api.getTerm()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val termApi = converter.toTerm(response)
                 dataSource.deleteAllTerm()
                 termApi.forEach { dataSource.insertTerm(it) }
@@ -321,10 +303,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesGottenLocal))
         try {
             val response = api.getMessagesGotten()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val messagesGottenApi = converter.toMessages(response)
                 dataSource.deleteAllMessageGotten()
                 messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
@@ -346,10 +326,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesSentLocal))
         try {
             val response = api.getMessagesSent()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val messagesSentApi = converter.toMessages(response)
                 dataSource.deleteAllMessageSent()
                 messagesSentApi.forEach { dataSource.insertMessageSent(it) }
@@ -371,10 +349,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesStarredLocal))
         try {
             val response = api.getMessagesStarred()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val messagesStarredApi = converter.toMessages(response)
                 dataSource.deleteAllMessageStarred()
                 messagesStarredApi.forEach { dataSource.insertMessageStarred(it) }
@@ -396,10 +372,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesDeletedLocal))
         try {
             val response = api.getMessagesDeleted()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val messagesDeletedApi = converter.toMessages(response)
                 dataSource.deleteAllMessageDeleted()
                 messagesDeletedApi.forEach { dataSource.insertMessageDeleted(it) }
@@ -421,10 +395,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messageIndividualLocal))
         try {
             val response = api.getMessageIndividual(id)
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val messagesIndividualApi = converter.toMessagesIndividual(response)
                 dataSource.deleteMessageIndividualById(id.toLong())
                 dataSource.insertMessageIndividual(messagesIndividualApi)
@@ -446,10 +418,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = holidayLocal))
         try {
             val response = api.getHoliday()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val holidayApi = converter.toHoliday(response)
                 dataSource.deleteAllHoliday()
                 holidayApi.forEach { dataSource.insertHoliday(it) }
@@ -471,10 +441,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = parentMeetingsLocal))
         try {
             val response = api.getParentMeetings()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val parentMeetingsApi = converter.toParentMeeting(response)
                 dataSource.deleteAllParentMeeting()
                 parentMeetingsApi.forEach { dataSource.insertParentMeeting(it) }
@@ -496,10 +464,8 @@ class RepositoryImpl(
         emit(Resource.Loading(data = scheduleLocal))
         try {
             val response = api.getSchedule()
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val scheduleApi = converter.toSchedule(response)
                 dataSource.deleteAllMarks()
                 scheduleApi.forEach { dataSource.insertSchedule(it) }
@@ -515,16 +481,14 @@ class RepositoryImpl(
         emit(Resource.Success(newSchedule))
     }
 
-    override fun getCalendar(payload: GetCalendar): Flow<Resource<List<Calendar>>> = flow {
+    override fun getCalendar(payload: GetCalendarDto): Flow<Resource<List<Calendar>>> = flow {
         emit(Resource.Loading())
         val calendarDateLocal = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
         emit(Resource.Loading(data = calendarDateLocal))
         try {
             val response = api.getCalendarDate(payload)
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
                 val calendarDateApi = converter.toCalendar(response)
                 dataSource.deleteAllMarks()
                 calendarDateApi.forEach { dataSource.insertCalendar(it) }
@@ -540,19 +504,17 @@ class RepositoryImpl(
         emit(Resource.Success(newCalendar))
     }
 
-    override fun getCalendarEvent(id: String): Flow<Resource<Calendar>> = flow {
+    override fun getCalendarEvent(url: String): Flow<Resource<CalendarEvent>> = flow {
         emit(Resource.Loading())
-        val calendarEventLocal = converter.toCalendarFromEntity(dataSource.getCalendarById(id.toLong()))
+        val calendarEventLocal = converter.toCalendarEventFromEntity(dataSource.getCalendarEventByUrl(url))
         emit(Resource.Loading(data = calendarEventLocal))
         try {
-            val response = api.getCalendarEvent(id)
-            val user = converter.toUser(response)
-            if (user.name.isNotBlank()) {
-                dataSource.deleteUser()
-                dataSource.insertUser(user)
-                val calendarEventApi = converter.toCalendar(response)
-                dataSource.deleteCalendarById(id.toLong())
-                calendarEventApi.forEach { dataSource.insertCalendar(it) }
+            val response = api.getCalendarEvent(url)
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
+                val calendarEventApi = converter.toCalendarEvent(response)
+                dataSource.deleteCalendarEventByUrl(url)
+                dataSource.insertCalendarEvent(calendarEventApi)
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
@@ -561,7 +523,7 @@ class RepositoryImpl(
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newCalendarEvent = converter.toCalendarFromEntity(dataSource.getCalendarById(id.toLong()))
+        val newCalendarEvent = converter.toCalendarEventFromEntity(dataSource.getCalendarEventByUrl(url))
         emit(Resource.Success(newCalendarEvent))
     }
 

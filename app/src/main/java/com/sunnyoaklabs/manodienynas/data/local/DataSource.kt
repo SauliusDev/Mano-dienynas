@@ -5,13 +5,9 @@ import manodienynas.db.*
 
 interface DataSource {
 
-    suspend fun getState(): StateEntity?
-    suspend fun deleteState()
-    suspend fun insertState(state: State)
-
-    suspend fun getUser(): UserEntity?
-    suspend fun deleteUser()
-    suspend fun insertUser(user: User)
+    suspend fun getPerson(): PersonEntity?
+    suspend fun deletePerson()
+    suspend fun insertPerson(person: Person)
 
     suspend fun getSettings(): SettingsEntity?
     suspend fun deleteSettings()

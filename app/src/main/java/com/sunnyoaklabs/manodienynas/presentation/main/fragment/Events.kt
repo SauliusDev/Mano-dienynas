@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sunnyoaklabs.manodienynas.domain.model.Event
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
@@ -21,9 +22,11 @@ import kotlinx.coroutines.flow.collect
 
 @Composable
 fun EventsFragment(
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    modifier: Modifier = Modifier
 ) {
     val events = mainViewModel.eventsFragmentViewModel.eventState.value.events
+    val terms = mainViewModel.eventsFragmentViewModel.termState.value.terms
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -31,15 +34,14 @@ fun EventsFragment(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        Text(text = terms.toString())
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(events) {
-                Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                Text(text = it.eventHeader + it.eventText, Modifier.padding(horizontal = 10.dp))
-                Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+            items(events) { event ->
+                EventCard(event = event)
             }
         }
     }
@@ -68,13 +70,15 @@ fun TermsCard(
 
 @Composable
 fun EventCard(
+    event: Event,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.padding(
-            top = LocalSpacing.current.medium,
-            start = LocalSpacing.current.small,
-            end = LocalSpacing.current.small
+            top = 2.dp,
+            bottom = 2.dp,
+            start = 4.dp,
+            end = 4.dp
         ),
         elevation = 10.dp
     ) {
@@ -82,7 +86,7 @@ fun EventCard(
             modifier = modifier
                 .fillMaxWidth()
         ) {
-
+            Text(text = event.eventHeader + event.eventText, Modifier.padding(horizontal = 10.dp))
         }
     }
 }

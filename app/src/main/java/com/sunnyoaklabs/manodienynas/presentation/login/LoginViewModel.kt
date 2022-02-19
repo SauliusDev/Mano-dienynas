@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.R
@@ -27,7 +28,7 @@ class LoginViewModel @Inject constructor(
     private val app: Application,
     private val repository: Repository,
     private val dataSource: DataSource
-) : ViewModel() {
+) : AndroidViewModel(app) {
 
     private val _credentials = MutableStateFlow(Credentials("", ""))
     val credentials: StateFlow<Credentials> = _credentials
@@ -74,5 +75,4 @@ class LoginViewModel @Inject constructor(
         return app.resources.openRawResource(R.raw.app_license)
             .bufferedReader().use(BufferedReader::readText)
     }
-
 }

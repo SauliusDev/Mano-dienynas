@@ -9,17 +9,18 @@ class DataSourceObjectParserImpl(
     private val jsonParser: JsonParser
 ) : DataSourceObjectParser {
 
-    override fun toUserFromEntity(userEntity: UserEntity?): User {
-        return User(
-            userEntity?.name ?: "",
-            userEntity?.role ?: "",
-            fromSchoolNamesJson(userEntity?.schoolsNames ?: "")
+    override fun toPersonFromEntity(personEntity: PersonEntity?): Person {
+        return Person(
+            personEntity?.name ?: "",
+            personEntity?.role ?: "",
+            fromSchoolNamesJson(personEntity?.schoolsNames ?: "")
         )
     }
 
     override fun toSettingsFromEntity(settingsEntity: SettingsEntity?): Settings {
         return Settings(
-            (settingsEntity?.keepSignedIn ?: 0).toBoolean()
+            (settingsEntity?.keepSignedIn ?: 0).toBoolean(),
+            fromSchoolInfoJson(settingsEntity?.selectedSchoolInfo ?: "")
         )
     }
 
@@ -208,7 +209,15 @@ class DataSourceObjectParserImpl(
             calendarEntity?.url ?: "",
             calendarEntity?.type ?: "",
             calendarEntity?.allDay!!.toBoolean(),
-         )
+        )
+    }
+
+    override fun toCalendarEventFromEntity(calendarEventEntity: CalendarEventEntity?): CalendarEvent {
+        return CalendarEvent(
+            calendarEventEntity?.url ?: "",
+            calendarEventEntity?.teacher ?: "",
+            calendarEventEntity?.theme ?: ""
+        )
     }
 
     private fun fromSchoolNamesJson(json: String): List<SchoolInfo> {
@@ -265,5 +274,12 @@ class DataSourceObjectParserImpl(
             json,
             object : TypeToken<ArrayList<MarkEvent>>(){}.type
         ) ?: emptyList()
+    }
+
+    private fun fromSchoolInfoJson(json: String): SchoolInfo? {
+        return jsonParser.fromJson<SchoolInfo>(
+            json,
+            object : TypeToken<SchoolInfo>(){}.type
+        )
     }
 }

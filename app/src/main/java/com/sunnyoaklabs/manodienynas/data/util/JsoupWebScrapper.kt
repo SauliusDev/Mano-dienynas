@@ -6,7 +6,7 @@ import org.jsoup.Jsoup
 
 class JsoupWebScrapper() : WebScrapper {
 
-    override fun toUser(html: String): User {
+    override fun toPerson(html: String): Person {
         val document = Jsoup.parse(html)
         val element = document.getElementById("act-user-info-text")
         val name = element.getElementsByTag("a").attr("title")
@@ -22,7 +22,7 @@ class JsoupWebScrapper() : WebScrapper {
             val schoolId = elementSchoolWrapper[i].attr("data-school_id")
             schoolsInfo.add(SchoolInfo(roleName, schoolName, schoolId))
         }
-        return User(
+        return Person(
             name = name,
             role = role,
             schoolsNames = schoolsInfo
@@ -39,17 +39,20 @@ class JsoupWebScrapper() : WebScrapper {
         )
         for (i in elementEventItems.indices) {
             val elementEventItem = elementEventItems[i]
-            val title = elementEventItem.getElementsByClass("trigger")[0].text()
-            val pupilInfo = elementEventItem.getElementsByClass("pupilInfo")[0].text()
-            val createDate = elementEventItem.getElementsByClass("pull-right")[0].text()
-            val createDateText = elementEventItem.getElementsByClass("create-date")[0].text()
-            val eventHeader = elementEventItem.getElementsByClass("event-header")[0].text()
+            val title = try { elementEventItem.getElementsByClass("trigger")[0].text() } catch (e: Exception) {""}
+            val pupilInfo = try { elementEventItem.getElementsByClass("pupilInfo")[0].text() } catch (e: Exception) {""}
+            val createDate = try { elementEventItem.getElementsByClass("pull-right")[0].text() } catch (e: Exception) {""}
+            val createDateText = try { elementEventItem.getElementsByClass("create-date")[0].text() } catch (e: Exception) {""}
+            val eventHeader = try { elementEventItem.getElementsByClass("event-header")[0].text() } catch (e: Exception) {""}
+            val eventText = elementEventItem.getElementsByClass("event-text")[0].text()
+            /*
             val eventText = if (title == "Atsiskaitymai") {
                 elementEventItem.getElementsByClass("event-text")[0].removeClass("btn btn-default pull-right")
                     .text()
             } else {
                 elementEventItem.getElementsByClass("event-text")[0].getElementsByTag("span").text()
             }
+            */
             val creatorName = elementEventItem.getElementsByTag("h4").text()
             eventsList.add(
                 Event(
@@ -461,5 +464,16 @@ class JsoupWebScrapper() : WebScrapper {
             }
         }
         return scheduleList
+    }
+
+    override fun toCalendarEvent(html: String): CalendarEvent {
+        // TODO(currently not implemented)
+        val document = Jsoup.parse(html)
+        val calendarEvent = CalendarEvent(
+            url = "",
+            teacher = "",
+            theme = ""
+        )
+        return calendarEvent
     }
 }

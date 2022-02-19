@@ -32,17 +32,15 @@ object AppModule {
     @Provides
     @Singleton
     fun provideEventsFragmentViewModel(
-        app: Application,
         getEvents: GetEvents,
         getTerm: GetTerm
     ): EventsFragmentViewModel {
-        return EventsFragmentViewModel(app, getEvents, getTerm)
+        return EventsFragmentViewModel(getEvents, getTerm)
     }
 
     @Provides
     @Singleton
     fun provideMarksFragmentViewModel(
-        app: Application,
         getMarks: GetMarks,
         getAttendance: GetAttendance,
         getClassWork: GetClassWork,
@@ -53,7 +51,6 @@ object AppModule {
         getControlWorkByCondition: GetControlWorkByCondition
     ): MarksFragmentViewModel {
         return MarksFragmentViewModel(
-            app,
             getMarks,
             getAttendance,
             getClassWork,
@@ -68,7 +65,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMessagesFragmentViewModel(
-        app: Application,
         getMessagesGotten: GetMessagesGotten,
         getMessagesSent: GetMessagesSent,
         getMessagesStarred: GetMessagesStarred,
@@ -76,7 +72,6 @@ object AppModule {
         getMessageIndividual: GetMessageIndividual
     ): MessagesFragmentViewModel {
         return MessagesFragmentViewModel(
-            app,
             getMessagesGotten,
             getMessagesSent,
             getMessagesStarred,
@@ -88,7 +83,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMoreFragmentViewModel(
-        app: Application,
         getHoliday: GetHoliday,
         getParentMeetings: GetParentMeetings,
         getSchedule: GetSchedule,
@@ -96,7 +90,6 @@ object AppModule {
         getCalendarEvent: GetCalendarEvent
     ): MoreFragmentViewModel {
         return MoreFragmentViewModel(
-            app,
             getHoliday,
             getParentMeetings,
             getSchedule,

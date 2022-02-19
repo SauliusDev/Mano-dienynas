@@ -5,7 +5,7 @@ import manodienynas.db.*
 
 interface DataSourceObjectParser {
 
-    fun toUserFromEntity(userEntity: UserEntity?): User
+    fun toPersonFromEntity(personEntity: PersonEntity?): Person
 
     fun toSettingsFromEntity(settingsEntity: SettingsEntity?): Settings
 
@@ -42,5 +42,7 @@ interface DataSourceObjectParser {
     fun toScheduleFromEntity(scheduleEntity: ScheduleEntity?): Schedule
 
     fun toCalendarFromEntity(calendarEntity: CalendarEntity?): Calendar
+
+    fun toCalendarEventFromEntity(calendarEventEntity: CalendarEventEntity?): CalendarEvent
 
 }

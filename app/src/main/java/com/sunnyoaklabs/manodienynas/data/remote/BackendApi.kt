@@ -55,7 +55,7 @@ interface BackendApi {
 
     suspend fun getSchedule(): String
 
-    suspend fun getCalendarDate(payload: GetCalendar): String
+    suspend fun getCalendarDate(payload: GetCalendarDto): String
 
     suspend fun getCalendarEvent(id: String): String
 
@@ -73,9 +73,9 @@ interface BackendApi {
                         storage = AcceptAllCookiesStorage()
                     }
                     install(HttpTimeout) {
-                        requestTimeoutMillis = 15000L
-                        connectTimeoutMillis = 15000L
-                        socketTimeoutMillis = 15000L
+                        requestTimeoutMillis = 150000L
+                        connectTimeoutMillis = 150000L
+                        socketTimeoutMillis = 150000L
                     }
                 },
                 converter = converter

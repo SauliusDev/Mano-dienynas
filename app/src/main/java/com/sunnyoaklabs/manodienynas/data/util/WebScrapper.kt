@@ -4,7 +4,7 @@ import com.sunnyoaklabs.manodienynas.domain.model.*
 
 interface WebScrapper {
 
-    fun toUser(html: String): User
+    fun toPerson(html: String): Person
 
     fun toEvents(html: String): List<Event>
 
@@ -29,5 +29,7 @@ interface WebScrapper {
     fun toParentMeetings(html: String): List<ParentMeeting>
 
     fun toSchedule(html: String): List<Schedule>
+
+    fun toCalendarEvent(html: String): CalendarEvent
 
 }

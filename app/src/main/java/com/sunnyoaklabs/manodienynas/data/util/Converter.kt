@@ -15,6 +15,13 @@ class Converter(
     private val dataSourceObjectParser: DataSourceObjectParser
 ) {
 
+    fun toSchoolInfoJson(schoolInfo: SchoolInfo?): String {
+        return jsonParser.toJson(
+            schoolInfo,
+            object : TypeToken<SchoolInfo>(){}.type
+        ) ?: "[]"
+    }
+
     fun toSchoolNamesJson(list: List<SchoolInfo>): String {
         return jsonParser.toJson(
             list,
@@ -99,8 +106,8 @@ class Converter(
         ) ?: "[]"
     }
 
-    fun toUser(html: String): User {
-        return webScrapper.toUser(html = html)
+    fun toPerson(html: String): Person {
+        return webScrapper.toPerson(html = html)
     }
 
     fun toEvents(html: String): List<Event> {
@@ -153,6 +160,14 @@ class Converter(
 
     fun toCalendar(json: String): List<Calendar> {
         return jsonFormatter.toCalendar(json = json)
+    }
+
+    fun toCalendarEvent(html: String): CalendarEvent {
+        return webScrapper.toCalendarEvent(html = html)
+    }
+
+    fun toPersonFromEntity(personEntity: PersonEntity?): Person {
+        return dataSourceObjectParser.toPersonFromEntity(personEntity)
     }
 
     fun toSettingsFromEntity(settingsEntity: SettingsEntity?): Settings {
@@ -225,6 +240,10 @@ class Converter(
 
     fun toCalendarFromEntity(calendarEntity: CalendarEntity?): Calendar {
         return dataSourceObjectParser.toCalendarFromEntity(calendarEntity)
+    }
+
+    fun toCalendarEventFromEntity(calendarEventEntity: CalendarEventEntity?): CalendarEvent {
+        return dataSourceObjectParser.toCalendarEventFromEntity(calendarEventEntity)
     }
 
 }

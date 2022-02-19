@@ -7,6 +7,7 @@ import com.sunnyoaklabs.manodienynas.core.util.SessionValidationJsonResponses
 import com.sunnyoaklabs.manodienynas.core.util.toDocument
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.Calendar
+import com.sunnyoaklabs.manodienynas.domain.model.CalendarEvent
 import com.sunnyoaklabs.manodienynas.domain.model.Event
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,7 @@ class GetCalendarEvent(
     private val repository: Repository
 ) {
 
-    operator fun invoke(id: String): Flow<Resource<Calendar>> {
+    operator fun invoke(id: String): Flow<Resource<CalendarEvent>> {
         return repository.getCalendarEvent(id)
     }
 
