@@ -79,9 +79,9 @@ class MainViewModel @Inject constructor(
                                 triedGettingSession = true
                             )
                         )
-                        changeRoleJob.start()
+                        val changeRoleJob = changeRole()
                         changeRoleJob.join()
-                        initDataJob.start()
+                        initData()
                     }
                     is Resource.Error -> {
                         firebaseCrashlytics.log("(MainViewModel) Error: credentials, sessionCookies")
@@ -105,19 +105,23 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private val changeRoleJob = CoroutineScope(IO).launch{
-        val settings = repository.getSettings()
-        settings.selectedSchool?.let {
-            backendApi.getChangeRole(it.schoolId)
+    private fun changeRole(): Job {
+        return CoroutineScope(IO).launch{
+            val settings = repository.getSettings()
+            settings.selectedSchool?.let {
+                backendApi.getChangeRole(it.schoolId)
+            }
         }
     }
 
-    private val initDataJob = CoroutineScope(IO).launch {
-        // TODO figure out if they run async because they need to run ASYNC!!!
-        val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
-        initPerson(eventsJob)
-        eventsFragmentViewModel.initTerm()
-        // all other initializations ..................
+    private fun initData(): Job {
+        return CoroutineScope(IO).launch {
+            // TODO figure out if they run async because they need to run ASYNC!!!
+            val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
+            initPerson(eventsJob)
+            // eventsFragmentViewModel.initTerm()
+            // all other initializations ..................
+        }
     }
 
     private fun initPerson(eventsJob: Job) {

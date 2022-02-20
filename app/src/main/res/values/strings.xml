@@ -16,6 +16,11 @@
     <string name="sign_in">Prisijungti</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="event_control_work">Atsiskaitymas</string>
+    <string name="event_home_work">Namų darbai</string>
+    <string name="event_attendance">Lankomumas</string>
+    <string name="event_mark">Pažimys</string>
+    <string name="event_unknown">Nežinomas</string>
 
     <!-- Main activity -->
     <string name="bottom_nav_events">Įvykiai</string>

@@ -16,6 +16,5 @@ val bottomNavigationItems = listOf(
     Screen.Events,
     Screen.Marks,
     Screen.Messages,
-    Screen.More,
-    Screen.Settings
+    Screen.More
 )

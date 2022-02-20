@@ -2,11 +2,15 @@ package com.sunnyoaklabs.manodienynas
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.activity.viewModels
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -35,6 +39,7 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.SettingsLoginFragmentDestination
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.Screen
 import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
@@ -94,7 +99,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     topBar = {
-                        ToolbarMain()
+                        ToolbarMain(navController)
                     },
                     bottomBar = {
                         BottomNavigationBar(navController, bottomNavigationItems)
@@ -209,15 +214,49 @@ fun BottomNavigationBar(
     }
 }
 
+sealed class MenuAction(
+    @StringRes val label: Int,
+    @DrawableRes val icon: Int,
+    @ColorInt val color: Color
+) {
+    object Settings : MenuAction(R.string.settings, R.drawable.ic_settings, Color.White)
+}
+
 @Composable
-fun ToolbarMain() {
+fun ToolbarMain(
+    navController: NavHostController
+) {
     TopAppBar(
-        title = {
-            Text(
-                text = "MainActivity",
-                color = colorResource(id = android.R.color.white)
-            )
-        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        title = { Text(text = stringResource(id = R.string.app_name), color = Color.White) },
         backgroundColor = primaryVariantGreenLight,
+        actions = {
+            AppBarIcon(
+                MenuAction.Settings
+            ) {
+                navController.navigate(Screen.Settings.route)
+            }
+        }
     )
+}
+
+@Composable
+fun AppBarIcon(
+    menuAction: MenuAction,
+    function: () -> Unit
+) {
+    IconButton(
+        modifier = Modifier.background(Color.Transparent).padding(end = 10.dp),
+        onClick = {
+            function.invoke()
+        },
+    ) {
+        Icon(
+            painter = painterResource(id = menuAction.icon),
+            contentDescription = stringResource(id = menuAction.label),
+            tint = menuAction.color
+        )
+    }
 }

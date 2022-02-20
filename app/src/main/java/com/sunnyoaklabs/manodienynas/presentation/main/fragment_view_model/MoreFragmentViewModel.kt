@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -61,8 +62,10 @@ class MoreFragmentViewModel @Inject constructor(
                             holiday = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        Log.e("console log", "holiday: "+_holidayState.value.holiday)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "holiday: "+it.message)
                         _holidayState.value = holidayState.value.copy(
                             holiday = it.data ?: emptyList(),
                             isLoading = false
@@ -93,8 +96,10 @@ class MoreFragmentViewModel @Inject constructor(
                             parentMeetings = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        Log.e("console log", "parent meetings: "+_parentMeetingState.value.parentMeetings)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "parent meetings: "+it.message)
                         _parentMeetingState.value = parentMeetingState.value.copy(
                             parentMeetings = it.data ?: emptyList(),
                             isLoading = false
@@ -125,8 +130,10 @@ class MoreFragmentViewModel @Inject constructor(
                             schedule = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        Log.e("console log", "schedule: "+_scheduleState.value.schedule)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "schedule: "+it.message)
                         _scheduleState.value = scheduleState.value.copy(
                             schedule = it.data ?: emptyList(),
                             isLoading = false
@@ -147,19 +154,21 @@ class MoreFragmentViewModel @Inject constructor(
             getCalendar(payload).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _calendarState.value = _calendarState.value.copy(
+                        _calendarState.value = calendarState.value.copy(
                             calendar = it.data ?: emptyList(),
                             isLoading = true
                         )
                     }
                     is Resource.Success -> {
-                        _calendarState.value = _calendarState.value.copy(
+                        _calendarState.value = calendarState.value.copy(
                             calendar = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        Log.e("console log", "holiday: "+_calendarState.value.calendar)
                     }
                     is Resource.Error -> {
-                        _calendarState.value = _calendarState.value.copy(
+                        Log.e("console log", "calendar: "+it.message)
+                        _calendarState.value = calendarState.value.copy(
                             calendar = it.data ?: emptyList(),
                             isLoading = false
                         )
@@ -189,8 +198,10 @@ class MoreFragmentViewModel @Inject constructor(
                             calendar = it.data,
                             isLoading = false
                         )
+                        Log.e("console log", "calendar event: "+_calendarEventState.value.calendar)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "calendar event: "+it.message)
                         _calendarEventState.value = calendarEventState.value.copy(
                             calendar = it.data,
                             isLoading = false

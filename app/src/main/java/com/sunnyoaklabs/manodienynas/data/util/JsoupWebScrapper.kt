@@ -44,15 +44,13 @@ class JsoupWebScrapper() : WebScrapper {
             val createDate = try { elementEventItem.getElementsByClass("pull-right")[0].text() } catch (e: Exception) {""}
             val createDateText = try { elementEventItem.getElementsByClass("create-date")[0].text() } catch (e: Exception) {""}
             val eventHeader = try { elementEventItem.getElementsByClass("event-header")[0].text() } catch (e: Exception) {""}
-            val eventText = elementEventItem.getElementsByClass("event-text")[0].text()
-            /*
-            val eventText = if (title == "Atsiskaitymai") {
-                elementEventItem.getElementsByClass("event-text")[0].removeClass("btn btn-default pull-right")
-                    .text()
-            } else {
-                elementEventItem.getElementsByClass("event-text")[0].getElementsByTag("span").text()
+            val eventText = try {
+                val thingToRemove = elementEventItem.getElementsByClass("event-text")[0].getElementsByTag("a")[0].text()
+                val item = elementEventItem.getElementsByClass("event-text")[0].text()
+                item.substring(0, item.length-thingToRemove.length)
+            } catch (e: Exception) {
+                elementEventItem.getElementsByClass("event-text")[0].text()
             }
-            */
             val creatorName = elementEventItem.getElementsByTag("h4").text()
             eventsList.add(
                 Event(

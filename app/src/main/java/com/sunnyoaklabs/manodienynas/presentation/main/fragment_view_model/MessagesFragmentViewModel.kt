@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -59,8 +60,10 @@ class MessagesFragmentViewModel @Inject constructor(
                             messagesGotten = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        Log.e("console log", "MESSAGE GOTTEN: "+_messagesGottenState.value.messagesGotten)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "MESSAGE GOTTEN: "+it.message)
                         _messagesGottenState.value = messagesGottenState.value.copy(
                             messagesGotten = it.data ?: emptyList(),
                             isLoading = false
@@ -91,8 +94,10 @@ class MessagesFragmentViewModel @Inject constructor(
                             messagesSent = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        Log.e("console log", "MESSAGE SENT: "+_messagesSentState.value.messagesSent)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "MESSAGE SENT: "+it.message)
                         _messagesSentState.value = messagesSentState.value.copy(
                             messagesSent = it.data ?: emptyList(),
                             isLoading = false
@@ -123,8 +128,10 @@ class MessagesFragmentViewModel @Inject constructor(
                             messagesStarred = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        Log.e("console log", "MESSAGE STARRED: "+_messagesStarredState.value.messagesStarred)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "MESSAGE STARRED: "+it.message)
                         _messagesStarredState.value = messagesStarredState.value.copy(
                             messagesStarred = it.data ?: emptyList(),
                             isLoading = false
@@ -155,8 +162,10 @@ class MessagesFragmentViewModel @Inject constructor(
                             messagesDeleted = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        Log.e("console log", "MESSAGE DELETED: "+_messagesDeletedState.value.messagesDeleted)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "MESSAGE DELETED: "+it.message)
                         _messagesDeletedState.value = messagesDeletedState.value.copy(
                             messagesDeleted = it.data ?: emptyList(),
                             isLoading = false
@@ -187,8 +196,10 @@ class MessagesFragmentViewModel @Inject constructor(
                             messageIndividual = it.data,
                             isLoading = false
                         )
+                        Log.e("console log", "MESSAGE INDIVIDUAL: "+_messageIndividualState.value.messageIndividual)
                     }
                     is Resource.Error -> {
+                        Log.e("console log", "MESSAGE INDIVIDUAL: "+it.message)
                         _messageIndividualState.value = messageIndividualState.value.copy(
                             messageIndividual = it.data,
                             isLoading = false
