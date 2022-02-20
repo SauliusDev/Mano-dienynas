@@ -64,6 +64,14 @@ class RepositoryImpl(
             val response = api.getEvents()
             val person = converter.toPerson(response)
             if (person.name.isNotBlank()) {
+                if (getSettings().selectedSchool == null) {
+                    val settings = Settings(
+                        getSettings().keepSignedIn,
+                        person.schoolsNames[0]
+                    )
+                    dataSource.deleteSettings()
+                    dataSource.insertSettings(settings)
+                }
                 dataSource.deletePerson()
                 dataSource.insertPerson(person)
                 val eventsApi = converter.toEvents(response)

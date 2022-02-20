@@ -17,7 +17,7 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreF
 @Composable
 fun MoreFragment() {
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

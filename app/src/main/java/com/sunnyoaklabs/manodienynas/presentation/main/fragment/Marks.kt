@@ -17,10 +17,10 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.Marks
 @Composable
 fun MarksFragment() {
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Marks fragment")
+        Text(text = "Marks fragment", color = Color.Black)
     }
 }

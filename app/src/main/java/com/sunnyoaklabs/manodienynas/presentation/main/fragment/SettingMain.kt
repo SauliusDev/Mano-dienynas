@@ -269,6 +269,7 @@ fun ItemSchoolSelected(
                     ) {
                         Text(
                             text = AnnotatedString(settings.selectedSchool?.schoolName ?: ""),
+                            color = Color.White
                         )
                         Row {
                             Text(

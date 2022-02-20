@@ -17,10 +17,10 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.Messa
 @Composable
 fun MessagesFragment() {
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Messages fragment")
+        Text(text = "Messages fragment", color = Color.Black)
     }
 }
