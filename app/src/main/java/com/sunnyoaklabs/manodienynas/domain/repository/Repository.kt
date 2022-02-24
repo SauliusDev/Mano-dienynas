@@ -1,10 +1,7 @@
 package com.sunnyoaklabs.manodienynas.domain.repository
 
 import com.sunnyoaklabs.manodienynas.core.util.Resource
-import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
+import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import kotlinx.coroutines.flow.Flow
 
@@ -17,6 +14,8 @@ interface Repository {
     suspend fun getCredentials(): Credentials
 
     suspend fun getPerson(): Person
+
+    fun getEventsPage(): Flow<Resource<List<Event>>>
 
     fun getEvents(): Flow<Resource<List<Event>>>
 

@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.domain.model
 
 data class Event(
+    val event_id: String,
     val title: String,
     val pupilInfo: String,
     val createDate: String,

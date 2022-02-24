@@ -98,12 +98,14 @@ fun ItemKeepSignedIn(
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val isChecked = remember { mutableStateOf(viewModel.keepSignedIn) }
                 Checkbox(
-                    checked = viewModel.keepSignedIn,
+                    checked = isChecked.value,
                     onCheckedChange = {
                         viewModel.deleteKeepSignedIn()
-                        viewModel.insertKeepSignedIn(!viewModel.keepSignedIn)
+                        viewModel.insertKeepSignedIn(!isChecked.value)
                         viewModel.getKeepSignedIn()
+                        isChecked.value = !isChecked.value
                     }
                 )
                 Text(

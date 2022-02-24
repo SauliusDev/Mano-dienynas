@@ -56,6 +56,28 @@ class RepositoryImpl(
         return converter.toPersonFromEntity(dataSource.getPerson())
     }
 
+    override fun getEventsPage(): Flow<Resource<List<Event>>> = flow {
+        emit(Resource.Loading())
+        val eventsLocal = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
+        try {
+            val shownEvents = mutableListOf<String>()
+            for (i in eventsLocal.indices) {
+                shownEvents.add(eventsLocal[i].event_id)
+            }
+            val postEvents = PostEvents(eventsLocal.size, 0, shownEvents)
+            val response = api.postEvents(postEvents)
+            val eventsApi = converter.toEvents(response)
+            eventsApi.forEach { dataSource.insertEvent(it) }
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
+        }
+        var newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
+        newEvents = newEvents.subList(eventsLocal.size, newEvents.size)
+        emit(Resource.Success(newEvents))
+    }
+
     override fun getEvents(): Flow<Resource<List<Event>>> = flow {
         emit(Resource.Loading())
         val eventsLocal = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }

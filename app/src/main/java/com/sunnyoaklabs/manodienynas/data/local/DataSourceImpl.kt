@@ -99,6 +99,7 @@ class DataSourceImpl @Inject constructor(
         return withContext(dispatchers.io) {
             db.eventsEntityQueries.insertEvent(
                 null,
+                event.event_id,
                 event.title,
                 event.pupilInfo,
                 event.createDate,

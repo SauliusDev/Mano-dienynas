@@ -33,9 +33,10 @@ object AppModule {
     @Singleton
     fun provideEventsFragmentViewModel(
         getEvents: GetEvents,
-        getTerm: GetTerm
+        getTerm: GetTerm,
+        getEventsPage: GetEventsPage
     ): EventsFragmentViewModel {
-        return EventsFragmentViewModel(getEvents, getTerm)
+        return EventsFragmentViewModel(getEvents, getTerm, getEventsPage)
     }
 
     @Provides
@@ -169,6 +170,12 @@ object AppModule {
     @Singleton
     fun provideGetEventsUseCase(repository: Repository): GetEvents {
         return GetEvents(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetEventsPageUseCase(repository: Repository): GetEventsPage {
+        return GetEventsPage(repository)
     }
 
     @Provides

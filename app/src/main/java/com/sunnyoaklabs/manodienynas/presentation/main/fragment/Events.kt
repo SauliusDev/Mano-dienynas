@@ -4,13 +4,16 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Center
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,12 +21,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.ATTENDANCE_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CONTROL_WORK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.Event
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
@@ -31,11 +41,14 @@ import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 import kotlinx.coroutines.flow.collect
 
+fun LazyListState.isScrolledToEnd() = layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
+
 @Composable
 fun EventsFragment(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val eventsFragmentViewModel = mainViewModel.eventsFragmentViewModel
     val events = mainViewModel.eventsFragmentViewModel.eventState.value.events
     val terms = mainViewModel.eventsFragmentViewModel.termState.value.terms
 
@@ -45,12 +58,20 @@ fun EventsFragment(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Center,
     ) {
+        val scrollState = rememberLazyListState()
+        val lastIndex = events.lastIndex
+        // observer when reached end of list
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(events) { event ->
+            itemsIndexed(events) { i, event  ->
+                if (lastIndex == i) {
+                    if (!eventsFragmentViewModel.eventState.value.isEveryEventLoaded) {
+                        eventsFragmentViewModel.loadMoreEvents()
+                    }
+                }
                 EventCard(event = event)
             }
         }
@@ -111,17 +132,27 @@ fun EventCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row(
+                        modifier = Modifier.weight(2.5f),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         setIcon(event = event)
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
-                            Text(text = event.title, fontWeight = FontWeight.Bold)
-                            Text(text = event.pupilInfo, fontSize = 12.sp)
-                            Text(text = event.createDateText, fontSize = 12.sp)
+                            if (event.title.isNotBlank()) {
+                                Text(text = event.title, fontWeight = FontWeight.Bold)
+                            }
+                            if (event.pupilInfo.isNotBlank()) {
+                                Text(text = event.pupilInfo, fontSize = 12.sp)
+                            }
+                            if (event.createDateText.isNotBlank()) {
+                                Text(text = event.createDateText, fontSize = 12.sp)
+                            }
                         }
+                        Spacer(modifier = Modifier
+                            .fillMaxHeight()
+                            .width(10.dp))
                     }
-                    Text(text = event.createDate)
+                    Text(modifier = Modifier.weight(1f), text = event.createDate, maxLines = 1, textAlign = TextAlign.End)
                 }
                 Spacer(modifier = Modifier
                     .height(8.dp)
@@ -148,7 +179,17 @@ fun EventCard(
                     Spacer(modifier = Modifier
                         .height(8.dp)
                         .fillMaxWidth())
-                    Text(text = event.eventText)
+                    val textFontSize =  if (event.title == MARK_EVENT_TYPE) 20.sp
+                    else 12.sp
+                    val textFontWeight =  if (event.title == MARK_EVENT_TYPE) FontWeight.Bold
+                    else FontWeight.Normal
+                    SelectionContainer() {
+                        Text(
+                            text = AnnotatedString(event.eventText),
+                            fontSize = textFontSize,
+                            fontWeight = textFontWeight
+                        )
+                    }
                     Spacer(modifier = Modifier
                         .height(8.dp)
                         .fillMaxWidth())
@@ -160,16 +201,16 @@ fun EventCard(
 
 private fun getEventColor(event: Event): Color {
     return when (event.title) {
-        EventTypes.controlWork -> {
+        CONTROL_WORK_EVENT_TYPE -> {
             accentYellowDark
         }
-        EventTypes.homeWork -> {
+        HOMEWORK_EVENT_TYPE -> {
             accentBlueLight
         }
-        EventTypes.mark -> {
+        MARK_EVENT_TYPE -> {
             accentRedDark
         }
-        EventTypes.attendance -> {
+        ATTENDANCE_EVENT_TYPE -> {
             accentRed
         }
         else -> {
@@ -181,7 +222,7 @@ private fun getEventColor(event: Event): Color {
 @Composable
 private fun setIcon(event: Event) {
     when (event.title) {
-        EventTypes.controlWork -> {
+        CONTROL_WORK_EVENT_TYPE -> {
             Icon(
                 painter = painterResource(id = R.drawable.ic_event_control_work),
                 contentDescription = stringResource(id = R.string.event_control_work),
@@ -189,7 +230,7 @@ private fun setIcon(event: Event) {
                 modifier = Modifier.size(30.dp)
             )
         }
-        EventTypes.homeWork -> {
+        HOMEWORK_EVENT_TYPE -> {
             Icon(
                 painter = painterResource(id = R.drawable.ic_event_home_work),
                 contentDescription = stringResource(id = R.string.event_home_work),
@@ -197,7 +238,7 @@ private fun setIcon(event: Event) {
                 modifier = Modifier.size(30.dp)
             )
         }
-        EventTypes.mark -> {
+        MARK_EVENT_TYPE -> {
             Icon(
                 painter = painterResource(id = R.drawable.ic_event_mark),
                 contentDescription = stringResource(id = R.string.event_mark),
@@ -205,7 +246,7 @@ private fun setIcon(event: Event) {
                 modifier = Modifier.size(30.dp)
             )
         }
-        EventTypes.attendance -> {
+        ATTENDANCE_EVENT_TYPE -> {
             Icon(
                 painter = painterResource(id = R.drawable.ic_event_attendance),
                 contentDescription = stringResource(id = R.string.event_attendance),
@@ -222,11 +263,4 @@ private fun setIcon(event: Event) {
             )
         }
     }
-}
-
-object EventTypes {
-    const val controlWork = "Atsiskaitymai"
-    const val homeWork = "Namų darbai"
-    const val mark = "Pažimys"
-    const val attendance = "Lankomumas"
 }

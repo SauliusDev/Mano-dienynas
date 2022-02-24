@@ -9,6 +9,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CLASS_WORK_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CONTROL_WORK_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CONTROL_WORK_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.EVENTS_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.EVENTS_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOLIDAY_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOME_WORK_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOME_WORK_POST
@@ -52,6 +53,19 @@ class BackendApiImpl(
 
     override suspend fun getChangeRole(schoolId: String): String {
         return client.get { url(CHANGE_ROLE_GET.replace("{school_id}", schoolId)) }
+    }
+
+    override suspend fun postEvents(postEvents: PostEvents): String {
+        return client.post {
+            url(EVENTS_POST)
+            body = FormDataContent(Parameters.build {
+                append("evCount[]", postEvents.evCount1.toString())
+                append("evCount[]", postEvents.evCount2.toString())
+                for (i in postEvents.shownEvents.indices) {
+                    append("shownEvents[]", postEvents.shownEvents[i])
+                }
+            })
+        }
     }
 
     override suspend fun getEvents(): String {

@@ -2,6 +2,7 @@ package com.sunnyoaklabs.manodienynas.presentation.login.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -57,7 +58,9 @@ fun LoginFragment(
     var isLoading by remember { mutableStateOf(false) }
 
     ConstraintLayout(
-        Modifier.fillMaxWidth().fillMaxHeight()
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
     ) {
         val (button) = createRefs()
 
@@ -201,17 +204,19 @@ fun CheckboxItem(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val isChecked = remember { mutableStateOf(viewModel.keepSignedIn) }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Checkbox(
-            checked = viewModel.keepSignedIn,
+            checked = isChecked.value,
             onCheckedChange = {
                 viewModel.deleteKeepSignedIn()
-                viewModel.insertKeepSignedIn(!viewModel.keepSignedIn)
+                viewModel.insertKeepSignedIn(it)
                 viewModel.getKeepSignedIn()
+                isChecked.value = it
             },
             enabled = !isLoading
         )

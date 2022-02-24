@@ -18,6 +18,8 @@ interface BackendApi {
 
     suspend fun getChangeRole(schoolId: String): String
 
+    suspend fun postEvents(postEvents: PostEvents): String
+
     suspend fun getEvents(): String
 
     suspend fun getMarks(): String

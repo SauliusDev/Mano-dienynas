@@ -105,25 +105,27 @@ class MainActivity : ComponentActivity() {
                         BottomNavigationBar(navController, bottomNavigationItems)
                     },
                     scaffoldState = scaffoldState
-                ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Screen.Events.route
-                    ) {
-                        composable(Screen.Events.route) {
-                            EventsFragment(mainViewModel)
-                        }
-                        composable(Screen.Marks.route) {
-                            MarksFragment()
-                        }
-                        composable(Screen.Messages.route) {
-                            MessagesFragment()
-                        }
-                        composable(Screen.More.route) {
-                            MoreFragment()
-                        }
-                        composable(Screen.Settings.route) {
-                            SettingsMainFragment(mainViewModel)
+                ) { innerPadding ->
+                    Box(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, innerPadding.calculateBottomPadding())) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screen.Events.route
+                        ) {
+                            composable(Screen.Events.route) {
+                                EventsFragment(mainViewModel)
+                            }
+                            composable(Screen.Marks.route) {
+                                MarksFragment()
+                            }
+                            composable(Screen.Messages.route) {
+                                MessagesFragment()
+                            }
+                            composable(Screen.More.route) {
+                                MoreFragment()
+                            }
+                            composable(Screen.Settings.route) {
+                                SettingsMainFragment(mainViewModel)
+                            }
                         }
                     }
                 }

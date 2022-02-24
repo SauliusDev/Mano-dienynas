@@ -1,5 +1,6 @@
 CREATE TABLE eventEntity (
     id INTEGER NOT NULL PRIMARY KEY,
+    event_id TEXT,
     title TEXT,
     pupilInfo TEXT,
     createDate TEXT,
@@ -21,7 +22,7 @@ FROM eventEntity;
 insertEvent:
 INSERT OR REPLACE
 INTO eventEntity
-VALUES(?, ?, ?, ?, ?, ?, ?, ?);
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteEventById:
 DELETE FROM eventEntity

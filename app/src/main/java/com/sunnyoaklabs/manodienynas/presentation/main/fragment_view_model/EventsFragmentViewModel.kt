@@ -16,6 +16,7 @@ import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
+import com.sunnyoaklabs.manodienynas.domain.use_case.GetEventsPage
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetTerm
 import com.sunnyoaklabs.manodienynas.presentation.main.state.EventState
 import com.sunnyoaklabs.manodienynas.presentation.main.state.TermState
@@ -31,6 +32,7 @@ import javax.inject.Inject
 class EventsFragmentViewModel @Inject constructor(
     private val getEvents: GetEvents,
     private val getTerm: GetTerm,
+    private val getEventsPage: GetEventsPage,
 ) : ViewModel() {
 
     private val _eventState = mutableStateOf(EventState())
@@ -94,6 +96,37 @@ class EventsFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _termState.value = termState.value.copy(
                             terms = it.data ?: emptyList(),
+                            isLoading = false
+                        )
+                        _eventFlow.emit(
+                            UIEvent.ShowSnackbar(
+                                it.message ?: Errors.UNKNOWN_ERROR
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun loadMoreEvents() {
+        viewModelScope.launch {
+            getEventsPage().collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        // todo show progress bar
+                    }
+                    is Resource.Success -> {
+                        val newList = _eventState.value.events+(it.data ?: emptyList())
+                        _eventState.value = eventState.value.copy(
+                            events = newList,
+                            isLoading = false,
+                            isEveryEventLoaded = newList.size%10 != 0
+                        )
+                    }
+                    is Resource.Error -> {
+                        _eventState.value = eventState.value.copy(
+                            events = it.data ?: emptyList(),
                             isLoading = false
                         )
                         _eventFlow.emit(

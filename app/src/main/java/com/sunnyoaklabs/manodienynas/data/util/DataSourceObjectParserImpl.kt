@@ -33,6 +33,7 @@ class DataSourceObjectParserImpl(
 
     override fun toEventFromEntity(eventEntity: EventEntity?): Event {
         return Event(
+            eventEntity?.event_id ?: "",
             eventEntity?.title ?: "",
             eventEntity?.pupilInfo ?: "",
             eventEntity?.createDate ?: "",

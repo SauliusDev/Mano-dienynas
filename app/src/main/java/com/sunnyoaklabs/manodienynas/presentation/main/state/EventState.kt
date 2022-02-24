@@ -4,5 +4,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Event
 
 data class EventState(
     val events: List<Event> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isEveryEventLoaded: Boolean = false
 )

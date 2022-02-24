@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
 import android.util.Log
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import org.jsoup.Jsoup
 
@@ -38,22 +39,37 @@ class JsoupWebScrapper() : WebScrapper {
             "panel panel-default event-holder"
         )
         for (i in elementEventItems.indices) {
+            var isAnnouncement = false
             val elementEventItem = elementEventItems[i]
-            val title = try { elementEventItem.getElementsByClass("trigger")[0].text() } catch (e: Exception) {""}
+            val eventId = elementEventItem.attr("id").removePrefix("event_")
+            val title = try { elementEventItem.getElementsByClass("trigger")[0].text() }
+            catch (e: Exception) {
+                isAnnouncement = true
+                elementEventItem.getElementsByClass("creator-name")[0].text()
+            }
             val pupilInfo = try { elementEventItem.getElementsByClass("pupilInfo")[0].text() } catch (e: Exception) {""}
-            val createDate = try { elementEventItem.getElementsByClass("pull-right")[0].text() } catch (e: Exception) {""}
+            val createDate = try {
+                if (!isAnnouncement) elementEventItem.getElementsByClass("pull-right")[0].text()
+                else ""
+            } catch (e: Exception) { "" }
             val createDateText = try { elementEventItem.getElementsByClass("create-date")[0].text() } catch (e: Exception) {""}
             val eventHeader = try { elementEventItem.getElementsByClass("event-header")[0].text() } catch (e: Exception) {""}
             val eventText = try {
-                val thingToRemove = elementEventItem.getElementsByClass("event-text")[0].getElementsByTag("a")[0].text()
-                val item = elementEventItem.getElementsByClass("event-text")[0].text()
-                item.substring(0, item.length-thingToRemove.length)
+                if (title == MARK_EVENT_TYPE) {
+                    elementEventItem.getElementsByClass("event-text")[0].getElementsByTag("span").text()
+                } else {
+                    val thingToRemove = elementEventItem.getElementsByClass("event-text")[0].getElementsByTag("a")[0].text()
+                    val item = elementEventItem.getElementsByClass("event-text")[0].text()
+                    if (!isAnnouncement) item.substring(0, item.length-thingToRemove.length)
+                    else item
+                }
             } catch (e: Exception) {
                 elementEventItem.getElementsByClass("event-text")[0].text()
             }
             val creatorName = elementEventItem.getElementsByTag("h4").text()
             eventsList.add(
                 Event(
+                    eventId,
                     title,
                     pupilInfo,
                     createDate,
