@@ -94,7 +94,9 @@ fun TermsCard(
             modifier = modifier
                 .fillMaxWidth()
         ) {
-
+            // TODO
+            //  -all mark average
+            //  -lazyRow of term marks of subjects
         }
     }
 }

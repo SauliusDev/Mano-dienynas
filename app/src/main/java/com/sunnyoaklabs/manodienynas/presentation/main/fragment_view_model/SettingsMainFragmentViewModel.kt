@@ -1,16 +1,22 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
+import com.sunnyoaklabs.manodienynas.domain.use_case.GetSettings
+import com.sunnyoaklabs.manodienynas.presentation.main.state.SettingsState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,16 +24,19 @@ class SettingsMainFragmentViewModel @Inject constructor(
     private val repository: Repository,
     private val backendApi: BackendApi,
     private val dataSource: DataSource,
+    private val getSettings: GetSettings,
 ) : ViewModel() {
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private val _settingsState = mutableStateOf(Settings())
-    val settingsState: State<Settings> = _settingsState
+    private val _settingsState = mutableStateOf(SettingsState())
+    val settingsState: State<SettingsState> = _settingsState
 
     init {
-        getSetting()
+        viewModelScope.launch {
+            getSetting()
+        }
     }
 
     fun logout() {
@@ -58,21 +67,48 @@ class SettingsMainFragmentViewModel @Inject constructor(
         dataSource.deleteAllCalendarEvent()
     }
 
-    fun getSetting() {
-        viewModelScope.launch {
-            _settingsState.value = repository.getSettings().copy()
+    fun setSettingsStateToLoading() {
+        _settingsState.value = settingsState.value.copy(
+            settings = null,
+            isLoading = true
+        )
+    }
+
+     suspend fun getSetting() {
+        getSettings().collect {
+            when(it) {
+                is Resource.Loading -> {
+                    _settingsState.value = settingsState.value.copy(
+                        settings = null,
+                        isLoading = true
+                    )
+                }
+                is Resource.Success -> {
+                    _settingsState.value = settingsState.value.copy(
+                        settings = it.data,
+                        isLoading = false
+                    )
+                }
+                else -> {}
+            }
         }
     }
 
-    fun deleteSetting() {
+    private suspend fun deleteSetting() {
         viewModelScope.launch {
             dataSource.deleteSettings()
         }
     }
 
-    fun insertSettings(settings: Settings) {
-        viewModelScope.launch {
-            dataSource.insertSettings(settings)
+    private suspend fun insertSettings(settings: Settings) {
+        dataSource.insertSettings(settings)
+    }
+
+    fun updateSettings(settings: Settings): Job {
+        return viewModelScope.launch {
+            deleteSetting()
+            insertSettings(settings)
+            getSetting()
         }
     }
 }

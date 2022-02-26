@@ -12,7 +12,7 @@ object HttpRoutes {
      * 1-2365-23/1 - saules
      * 1-2158-23/1 - muzikos
      * **/
-    const val CHANGE_ROLE_GET = "$BASE_URL/1/lt/action/user/change_role/{school_id}/1"
+    const val CHANGE_ROLE_GET = "$BASE_URL/1/lt/action/user/change_role/1-{school_id}-23/1"
 
     const val EVENTS_POST = "$BASE_URL/event/list"
     const val EVENTS_GET = "$BASE_URL/1/lt/page/sf/resolve_post/event/list"

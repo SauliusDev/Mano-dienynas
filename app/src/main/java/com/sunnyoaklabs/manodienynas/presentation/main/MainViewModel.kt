@@ -28,9 +28,11 @@ import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
+import com.sunnyoaklabs.manodienynas.domain.use_case.GetSettings
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.EventState
 import com.sunnyoaklabs.manodienynas.presentation.main.state.PersonState
+import com.sunnyoaklabs.manodienynas.presentation.main.state.SettingsState
 import com.sunnyoaklabs.manodienynas.presentation.main.state.TermState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -47,6 +49,7 @@ class MainViewModel @Inject constructor(
     private val backendApi: BackendApi,
     private val firebaseCrashlytics: FirebaseCrashlytics,
     private val getSessionCookies: GetSessionCookies,
+    private val getSettings: GetSettings,
     val eventsFragmentViewModel: EventsFragmentViewModel,
     val marksFragmentViewModel: MarksFragmentViewModel,
     val messagesFragmentViewModel: MessagesFragmentViewModel,
@@ -79,8 +82,7 @@ class MainViewModel @Inject constructor(
                                 triedGettingSession = true
                             )
                         )
-                        val changeRoleJob = changeRole()
-                        changeRoleJob.join()
+                        changeRole().join()
                         initData()
                     }
                     is Resource.Error -> {
@@ -106,11 +108,19 @@ class MainViewModel @Inject constructor(
     }
 
     private fun changeRole(): Job {
-        return CoroutineScope(IO).launch{
-            val settings = repository.getSettings()
-            settings.selectedSchool?.let {
-                backendApi.getChangeRole(it.schoolId)
+        return viewModelScope.launch{
+            getSettings().collect {
+                when(it) {
+                    is Resource.Success -> {
+                        it.data?.selectedSchool?.let { selectedSchool ->
+                            Log.e("console log", ": $selectedSchool | ${selectedSchool.schoolId}")
+                            backendApi.getChangeRole(selectedSchool.schoolId)
+                        }
+                    }
+                    else -> {}
+                }
             }
+            Log.e("console log", "2: ")
         }
     }
 
@@ -119,28 +129,34 @@ class MainViewModel @Inject constructor(
             // TODO figure out if they run async because they need to run ASYNC!!!
             val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
             initPerson(eventsJob)
-            // eventsFragmentViewModel.initTerm()
+            eventsFragmentViewModel.initTerm()
             // all other initializations ..................
         }
     }
 
     private fun initPerson(eventsJob: Job) {
         viewModelScope.launch {
+            // setting loading states
             _personState.value = personState.value.copy(
                 person = null,
                 isLoading = true
             )
+            settingsMainFragmentViewModel.setSettingsStateToLoading()
+            // joining coroutines
             eventsJob.join()
-            settingsMainFragmentViewModel.getSetting()
-            _personState.value = personState.value.copy(
-                person = getPerson(),
-                isLoading = false
-            )
+            // updating variables
+            viewModelScope.launch {
+                settingsMainFragmentViewModel.getSetting()
+            }
+            getPerson()
         }
     }
 
-    private suspend fun getPerson(): Person {
-        return repository.getPerson()
+    private suspend fun getPerson() {
+        _personState.value = personState.value.copy(
+            person = repository.getPerson(),
+            isLoading = false
+        )
     }
 
     fun getAppDescription(): String {

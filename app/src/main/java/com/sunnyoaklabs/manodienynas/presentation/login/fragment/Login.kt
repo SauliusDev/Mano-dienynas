@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 fun LoginFragment(
     navigator: DestinationsNavigator,
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
     context: Context = LocalContext.current
 ) {
     /* TODO only for testing */
@@ -127,23 +127,18 @@ fun LoginFragment(
         )
         CheckboxItem(
             isLoading,
-            Modifier
-                .fillMaxWidth()
+            loginViewModel
         )
         Button(
             onClick = {
                 if (username.isNotEmpty() && password.isNotEmpty()) {
                     isLoading = true
                     CoroutineScope(IO).launch {
-                        viewModel.deleteCredentials()
-                        viewModel.insertCredentials(Credentials(username, password))
-                        viewModel.getCredentials()
-                        viewModel.credentials.collect {
-                            val intent = Intent(context, MainActivity::class.java)
-                                .putExtra("initial", "Login from login activity")
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            context.startActivity(intent)
-                        }
+                        loginViewModel.updateCredentials(Credentials(username, password)).join()
+                        val intent = Intent(context, MainActivity::class.java)
+                            .putExtra("initial", "Login from login activity")
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        context.startActivity(intent)
                     }
                 }
             },
@@ -201,22 +196,20 @@ fun SettingButton(
 @Composable
 fun CheckboxItem(
     isLoading: Boolean,
+    loginViewModel: LoginViewModel,
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    val isChecked = remember { mutableStateOf(viewModel.keepSignedIn) }
     Row(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Checkbox(
-            checked = isChecked.value,
+            checked = loginViewModel.keepSignedIn.settings?.keepSignedIn ?: false,
             onCheckedChange = {
-                viewModel.deleteKeepSignedIn()
-                viewModel.insertKeepSignedIn(it)
-                viewModel.getKeepSignedIn()
-                isChecked.value = it
+                if (!loginViewModel.keepSignedIn.isLoading) {
+                    loginViewModel.updateKeepSignedIn(it)
+                }
             },
             enabled = !isLoading
         )

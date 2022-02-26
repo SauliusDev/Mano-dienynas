@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    suspend fun getSettings(): Settings
+    fun getSettings(): Flow<Resource<Settings>>
 
     suspend fun getSessionCookies(): Flow<Resource<String>>
 

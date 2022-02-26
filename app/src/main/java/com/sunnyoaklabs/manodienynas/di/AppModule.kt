@@ -162,6 +162,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideGetSettingsUseCase(repository: Repository): GetSettings {
+        return GetSettings(repository)
+    }
+
+    @Provides
+    @Singleton
     fun provideGetSessionCookiesUseCase(repository: Repository): GetSessionCookies {
         return GetSessionCookies(repository)
     }

@@ -20,6 +20,7 @@ import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
+import com.sunnyoaklabs.manodienynas.domain.use_case.GetSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -31,7 +32,8 @@ class SplashViewModel @Inject constructor(
     private val repository: Repository,
     private val getSessionCookies: GetSessionCookies,
     private val dataSource: DataSource,
-    private val firebaseCrashlytics: FirebaseCrashlytics
+    private val firebaseCrashlytics: FirebaseCrashlytics,
+    private val getSettings: GetSettings
 ) : AndroidViewModel(app) {
 
     private var _keepSignedIn = false
@@ -63,6 +65,9 @@ class SplashViewModel @Inject constructor(
             //  this.cancel()
             //  yield()
             getKeepSignedIn()
+            /** if user is not logging in for the first time and keep signed in is false
+             *  -> user is directed to login activity
+             * **/
             if (!_keepSignedIn && !isInitialLogin) {
                 _userState.emit(UserState(
                     isLoading = false,
@@ -138,7 +143,17 @@ class SplashViewModel @Inject constructor(
     }
 
     private suspend fun getKeepSignedIn() {
-        _keepSignedIn = repository.getSettings().keepSignedIn
+        getSettings().collect {
+            when(it) {
+                is Resource.Success -> {
+                    it.data?.let { settings ->
+                        _keepSignedIn = settings.keepSignedIn
+                        Log.e("console log", "gotten: $_keepSignedIn")
+                    }
+                }
+                else -> {}
+            }
+        }
     }
 
     private suspend fun getCredentials() {

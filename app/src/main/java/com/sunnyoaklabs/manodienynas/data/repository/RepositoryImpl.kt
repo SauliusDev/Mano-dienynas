@@ -13,6 +13,7 @@ import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import java.lang.Exception
@@ -23,9 +24,10 @@ class RepositoryImpl(
     private val converter: Converter
 ) : Repository {
 
-    override suspend fun getSettings(): Settings {
+    override fun getSettings(): Flow<Resource<Settings>> = flow {
+        emit(Resource.Loading())
         val settings = dataSource.getSettings()
-        return converter.toSettingsFromEntity(settings)
+        emit(Resource.Success(converter.toSettingsFromEntity(settings)))
     }
 
     override suspend fun getSessionCookies(): Flow<Resource<String>> = flow {
@@ -86,9 +88,10 @@ class RepositoryImpl(
             val response = api.getEvents()
             val person = converter.toPerson(response)
             if (person.name.isNotBlank()) {
-                if (getSettings().selectedSchool == null) {
+                val settingsLocal = converter.toSettingsFromEntity(dataSource.getSettings())
+                if (settingsLocal.selectedSchool == null) {
                     val settings = Settings(
-                        getSettings().keepSignedIn,
+                        settingsLocal.keepSignedIn,
                         person.schoolsNames[0]
                     )
                     dataSource.deleteSettings()
@@ -314,6 +317,7 @@ class RepositoryImpl(
             if (person.name.isNotBlank()) {
                 val termApi = converter.toTerm(response)
                 dataSource.deleteAllTerm()
+                Log.e("console log", "terms lmao: $termApi")
                 termApi.forEach { dataSource.insertTerm(it) }
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))

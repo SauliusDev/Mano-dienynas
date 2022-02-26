@@ -41,6 +41,9 @@ import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.SettingsMainFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsMainFragment(
@@ -67,7 +70,6 @@ fun ItemKeepSignedIn(
     settingsMainFragmentViewModel: SettingsMainFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
-    val settings = settingsMainFragmentViewModel.settingsState.value
     Card(
         modifier = Modifier.padding(
             top = LocalSpacing.current.medium,
@@ -80,14 +82,12 @@ fun ItemKeepSignedIn(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable {
-                    settingsMainFragmentViewModel.deleteSetting()
-                    settingsMainFragmentViewModel.insertSettings(
+                    settingsMainFragmentViewModel.updateSettings(
                         Settings(
-                            !settings.keepSignedIn,
-                            settings.selectedSchool
+                            !(settingsMainFragmentViewModel.settingsState.value.settings?.keepSignedIn ?: false),
+                            settingsMainFragmentViewModel.settingsState.value.settings?.selectedSchool
                         )
                     )
-                    settingsMainFragmentViewModel.getSetting()
                 }
         ) {
             Row(
@@ -98,16 +98,14 @@ fun ItemKeepSignedIn(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = settings.keepSignedIn,
+                    checked = settingsMainFragmentViewModel.settingsState.value.settings?.keepSignedIn ?: false,
                     onCheckedChange = {
-                        settingsMainFragmentViewModel.deleteSetting()
-                        settingsMainFragmentViewModel.insertSettings(
+                        settingsMainFragmentViewModel.updateSettings(
                             Settings(
-                                !settings.keepSignedIn,
-                                settings.selectedSchool
+                                !(settingsMainFragmentViewModel.settingsState.value.settings?.keepSignedIn ?: false),
+                                settingsMainFragmentViewModel.settingsState.value.settings?.selectedSchool
                             )
                         )
-                        settingsMainFragmentViewModel.getSetting()
                     }
                 )
                 Text(
@@ -226,10 +224,11 @@ fun ItemAppLicense(
 fun ItemSchoolSelected(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
+    settingsMainFragmentViewModel: SettingsMainFragmentViewModel = mainViewModel.settingsMainFragmentViewModel
 ) {
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val person = mainViewModel.personState.value.person
-    val settings = mainViewModel.settingsMainFragmentViewModel.settingsState.value
+    val settings = settingsMainFragmentViewModel.settingsState.value.settings
 
     Card(
         modifier = Modifier.padding(
@@ -263,17 +262,17 @@ fun ItemSchoolSelected(
                         .width(30.dp)
                         .height(30.dp)
                 )
-                AnimatedVisibility(visible = !mainViewModel.personState.value.isLoading) {
+                AnimatedVisibility(visible = !mainViewModel.personState.value.isLoading && !settingsMainFragmentViewModel.settingsState.value.isLoading) {
                     Column(
                         modifier = Modifier.padding(start = LocalSpacing.current.small)
                     ) {
                         Text(
-                            text = AnnotatedString(settings.selectedSchool?.schoolName ?: ""),
-                            color = Color.White
+                            text = AnnotatedString(settings?.selectedSchool?.schoolName ?: ""),
+                            color = Color.Black
                         )
-                        Row {
+                        Row() {
                             Text(
-                                text = AnnotatedString(settings.selectedSchool?.role ?: ""),
+                                text = AnnotatedString(settings?.selectedSchool?.role ?: ""),
                                 color = Color.Gray
                             )
                             Spacer(
@@ -296,7 +295,7 @@ fun ItemSchoolSelected(
                     setShowDialog
                 )
             }
-            if (mainViewModel.personState.value.isLoading) {
+            if (mainViewModel.personState.value.isLoading || settingsMainFragmentViewModel.settingsState.value.isLoading) {
                 CircularProgressIndicator(modifier = Modifier
                     .align(Alignment.Center)
                     .size(30.dp))
@@ -418,19 +417,20 @@ fun ChangeRoleListItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    val settings = settingsMainFragmentViewModel.settingsState.value
-                    if (schoolInfo.schoolId != settings.selectedSchool?.schoolId) {
-                        settingsMainFragmentViewModel.deleteSetting()
-                        settingsMainFragmentViewModel.insertSettings(
-                            Settings(
-                                settings.keepSignedIn,
-                                schoolInfo
-                            )
-                        )
-                        setShowDialog(false)
-                        val intent = Intent(context, MainActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        context.startActivity(intent)
+                    val settings = settingsMainFragmentViewModel.settingsState.value.settings
+                    if (schoolInfo.schoolId != settings?.selectedSchool?.schoolId) {
+                        CoroutineScope(IO).launch {
+                            settingsMainFragmentViewModel.updateSettings(
+                                Settings(
+                                    settings?.keepSignedIn ?: false,
+                                    schoolInfo
+                                )
+                            ).join()
+                            setShowDialog(false)
+                            val intent = Intent(context, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            context.startActivity(intent)
+                        }
                     } else {
                         setShowDialog(false)
                     }

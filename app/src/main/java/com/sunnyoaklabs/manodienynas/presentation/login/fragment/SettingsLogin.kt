@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.presentation.login.fragment
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -25,19 +26,18 @@ import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 @Composable
 fun SettingsLoginFragment(
     navigator: DestinationsNavigator,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
-    val viewModel: LoginViewModel = hiltViewModel()
-
     Column(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
         ToolbarSettings(navigator)
-        ItemKeepSignedIn()
-        ItemAppDescription(viewModel.getAppDescription())
-        ItemAppLicense(viewModel.getAppLicense())
+        ItemKeepSignedIn(loginViewModel)
+        ItemAppDescription(loginViewModel.getAppDescription())
+        ItemAppLicense(loginViewModel.getAppLicense())
     }
 }
 
@@ -71,8 +71,8 @@ fun ToolbarSettings(
 
 @Composable
 fun ItemKeepSignedIn(
-    modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = hiltViewModel()
+    loginViewModel: LoginViewModel,
+    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = Modifier.padding(
@@ -86,9 +86,9 @@ fun ItemKeepSignedIn(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable {
-                    viewModel.deleteKeepSignedIn()
-                    viewModel.insertKeepSignedIn(!viewModel.keepSignedIn)
-                    viewModel.getKeepSignedIn()
+                    if (!loginViewModel.keepSignedIn.isLoading) {
+                        loginViewModel.updateKeepSignedIn(!(loginViewModel.keepSignedIn.settings?.keepSignedIn ?: false))
+                    }
                 }
         ) {
             Row(
@@ -98,14 +98,12 @@ fun ItemKeepSignedIn(
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val isChecked = remember { mutableStateOf(viewModel.keepSignedIn) }
                 Checkbox(
-                    checked = isChecked.value,
+                    checked = loginViewModel.keepSignedIn.settings?.keepSignedIn ?: false,
                     onCheckedChange = {
-                        viewModel.deleteKeepSignedIn()
-                        viewModel.insertKeepSignedIn(!isChecked.value)
-                        viewModel.getKeepSignedIn()
-                        isChecked.value = !isChecked.value
+                        if (!loginViewModel.keepSignedIn.isLoading) {
+                            loginViewModel.updateKeepSignedIn(it)
+                        }
                     }
                 )
                 Text(
