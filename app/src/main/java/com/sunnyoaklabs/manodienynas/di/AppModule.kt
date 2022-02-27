@@ -33,10 +33,9 @@ object AppModule {
     @Singleton
     fun provideEventsFragmentViewModel(
         getEvents: GetEvents,
-        getTerm: GetTerm,
         getEventsPage: GetEventsPage
     ): EventsFragmentViewModel {
-        return EventsFragmentViewModel(getEvents, getTerm, getEventsPage)
+        return EventsFragmentViewModel(getEvents, getEventsPage)
     }
 
     @Provides

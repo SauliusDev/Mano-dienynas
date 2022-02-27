@@ -148,7 +148,6 @@ class SplashViewModel @Inject constructor(
                 is Resource.Success -> {
                     it.data?.let { settings ->
                         _keepSignedIn = settings.keepSignedIn
-                        Log.e("console log", "gotten: $_keepSignedIn")
                     }
                 }
                 else -> {}

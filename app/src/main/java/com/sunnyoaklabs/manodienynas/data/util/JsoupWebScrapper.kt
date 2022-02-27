@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
 import android.util.Log
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import org.jsoup.Jsoup
@@ -55,7 +56,7 @@ class JsoupWebScrapper() : WebScrapper {
             val createDateText = try { elementEventItem.getElementsByClass("create-date")[0].text() } catch (e: Exception) {""}
             val eventHeader = try { elementEventItem.getElementsByClass("event-header")[0].text() } catch (e: Exception) {""}
             val eventText = try {
-                if (title == MARK_EVENT_TYPE) {
+                if (title == MARK_EVENT_TYPE || title == HOMEWORK_EVENT_TYPE) {
                     elementEventItem.getElementsByClass("event-text")[0].getElementsByTag("span").text()
                 } else {
                     val thingToRemove = elementEventItem.getElementsByClass("event-text")[0].getElementsByTag("a")[0].text()

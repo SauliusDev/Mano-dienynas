@@ -8,6 +8,7 @@ sealed class Screen(var title: Int, var icon: Int, var route: String){
     object Events : Screen(R.string.bottom_nav_events, R.drawable.ic_event,"events")
     object Marks: Screen(R.string.bottom_nav_marks,R.drawable.ic_mark,"marks")
     object Messages: Screen(R.string.bottom_nav_messages,R.drawable.ic_message,"messages")
+    object Terms: Screen(R.string.bottom_nav_terms,R.drawable.ic_terms,"terms")
     object More: Screen(R.string.bottom_nav_more,R.drawable.ic_more,"more")
     object Settings: Screen(R.string.bottom_nav_settings, R.drawable.ic_settings,"settings")
 }
@@ -16,5 +17,6 @@ val bottomNavigationItems = listOf(
     Screen.Events,
     Screen.Marks,
     Screen.Messages,
+    Screen.Terms,
     Screen.More
 )

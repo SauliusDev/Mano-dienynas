@@ -22,6 +22,9 @@ class GetSessionCookies(
     suspend operator fun invoke(): Flow<Resource<Boolean>> = flow {
         repository.getSessionCookies().collect {
             when (it) {
+                is Resource.Loading -> {
+                    emit(Resource.Loading())
+                }
                 is Resource.Success -> {
                     emit(Resource.Success(true))
                 }

@@ -120,6 +120,9 @@ class MainActivity : ComponentActivity() {
                             composable(Screen.Messages.route) {
                                 MessagesFragment()
                             }
+                            composable(Screen.Terms.route) {
+                                TermsFragment()
+                            }
                             composable(Screen.More.route) {
                                 MoreFragment()
                             }
@@ -207,6 +210,7 @@ fun BottomNavigationBar(
                         "events" -> navController.navigate(Screen.Events.route)
                         "marks" -> navController.navigate(Screen.Marks.route)
                         "messages" -> navController.navigate(Screen.Messages.route)
+                        "terms" -> navController.navigate(Screen.Terms.route)
                         "more" -> navController.navigate(Screen.More.route)
                         "settings" -> navController.navigate(Screen.Settings.route)
                     }

@@ -30,10 +30,7 @@ import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSettings
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.*
-import com.sunnyoaklabs.manodienynas.presentation.main.state.EventState
-import com.sunnyoaklabs.manodienynas.presentation.main.state.PersonState
-import com.sunnyoaklabs.manodienynas.presentation.main.state.SettingsState
-import com.sunnyoaklabs.manodienynas.presentation.main.state.TermState
+import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -63,8 +60,8 @@ class MainViewModel @Inject constructor(
     private val _personState = mutableStateOf(PersonState())
     val personState: State<PersonState> = _personState
 
-    private val _userState = MutableStateFlow(UserState())
-    val userState = _userState.asStateFlow()
+    private val _userState = mutableStateOf(UserStateState())
+    val userState: State<UserStateState> = _userState
 
     fun initSessionCookies() {
         viewModelScope.launch {
@@ -74,8 +71,8 @@ class MainViewModel @Inject constructor(
                 when (wasSessionCreated) {
                     is Resource.Success -> {
                         firebaseCrashlytics.log("(MainViewModel) Success: credentials, sessionCookies")
-                        _userState.emit(
-                            UserState(
+                        _userState.value = userState.value.copy(
+                            userState = UserState(
                                 isLoading = false,
                                 isUserLoggedIn = true,
                                 isSessionGotten = true,
@@ -83,7 +80,7 @@ class MainViewModel @Inject constructor(
                             )
                         )
                         changeRole().join()
-                        initData()
+                        initData().join()
                     }
                     is Resource.Error -> {
                         firebaseCrashlytics.log("(MainViewModel) Error: credentials, sessionCookies")
@@ -92,8 +89,8 @@ class MainViewModel @Inject constructor(
                                 wasSessionCreated.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
-                        _userState.emit(
-                            UserState(
+                        _userState.value = userState.value.copy(
+                            userState = UserState(
                                 isLoading = false,
                                 isUserLoggedIn = true,
                                 isSessionGotten = false,
@@ -113,23 +110,20 @@ class MainViewModel @Inject constructor(
                 when(it) {
                     is Resource.Success -> {
                         it.data?.selectedSchool?.let { selectedSchool ->
-                            Log.e("console log", ": $selectedSchool | ${selectedSchool.schoolId}")
                             backendApi.getChangeRole(selectedSchool.schoolId)
                         }
                     }
                     else -> {}
                 }
             }
-            Log.e("console log", "2: ")
         }
     }
 
     private fun initData(): Job {
         return CoroutineScope(IO).launch {
-            // TODO figure out if they run async because they need to run ASYNC!!!
             val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
             initPerson(eventsJob)
-            eventsFragmentViewModel.initTerm()
+
             // all other initializations ..................
         }
     }

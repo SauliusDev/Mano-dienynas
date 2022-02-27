@@ -317,7 +317,6 @@ class RepositoryImpl(
             if (person.name.isNotBlank()) {
                 val termApi = converter.toTerm(response)
                 dataSource.deleteAllTerm()
-                Log.e("console log", "terms lmao: $termApi")
                 termApi.forEach { dataSource.insertTerm(it) }
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
