@@ -102,29 +102,30 @@ class MainActivity : ComponentActivity() {
                         ToolbarMain(navController)
                     },
                     bottomBar = {
-                        BottomNavigationBar(navController, bottomNavigationItems)
+                        BottomNavigationBar(navController, mainViewModel, bottomNavigationItems)
                     },
                     scaffoldState = scaffoldState
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, innerPadding.calculateBottomPadding())) {
                         NavHost(
                             navController = navController,
-                            startDestination = Screen.Events.route
+                            // TODO just for testing
+                            startDestination = Screen.Marks.route
                         ) {
                             composable(Screen.Events.route) {
                                 EventsFragment(mainViewModel)
                             }
                             composable(Screen.Marks.route) {
-                                MarksFragment()
+                                MarksFragment(mainViewModel)
                             }
                             composable(Screen.Messages.route) {
-                                MessagesFragment()
+                                MessagesFragment(mainViewModel)
                             }
                             composable(Screen.Terms.route) {
-                                TermsFragment()
+                                TermsFragment(mainViewModel)
                             }
                             composable(Screen.More.route) {
-                                MoreFragment()
+                                MoreFragment(mainViewModel)
                             }
                             composable(Screen.Settings.route) {
                                 SettingsMainFragment(mainViewModel)
@@ -183,6 +184,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BottomNavigationBar(
     navController: NavHostController,
+    mainViewModel: MainViewModel,
     bottomNavigationItems: List<Screen>
 ) {
     BottomNavigation(
@@ -207,12 +209,25 @@ fun BottomNavigationBar(
                 alwaysShowLabel = false,
                 onClick = {
                     when (screen.route) {
-                        "events" -> navController.navigate(Screen.Events.route)
-                        "marks" -> navController.navigate(Screen.Marks.route)
-                        "messages" -> navController.navigate(Screen.Messages.route)
-                        "terms" -> navController.navigate(Screen.Terms.route)
-                        "more" -> navController.navigate(Screen.More.route)
-                        "settings" -> navController.navigate(Screen.Settings.route)
+                        "events" -> {
+                            mainViewModel.eventsFragmentViewModel.onFragmentOpen()
+                            navController.navigate(Screen.Events.route)
+                        }
+                        "marks" -> {
+                            navController.navigate(Screen.Marks.route)
+                        }
+                        "messages" -> {
+                            navController.navigate(Screen.Messages.route)
+                        }
+                        "terms" -> {
+                            navController.navigate(Screen.Terms.route)
+                        }
+                        "more" -> {
+                            navController.navigate(Screen.More.route)
+                        }
+                        "settings" -> {
+                            navController.navigate(Screen.Settings.route)
+                        }
                     }
                 }
             )

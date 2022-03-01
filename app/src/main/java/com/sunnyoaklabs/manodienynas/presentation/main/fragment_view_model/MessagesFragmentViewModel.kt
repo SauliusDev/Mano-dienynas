@@ -13,6 +13,8 @@ import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
@@ -44,6 +46,16 @@ class MessagesFragmentViewModel @Inject constructor(
 
     private val _messageIndividualState = mutableStateOf(MessageIndividualState())
     val messageIndividualState: State<MessageIndividualState> = _messageIndividualState
+
+    private var getDataJob: Job? = null
+
+    fun onFragmentOpen() {
+        getDataJob?.cancel()
+        getDataJob = viewModelScope.launch {
+            delay(500L)
+
+        }
+    }
 
     fun initMessagesGotten() {
         viewModelScope.launch {

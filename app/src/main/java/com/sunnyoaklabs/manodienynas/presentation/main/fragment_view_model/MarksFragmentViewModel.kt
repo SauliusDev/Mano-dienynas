@@ -16,6 +16,8 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
@@ -51,6 +53,18 @@ class MarksFragmentViewModel @Inject constructor(
     private val _controlWorkState = mutableStateOf(ControlWorkState())
     val controlWorkState: State<ControlWorkState> = _controlWorkState
 
+    private var getDataJob: Job? = null
+
+    fun onFragmentOpen() {
+        getDataJob?.cancel()
+        getDataJob = viewModelScope.launch {
+            delay(500L)
+            if (!_markState.value.isLoading) {
+//                initMarks()
+            }
+        }
+    }
+
     fun initMarks() {
         viewModelScope.launch {
             getMarks().collect {
@@ -66,7 +80,6 @@ class MarksFragmentViewModel @Inject constructor(
                             marks = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "marks: "+_markState.value.marks)
                     }
                     is Resource.Error -> {
                         _markState.value = markState.value.copy(

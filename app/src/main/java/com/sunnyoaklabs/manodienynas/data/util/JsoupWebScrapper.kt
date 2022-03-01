@@ -100,7 +100,13 @@ class JsoupWebScrapper() : WebScrapper {
                 elementPupils[i].getElementsByClass("noTextWrap setRowHeight listSetHeight mark_subject")
                     .attr("title")
             val teacher = elementPupils[i].getElementsByTag("a").text()
-            val average = elementMarks.last().lastElementSibling().getElementsByTag("a").text()
+            val average = try {
+                elementRows[i].getElementsByClass("hiddenPrint vidurkioth")[0]
+                    .getElementsByTag("span")[0]
+                    .getElementsByTag("span")[2].text()
+            }catch (e: Exception) {
+                ""
+            }
             val markEventList: MutableList<MarkEvent> = mutableListOf()
             for (h in elementMarks.indices) {
                 val elementMark = elementMarks[h]

@@ -48,7 +48,6 @@ import kotlinx.coroutines.launch
 fun EventsFragment(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current
 ) {
     val eventsFragmentViewModel = mainViewModel.eventsFragmentViewModel
     val events = eventsFragmentViewModel.eventState.value.events

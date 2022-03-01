@@ -131,6 +131,7 @@ class RepositoryImpl(
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
         val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }

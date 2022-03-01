@@ -15,6 +15,8 @@ import com.sunnyoaklabs.manodienynas.domain.model.CalendarEvent
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
@@ -46,6 +48,16 @@ class MoreFragmentViewModel @Inject constructor(
 
     private val _calendarEventState = mutableStateOf(CalendarEventState())
     val calendarEventState: State<CalendarEventState> = _calendarEventState
+
+    private var getDataJob: Job? = null
+
+    fun onFragmentOpen() {
+        getDataJob?.cancel()
+        getDataJob = viewModelScope.launch {
+            delay(500L)
+
+        }
+    }
 
     fun initHoliday() {
         viewModelScope.launch {

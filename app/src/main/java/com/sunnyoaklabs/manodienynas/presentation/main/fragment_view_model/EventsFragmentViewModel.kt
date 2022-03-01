@@ -26,6 +26,7 @@ import com.sunnyoaklabs.manodienynas.presentation.main.state.TermState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
@@ -44,6 +45,18 @@ class EventsFragmentViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    private var getDataJob: Job? = null
+
+    fun onFragmentOpen() {
+        getDataJob?.cancel()
+        getDataJob = viewModelScope.launch {
+            delay(500L)
+            if (!_eventState.value.isLoading){
+//                initEventsAndPerson()
+            }
+        }
+    }
 
     fun initEventsAndPerson(): Job {
         val eventsJob = viewModelScope.launch {
