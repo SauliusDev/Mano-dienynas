@@ -35,4 +35,18 @@
     <string name="no_data">Nėra duomenų</string>
     <string name="reload">Perkrauti duomenis</string>
 
+    <string-array name="attendance_category">
+        <item>Praleistos</item>
+        <item>Pateisintos dėl ligos</item>
+        <item>Dėl kitų priežasčių</item>
+        <item>Nepateisintos</item>
+        <item>Pavėluota</item>
+    </string-array>
+
+    <string name="marks_fragment_marks">Pažymiai</string>
+    <string name="marks_fragment_control_work">Kontroliniai darbai</string>
+    <string name="marks_fragment_class_work">Klasės darbai</string>
+    <string name="marks_fragment_homework">Namų darbai</string>
+
+
 </resources>
