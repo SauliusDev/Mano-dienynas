@@ -110,15 +110,23 @@ class JsoupWebScrapper() : WebScrapper {
             val markEventList: MutableList<MarkEvent> = mutableListOf()
             for (h in elementMarks.indices) {
                 val elementMark = elementMarks[h]
-                val mark = elementMark.getElementsByClass("span-mark-value wd-type-1").text()
-                val info = elementMark.getElementsByClass("span-mark-info wd-type-1").text()
                 val infoUrl = elementMark.getElementsByTag("input").attr("value")
-                if (mark.isNotBlank()) {
-                    markEventList.add(MarkEvent("", mark, infoUrl))
+                val mark = try {
+                    elementMark.getElementsByClass("span-mark-value")[0].getElementsByTag("span")
+                } catch (e: Exception) {
+                    null
                 }
-                if (info.isNotBlank()) {
-                    markEventList.add(MarkEvent("", info, infoUrl))
+                mark?.let {
+                    for (j in mark.indices) {
+                        val markText = mark[j].text()
+                        if (markText.isNotBlank()) {
+                            if (markText.length <= 1 || markText == "įsk" || markText == "nsk" || markText == "atl") {
+                                markEventList.add(MarkEvent("", mark[j].text(), infoUrl))
+                            }
+                        }
+                    }
                 }
+
             }
             markList.add(Mark(lesson, teacher, average, markEventList))
         }

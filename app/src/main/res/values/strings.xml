@@ -34,6 +34,7 @@
     <string name="school">Mokykla</string>
     <string name="no_data">Nėra duomenų</string>
     <string name="reload">Perkrauti duomenis</string>
+    <string name="ic_mark_description">Pažymiai ir lankomumas</string>
 
     <string-array name="attendance_category">
         <item>Praleistos</item>
@@ -43,10 +44,12 @@
         <item>Pavėluota</item>
     </string-array>
 
-    <string name="marks_fragment_marks">Pažymiai</string>
+    <string name="marks_fragment_marks">Pažymiai ir lankomumas</string>
     <string name="marks_fragment_control_work">Kontroliniai darbai</string>
     <string name="marks_fragment_class_work">Klasės darbai</string>
     <string name="marks_fragment_homework">Namų darbai</string>
 
+    <string name="marks_fragment_item_marks">Pažymiai</string>
+    <string name="marks_fragment_item_attendance">Lankomumas</string>
 
 </resources>

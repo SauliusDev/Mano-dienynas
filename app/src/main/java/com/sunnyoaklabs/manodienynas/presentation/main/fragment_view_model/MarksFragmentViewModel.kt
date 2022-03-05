@@ -80,7 +80,6 @@ class MarksFragmentViewModel @Inject constructor(
                             marks = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "attendance: "+_markState.value.marks)
                     }
                     is Resource.Error -> {
                         _markState.value = markState.value.copy(
@@ -113,7 +112,6 @@ class MarksFragmentViewModel @Inject constructor(
                             attendance = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "attendance: "+_attendanceState.value.attendance)
                     }
                     is Resource.Error -> {
                         _attendanceState.value = attendanceState.value.copy(

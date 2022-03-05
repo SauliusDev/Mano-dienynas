@@ -36,6 +36,7 @@ import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CONTROL_WORK_EVENT_TYP
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.Event
+import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
 import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.SettingsLoginFragmentDestination
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
@@ -100,46 +101,6 @@ fun LazyListState.disableScrolling(scope: CoroutineScope) {
     scope.launch {
         scroll(scrollPriority = MutatePriority.PreventUserInput) {
             awaitCancellation()
-        }
-    }
-}
-
-@Composable
-fun LoadingItem(
-    transparency: Float,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .padding(
-                vertical = 4.dp,
-                horizontal = 4.dp
-            )
-            .alpha(transparency),
-        elevation = 5.dp,
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(vertical = 24.dp, horizontal = 16.dp)
-        ) {
-            Column() {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(5.dp), color = Color.Gray
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                Row(modifier = Modifier.height(8.dp)) {
-                    LinearProgressIndicator(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight(),
-                        color = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
         }
     }
 }
