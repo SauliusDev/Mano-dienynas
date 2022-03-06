@@ -98,7 +98,7 @@ class JsoupWebScrapper() : WebScrapper {
             val elementMarks = elementRows[i].getElementsByTag("td")
             val lesson =
                 elementPupils[i].getElementsByClass("noTextWrap setRowHeight listSetHeight mark_subject")
-                    .attr("title")
+                    .attr("title").replace("  ", " ")
             val teacher = elementPupils[i].getElementsByTag("a").text()
             val average = try {
                 elementRows[i].getElementsByClass("hiddenPrint vidurkioth")[0]
@@ -110,7 +110,11 @@ class JsoupWebScrapper() : WebScrapper {
             val markEventList: MutableList<MarkEvent> = mutableListOf()
             for (h in elementMarks.indices) {
                 val elementMark = elementMarks[h]
-                val infoUrl = elementMark.getElementsByTag("input").attr("value")
+                val infoUrl = try {
+                    elementMark.getElementsByTag("input").attr("value")
+                } catch (e: Exception) {
+                    ""
+                }
                 val mark = try {
                     elementMark.getElementsByClass("span-mark-value")[0].getElementsByTag("span")
                 } catch (e: Exception) {
@@ -120,13 +124,24 @@ class JsoupWebScrapper() : WebScrapper {
                     for (j in mark.indices) {
                         val markText = mark[j].text()
                         if (markText.isNotBlank()) {
-                            if (markText.length <= 1 || markText == "įsk" || markText == "nsk" || markText == "atl") {
+                            if (markText.length <= 2 || markText == "įsk" || markText == "nsk" || markText == "atl") {
                                 markEventList.add(MarkEvent("", mark[j].text(), infoUrl))
                             }
                         }
                     }
                 }
-
+                val info = try {
+                    elementMark.getElementsByClass("span-mark-info")[0].getElementsByTag("span")
+                } catch (e: Exception) {
+                    null
+                }
+                info?.let {
+                    for (j in info.indices) {
+                        if (info[j].text().isNotBlank()) {
+                            markEventList.add(MarkEvent("", info[j].text(), infoUrl))
+                        }
+                    }
+                }
             }
             markList.add(Mark(lesson, teacher, average, markEventList))
         }
@@ -150,7 +165,7 @@ class JsoupWebScrapper() : WebScrapper {
                     .text()
             val teacher = elementPupilRow.getElementsByTag("a").text()
             val lessonTitle =
-                lessonTitleUnformatted.substring(0, lessonTitleUnformatted.length - teacher.length)
+                lessonTitleUnformatted.substring(0, lessonTitleUnformatted.length - teacher.length-1)
             val attendanceItemList: MutableList<Int> = mutableListOf()
             val attendanceRangeList: MutableList<AttendanceRange> = mutableListOf()
             val elementAttendanceRanges = elementAttendanceRows[0].getElementsByTag("th")
@@ -239,7 +254,8 @@ class JsoupWebScrapper() : WebScrapper {
             val teacher = elements[2].text()
             val description = elements[3].getElementsByTag("p").text()
             val dateAddition = elements[5].text()
-            val attachmentsUrl = elements[4].getElementsByTag("a").attr("href")
+            val dueDate = elements[4].text()
+            val attachmentsUrl = elements[6].getElementsByTag("a").attr("href")
             homeWorkList.add(
                 HomeWork(
                     month,
@@ -249,6 +265,7 @@ class JsoupWebScrapper() : WebScrapper {
                     teacher,
                     description,
                     dateAddition,
+                    dueDate,
                     attachmentsUrl
                 )
             )

@@ -45,11 +45,13 @@
     </string-array>
 
     <string name="marks_fragment_marks">Pažymiai ir lankomumas</string>
-    <string name="marks_fragment_control_work">Kontroliniai darbai</string>
+    <string name="marks_fragment_control_work">Atsiskaitomieji darbai</string>
     <string name="marks_fragment_class_work">Klasės darbai</string>
     <string name="marks_fragment_homework">Namų darbai</string>
 
     <string name="marks_fragment_item_marks">Pažymiai</string>
     <string name="marks_fragment_item_attendance">Lankomumas</string>
+
+    <string name="due_to">Atlikti iki</string>
 
 </resources>

@@ -8,6 +8,7 @@ data class HomeWork(
     val teacher: String,
     val description: String,
     val dateAddition: String,
+    val dueDate: String,
     val attachmentsUrl: String,
     val id: Long? = null
 )

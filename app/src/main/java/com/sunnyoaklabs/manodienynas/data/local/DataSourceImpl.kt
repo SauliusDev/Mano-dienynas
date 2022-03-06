@@ -226,6 +226,7 @@ class DataSourceImpl @Inject constructor(
                 homeWork.teacher,
                 homeWork.description,
                 homeWork.dateAddition,
+                homeWork.dueDate,
                 homeWork.attachmentsUrl
             )
         }

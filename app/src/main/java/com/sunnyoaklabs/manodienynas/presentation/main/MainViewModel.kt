@@ -124,7 +124,7 @@ class MainViewModel @Inject constructor(
 //            val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
 //            initPerson(eventsJob)
             marksFragmentViewModel.initMarks()
-            marksFragmentViewModel.initAttendance()
+//            marksFragmentViewModel.initAttendance()
 //            marksFragmentViewModel.initClassWork()
 //            marksFragmentViewModel.initHomeWork()
 //            marksFragmentViewModel.initControlWork()

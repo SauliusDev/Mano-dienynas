@@ -84,6 +84,7 @@ class DataSourceObjectParserImpl(
             homeworkEntity?.teacher ?: "",
             homeworkEntity?.description ?: "",
             homeworkEntity?.dateAddition ?: "",
+            homeworkEntity?.dueDate ?: "",
             homeworkEntity?.attachmentsUrl ?: ""
         )
     }
