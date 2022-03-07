@@ -31,7 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.ATTENDANCE_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CHANGED_MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CONTROL_WORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
@@ -279,6 +281,9 @@ private fun getEventColor(event: Event): Color {
         ATTENDANCE_EVENT_TYPE -> {
             accentRed
         }
+        CHANGED_MARK_EVENT_TYPE -> {
+            accentPurpleLight
+        }
         else -> {
             Color.Gray
         }
@@ -317,6 +322,14 @@ private fun setIcon(event: Event) {
                 painter = painterResource(id = R.drawable.ic_event_attendance),
                 contentDescription = stringResource(id = R.string.event_attendance),
                 tint = accentRed,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+        CHANGED_MARK_EVENT_TYPE -> {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_mark_changed),
+                contentDescription = stringResource(id = R.string.event_mark_changed),
+                tint = accentPurpleLight,
                 modifier = Modifier.size(30.dp)
             )
         }

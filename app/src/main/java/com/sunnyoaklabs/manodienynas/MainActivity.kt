@@ -45,6 +45,7 @@ import com.sunnyoaklabs.manodienynas.presentation.main.Screen
 import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.bottomNavigationItems
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.*
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.MarksFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.*
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent

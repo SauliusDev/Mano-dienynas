@@ -19,6 +19,7 @@
     <string name="event_control_work">Atsiskaitymas</string>
     <string name="event_home_work">Namų darbai</string>
     <string name="event_attendance">Lankomumas</string>
+    <string name="event_mark_changed">Pažimys pakeistas</string>
     <string name="event_mark">Pažimys</string>
     <string name="event_unknown">Nežinomas</string>
 
@@ -53,5 +54,6 @@
     <string name="marks_fragment_item_attendance">Lankomumas</string>
 
     <string name="due_to">Atlikti iki</string>
+    <string name="all_lesson_attendance">Visų pamokų lankomumas</string>
 
 </resources>
