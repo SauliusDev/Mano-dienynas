@@ -125,9 +125,9 @@ class MainViewModel @Inject constructor(
 //            initPerson(eventsJob)
             marksFragmentViewModel.initMarks()
             marksFragmentViewModel.initAttendance()
-//            marksFragmentViewModel.initClassWork()
-//            marksFragmentViewModel.initHomeWork()
-//            marksFragmentViewModel.initControlWork()
+            marksFragmentViewModel.initClassWork()
+            marksFragmentViewModel.initHomeWork()
+            marksFragmentViewModel.initControlWork()
             // all other initializations ..................
         }
     }

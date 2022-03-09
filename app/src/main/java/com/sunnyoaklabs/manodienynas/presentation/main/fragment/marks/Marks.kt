@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,14 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp.ClassWorkCard
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp.ControlWorkCard
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp.HomeWorkCard
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp.MarksCard
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp.*
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 
@@ -43,15 +42,35 @@ fun MarksFragment(
     modifier: Modifier = Modifier
 ) {
     val marksFragmentViewModel = mainViewModel.marksFragmentViewModel
+    val markFragmentTypeState = marksFragmentViewModel.markFragmentTypeState.value
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    ConstraintLayout(
+        Modifier.fillMaxSize()
     ) {
-        MarksCard(marksFragmentViewModel = marksFragmentViewModel, Modifier.weight(1f))
-        ControlWorkCard(marksFragmentViewModel = marksFragmentViewModel, Modifier.weight(0.1f))
-        HomeWorkCard(marksFragmentViewModel = marksFragmentViewModel, Modifier.weight(0.1f))
-        ClassWorkCard(marksFragmentViewModel = marksFragmentViewModel, Modifier.weight(0.1f))
+        val (cards, list) = createRefs()
+        Column(modifier = Modifier.constrainAs(cards) {
+            top.linkTo(parent.top)
+        }) {
+            MarksCardButton(marksFragmentViewModel)
+            ControlWorkCardButton(marksFragmentViewModel)
+            HomeWorkCardButton(marksFragmentViewModel)
+            ClassWorkCardButton(marksFragmentViewModel)
+        }
+        Box(modifier = Modifier.constrainAs(list) {
+            top.linkTo(cards.bottom)
+        }) {
+            AnimatedVisibility(visible = markFragmentTypeState.markTypeIsSelected) {
+                MarksCard(marksFragmentViewModel = marksFragmentViewModel)
+            }
+            AnimatedVisibility(visible = markFragmentTypeState.controlWorkTypeIsSelected) {
+                ControlWorkCard(marksFragmentViewModel = marksFragmentViewModel)
+            }
+            AnimatedVisibility(visible = markFragmentTypeState.homeWorkTypeIsSelected) {
+                HomeWorkCard(marksFragmentViewModel = marksFragmentViewModel)
+            }
+            AnimatedVisibility(visible = markFragmentTypeState.classWorkTypeIsSelected) {
+                ClassWorkCard(marksFragmentViewModel = marksFragmentViewModel)
+            }
+        }
     }
 }

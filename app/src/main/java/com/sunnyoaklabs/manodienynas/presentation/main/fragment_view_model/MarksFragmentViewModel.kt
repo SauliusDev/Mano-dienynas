@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
@@ -34,6 +35,14 @@ class MarksFragmentViewModel @Inject constructor(
     private val getControlWork: GetControlWork,
     private val getControlWorkByCondition: GetControlWorkByCondition
 ) : ViewModel() {
+
+    private val _markFragmentTypeState = mutableStateOf(MarkFragmentTypeState(
+        markTypeIsSelected = true,
+        controlWorkTypeIsSelected = false,
+        homeWorkTypeIsSelected = false,
+        classWorkTypeIsSelected = false,
+    ))
+    val markFragmentTypeState: State<MarkFragmentTypeState> = _markFragmentTypeState
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -321,6 +330,50 @@ class MarksFragmentViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun updateMarkMarkFragmentTypeState() {
+        viewModelScope.launch {
+            _markFragmentTypeState.value = markFragmentTypeState.value.copy(
+                markTypeIsSelected = true,
+                controlWorkTypeIsSelected = false,
+                homeWorkTypeIsSelected = false,
+                classWorkTypeIsSelected = false,
+            )
+        }
+    }
+
+    fun updateControlWorkMarkFragmentTypeState() {
+        viewModelScope.launch {
+            _markFragmentTypeState.value = markFragmentTypeState.value.copy(
+                markTypeIsSelected = false,
+                controlWorkTypeIsSelected = true,
+                homeWorkTypeIsSelected = false,
+                classWorkTypeIsSelected = false,
+            )
+        }
+    }
+
+    fun updateHomeWorkMarkFragmentTypeState() {
+        viewModelScope.launch {
+            _markFragmentTypeState.value = markFragmentTypeState.value.copy(
+                markTypeIsSelected = false,
+                controlWorkTypeIsSelected = false,
+                homeWorkTypeIsSelected = true,
+                classWorkTypeIsSelected = false,
+            )
+        }
+    }
+
+    fun updateClassWorkMarkFragmentTypeState() {
+        viewModelScope.launch {
+            _markFragmentTypeState.value = markFragmentTypeState.value.copy(
+                markTypeIsSelected = false,
+                controlWorkTypeIsSelected = false,
+                homeWorkTypeIsSelected = false,
+                classWorkTypeIsSelected = true,
+            )
         }
     }
 }
