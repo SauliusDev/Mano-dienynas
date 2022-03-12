@@ -2,15 +2,14 @@ package com.sunnyoaklabs.manodienynas
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import androidx.activity.viewModels
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -18,49 +17,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
-import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.SettingsLoginFragmentDestination
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.Screen
 import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.bottomNavigationItems
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.*
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.EventsFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.MarksFragment
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.*
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
-import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
     private val splashViewModel: SplashViewModel by viewModels()
@@ -117,7 +100,10 @@ class MainActivity : ComponentActivity() {
                                 EventsFragment(mainViewModel)
                             }
                             composable(Screen.Marks.route) {
-                                MarksFragment(mainViewModel)
+                                MarksFragment(
+                                    mainViewModel,
+                                    (this@MainActivity as AppCompatActivity).supportFragmentManager,
+                                )
                             }
                             composable(Screen.Messages.route) {
                                 MessagesFragment(mainViewModel)

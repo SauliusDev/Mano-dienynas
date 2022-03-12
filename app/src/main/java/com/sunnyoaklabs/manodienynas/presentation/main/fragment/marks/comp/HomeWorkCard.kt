@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.HomeWork
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
@@ -37,57 +37,48 @@ fun HomeWorkCard(
 ) {
     val homeWorkState = marksFragmentViewModel.homeWorkState.value
 
-    Card(
-        modifier = modifier
-            .padding(
-                vertical = 4.dp,
-                horizontal = 4.dp
-            ),
-        elevation = 5.dp,
-    ) {
-        val scope = rememberCoroutineScope()
-        val state = rememberLazyListState()
-        state.disableScrolling(scope)
-        when {
-            homeWorkState.isLoading -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = state
-                ) {
-                    items(10) {
-                        LoadingItem(1f / (it + 1))
-                    }
+    val scope = rememberCoroutineScope()
+    val state = rememberLazyListState()
+    state.disableScrolling(scope)
+    when {
+        homeWorkState.isLoading -> {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = state
+            ) {
+                items(10) {
+                    LoadingItem(1f / (it + 1))
                 }
             }
-            homeWorkState.homeWork.isEmpty() -> {
-                EmptyHomeWorkItem(marksFragmentViewModel)
-            }
-            else -> {
-                Column(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp, horizontal = 4.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            painter = painterResource(id = R.drawable.ic_mark),
-                            contentDescription = stringResource(R.string.marks_fragment_homework),
-                            tint = accentBlue
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = stringResource(id = R.string.marks_fragment_homework),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = accentBlue
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                        items(homeWorkState.homeWork) {
-                            HomeWorkItem(it)
-                        }
+        }
+        homeWorkState.homeWork.isEmpty() -> {
+            EmptyHomeWorkItem(marksFragmentViewModel)
+        }
+        else -> {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp, horizontal = 4.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(id = R.drawable.ic_homework),
+                        contentDescription = stringResource(R.string.marks_fragment_homework),
+                        tint = accentBlue
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(id = R.string.marks_fragment_homework),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = accentBlue
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(homeWorkState.homeWork) {
+                        HomeWorkItem(it)
                     }
                 }
             }

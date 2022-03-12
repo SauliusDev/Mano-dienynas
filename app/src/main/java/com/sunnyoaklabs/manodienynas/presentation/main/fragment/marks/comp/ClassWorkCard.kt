@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.ClassWork
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
@@ -36,57 +36,49 @@ fun ClassWorkCard(
     modifier: Modifier = Modifier
 ) {
     val classWorkState = marksFragmentViewModel.classWorkState.value
-    Card(
-        modifier = modifier
-            .padding(
-                vertical = 4.dp,
-                horizontal = 4.dp
-            ),
-        elevation = 5.dp,
-    ) {
-        val scope = rememberCoroutineScope()
-        val state = rememberLazyListState()
-        state.disableScrolling(scope)
-        when {
-            classWorkState.isLoading -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = state
-                ) {
-                    items(10) {
-                        LoadingItem(1f / (it + 1))
-                    }
+
+    val scope = rememberCoroutineScope()
+    val state = rememberLazyListState()
+    state.disableScrolling(scope)
+    when {
+        classWorkState.isLoading -> {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = state
+            ) {
+                items(10) {
+                    LoadingItem(1f / (it + 1))
                 }
             }
-            classWorkState.classWork.isEmpty() -> {
-                EmptyClassWorkItem(marksFragmentViewModel)
-            }
-            else -> {
-                Column(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp, horizontal = 4.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            painter = painterResource(id = R.drawable.ic_mark),
-                            contentDescription = stringResource(R.string.marks_fragment_class_work),
-                            tint = accentBlue
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = stringResource(id = R.string.marks_fragment_class_work),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = accentBlue
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                        items(classWorkState.classWork) {
-                            ClassWorkItem(it)
-                        }
+        }
+        classWorkState.classWork.isEmpty() -> {
+            EmptyClassWorkItem(marksFragmentViewModel)
+        }
+        else -> {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp, horizontal = 4.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(id = R.drawable.ic_class_work),
+                        contentDescription = stringResource(R.string.marks_fragment_class_work),
+                        tint = accentBlue
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(id = R.string.marks_fragment_class_work),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = accentBlue
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(classWorkState.classWork) {
+                        ClassWorkItem(it)
                     }
                 }
             }

@@ -55,5 +55,9 @@
 
     <string name="due_to">Atlikti iki</string>
     <string name="all_lesson_attendance">Visų pamokų lankomumas</string>
+    <string name="ic_calendar_description">Datos pasirinkimas</string>
+    <string name="ic_control_work_description">Kontroliniai darbai</string>
+    <string name="ic_homework_description">Namų darbai</string>
+    <string name="ic_classwork_description">Klasės darbao</string>
 
 </resources>

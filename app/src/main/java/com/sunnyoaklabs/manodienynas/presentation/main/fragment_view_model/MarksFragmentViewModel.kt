@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class MarksFragmentViewModel @Inject constructor(
@@ -35,6 +37,15 @@ class MarksFragmentViewModel @Inject constructor(
     private val getControlWork: GetControlWork,
     private val getControlWorkByCondition: GetControlWorkByCondition
 ) : ViewModel() {
+
+    private val _markTimeRange = mutableStateOf(Pair("", ""))
+    val markTimeRange = _markTimeRange
+    private val _controlWorkTimeRange = mutableStateOf(Pair("", ""))
+    val controlWorkTimeRange = _controlWorkTimeRange
+    private val _homeWorkTimeRange = mutableStateOf(Pair("", ""))
+    val homeWorkTimeRange = _homeWorkTimeRange
+    private val _classWorkTimeRange = mutableStateOf(Pair("", ""))
+    val classWorkTimeRange = _classWorkTimeRange
 
     private val _markFragmentTypeState = mutableStateOf(MarkFragmentTypeState(
         markTypeIsSelected = true,
@@ -373,6 +384,58 @@ class MarksFragmentViewModel @Inject constructor(
                 controlWorkTypeIsSelected = false,
                 homeWorkTypeIsSelected = false,
                 classWorkTypeIsSelected = true,
+            )
+        }
+    }
+
+    fun initDataByCondition() {
+        viewModelScope.launch {
+            // TODO init data by condition or date
+        }
+    }
+
+    fun formatDateFromMillis(milliseconds : Long?) : String?{
+        milliseconds?.let{
+            val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.timeInMillis = it
+            return formatter.format(calendar.time)
+        }
+        return null
+    }
+
+    fun updateMarkTimeRange(timeRange: Pair<String, String>) {
+        viewModelScope.launch {
+            _markTimeRange.value = markTimeRange.value.copy(
+                timeRange.first,
+                timeRange.second
+            )
+        }
+    }
+
+    fun updateControlWorkTimeRange(timeRange: Pair<String, String>) {
+        viewModelScope.launch {
+            _controlWorkTimeRange.value = controlWorkTimeRange.value.copy(
+                timeRange.first,
+                timeRange.second
+            )
+        }
+    }
+
+    fun updateHomeWorkTimeRange(timeRange: Pair<String, String>) {
+        viewModelScope.launch {
+            _homeWorkTimeRange.value = homeWorkTimeRange.value.copy(
+                timeRange.first,
+                timeRange.second
+            )
+        }
+    }
+
+    fun updateClassWorkTimeRange(timeRange: Pair<String, String>) {
+        viewModelScope.launch {
+            _classWorkTimeRange.value = classWorkTimeRange.value.copy(
+                timeRange.first,
+                timeRange.second
             )
         }
     }

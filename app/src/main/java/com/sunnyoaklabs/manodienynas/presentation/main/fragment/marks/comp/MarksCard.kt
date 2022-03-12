@@ -36,8 +36,7 @@ import com.sunnyoaklabs.manodienynas.domain.model.AttendanceRange
 import com.sunnyoaklabs.manodienynas.domain.model.Mark
 import com.sunnyoaklabs.manodienynas.domain.model.MarkEvent
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.disableScrolling
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.*
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentPurple
@@ -72,58 +71,48 @@ fun MarksCard(
             )
         }
     }
-
-    Card(
-        modifier = modifier
-            .padding(
-                vertical = 4.dp,
-                horizontal = 4.dp
-            ),
-        elevation = 5.dp,
-    ) {
-        val scope = rememberCoroutineScope()
-        val state = rememberLazyListState()
-        state.disableScrolling(scope)
-        when {
-            marksState.isLoading || attendanceState.isLoading -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = state
-                ) {
-                    items(10) {
-                        LoadingItem(1f / (it + 1))
-                    }
+    val scope = rememberCoroutineScope()
+    val state = rememberLazyListState()
+    state.disableScrolling(scope)
+    when {
+        marksState.isLoading || attendanceState.isLoading -> {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = state
+            ) {
+                items(10) {
+                    LoadingItem(1f / (it + 1))
                 }
             }
-            marksState.marks.isEmpty() || attendanceState.attendance.isEmpty() -> {
-                EmptyMarksItem(marksFragmentViewModel)
-            }
-            else -> {
-                Column(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp, horizontal = 4.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            painter = painterResource(id = R.drawable.ic_mark),
-                            contentDescription = stringResource(R.string.ic_mark_description),
-                            tint = accentRed
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = stringResource(id = R.string.marks_fragment_marks),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = accentRed
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    CollapsableLazyColumnMarks(
-                        sections = collapsableSectionMarks
+        }
+        marksState.marks.isEmpty() || attendanceState.attendance.isEmpty() -> {
+            EmptyMarksItem(marksFragmentViewModel)
+        }
+        else -> {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp, horizontal = 4.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(id = R.drawable.ic_mark),
+                        contentDescription = stringResource(R.string.ic_mark_description),
+                        tint = accentRed
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(id = R.string.marks_fragment_marks),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = accentRed
                     )
                 }
+                Spacer(modifier = Modifier.height(4.dp))
+                CollapsableLazyColumnMarks(
+                    sections = collapsableSectionMarks
+                )
             }
         }
     }
