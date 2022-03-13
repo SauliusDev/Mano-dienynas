@@ -1,6 +1,5 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
-import android.util.Log
 import com.sunnyoaklabs.manodienynas.core.util.*
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
@@ -11,9 +10,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import java.lang.Exception
@@ -164,6 +161,18 @@ class RepositoryImpl(
         }
         val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
         emit(Resource.Success(newMarks))
+    }
+
+    override fun getMarksEventItem(infoUrl: String): Flow<Resource<MarksEventItem>> = flow {
+        emit(Resource.Loading())
+        try {
+            val response = api.getMarksEvent(infoUrl)
+            val markEventItem = converter.toMarkEventItem(response)
+            emit(Resource.Success(markEventItem))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        }
+        emit(Resource.Error(message = UNKNOWN_ERROR))
     }
 
     override fun getAttendance(): Flow<Resource<List<Attendance>>> = flow {

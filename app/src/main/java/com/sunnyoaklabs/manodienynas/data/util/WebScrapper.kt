@@ -10,6 +10,8 @@ interface WebScrapper {
 
     fun toMarks(html: String): List<Mark>
 
+    fun toMarkEventItem(html: String): MarksEventItem
+
     fun toAttendance(html: String): List<Attendance>
 
     fun toClassWork(html: String): List<ClassWork>

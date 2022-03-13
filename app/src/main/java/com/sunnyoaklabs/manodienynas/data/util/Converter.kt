@@ -1,7 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
 import com.google.gson.reflect.TypeToken
-import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import manodienynas.db.*
 
@@ -75,41 +74,6 @@ class Converter(
         ) ?: "[]"
     }
 
-    fun toPostLogin(payload: PostLogin): String {
-        return jsonParser.toJson(
-            payload,
-            object : TypeToken<PostLogin>(){}.type
-        ) ?: "[]"
-    }
-
-    fun toPostMarkJson(payload: PostMarks): String {
-        return jsonParser.toJson(
-            payload,
-            object : TypeToken<PostMarks>(){}.type
-        ) ?: "[]"
-    }
-
-    fun toPostClassWorkJson(payload: PostClassWork): String {
-        return jsonParser.toJson(
-            payload,
-            object : TypeToken<PostClassWork>(){}.type
-        ) ?: "[]"
-    }
-
-    fun toPostControlWorkJson(payload: PostControlWork): String {
-        return jsonParser.toJson(
-            payload,
-            object : TypeToken<PostControlWork>(){}.type
-        ) ?: "[]"
-    }
-
-    fun toPostHomeWorkJson(payload: PostHomeWork): String {
-        return jsonParser.toJson(
-            payload,
-            object : TypeToken<PostHomeWork>(){}.type
-        ) ?: "[]"
-    }
-
     fun toPerson(html: String): Person {
         return webScrapper.toPerson(html = html)
     }
@@ -124,6 +88,10 @@ class Converter(
 
     fun toAttendance(html: String): List<Attendance> {
         return webScrapper.toAttendance(html = html)
+    }
+
+    fun toMarkEventItem(html: String): MarksEventItem {
+        return webScrapper.toMarkEventItem(html = html)
     }
 
     fun toClassWork(html: String): List<ClassWork> {

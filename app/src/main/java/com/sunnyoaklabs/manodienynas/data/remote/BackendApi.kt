@@ -24,6 +24,7 @@ interface BackendApi {
 
     suspend fun getMarks(): String
     suspend fun postMarks(payload: PostMarks, schoolId: String): String
+    suspend fun getMarksEvent(infoUrl: String): String
 
     suspend fun getAttendance(): String
 
@@ -63,11 +64,11 @@ interface BackendApi {
     suspend fun getCalendarEvent(id: String): String
 
     companion object {
-        fun create(converter: Converter): BackendApi {
+        fun create(): BackendApi {
             return BackendApiImpl(
                 client = HttpClient(Android) {
 //                    install(Logging) {
-//                        level = LogLevel.ALL
+//                        level = LogLevel.HEADERS
 //                    }
                     install(JsonFeature) {
                         serializer = KotlinxSerializer()
@@ -80,8 +81,7 @@ interface BackendApi {
                         connectTimeoutMillis = 150000L
                         socketTimeoutMillis = 150000L
                     }
-                },
-                converter = converter
+                }
             )
         }
     }

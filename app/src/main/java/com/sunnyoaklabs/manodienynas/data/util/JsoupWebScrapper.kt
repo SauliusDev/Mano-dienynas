@@ -148,6 +148,19 @@ class JsoupWebScrapper() : WebScrapper {
         return markList
     }
 
+    override fun toMarkEventItem(html: String): MarksEventItem {
+        val document = Jsoup.parse(html)
+        val table = document.getElementsByClass("new_class_sms")[0]
+        val items = table.getElementsByTag("tr")
+        return MarksEventItem(
+            items[0].text(),
+            items[1].text(),
+            items[2].text(),
+            items[3].text(),
+            items[4].text()
+        )
+    }
+
     override fun toAttendance(html: String): List<Attendance> {
         val document = Jsoup.parse(html)
         val attendanceList: MutableList<Attendance> = mutableListOf()

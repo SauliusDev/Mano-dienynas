@@ -54,7 +54,6 @@ class TermsFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Success -> {
-                        Log.e("console log", ": "+it.data)
                         _termState.value = termState.value.copy(
                             terms = it.data ?: emptyList(),
                             isLoading = false

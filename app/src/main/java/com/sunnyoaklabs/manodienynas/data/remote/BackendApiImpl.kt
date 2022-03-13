@@ -9,6 +9,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CLASS_WORK_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CONTROL_WORK_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CONTROL_WORK_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.EVENTS_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.EVENTS_INDIVIDUAL_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.EVENTS_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOLIDAY_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOME_WORK_GET
@@ -33,7 +34,6 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 
 class BackendApiImpl(
-    private val converter: Converter,
     private val client: HttpClient
 ) : BackendApi {
 
@@ -80,9 +80,19 @@ class BackendApiImpl(
     override suspend fun postMarks(payload: PostMarks, schoolId: String): String {
         return client.post {
             url(MARKS_POST.replace("{school_id}", schoolId))
-            contentType(ContentType.Application.FormUrlEncoded)
-            body = converter.toPostMarkJson(payload)
+            body = FormDataContent(Parameters.build {
+                append("datepickerFrom", payload.dateFrom)
+                append("datepickerTo", payload.dateTo)
+                append("changeDate", payload.changeDate)
+                append("urlBase", payload.urlBase)
+                append("classId", payload.classId.toString())
+                append("print", payload.print.toString())
+            })
         }
+    }
+
+    override suspend fun getMarksEvent(infoUrl: String): String {
+        return client.get { url(EVENTS_INDIVIDUAL_GET.replace("{mark_url}", infoUrl)) }
     }
 
     override suspend fun getAttendance(): String {
@@ -96,8 +106,13 @@ class BackendApiImpl(
     override suspend fun postClassWork(payload: PostClassWork, page: Int): String {
         return client.post {
             url(CLASS_WORK_POST.replace("{page}", page.toString()))
-            contentType(ContentType.Application.FormUrlEncoded)
-            body = converter.toPostClassWorkJson(payload)
+            body = FormDataContent(Parameters.build {
+                append("datepickerFrom", payload.dateFrom)
+                append("datepickerTo", payload.dateTo)
+                append("changeDate", payload.changeDate)
+                append("orderBy", payload.orderBy.toString())
+                append("lessonSelect", payload.lessonSelect.toString())
+            })
         }
     }
 
@@ -108,8 +123,13 @@ class BackendApiImpl(
     override suspend fun postHomeWork(payload: PostHomeWork, page: Int): String {
         return client.post {
             url(HOME_WORK_POST.replace("{page}", page.toString()))
-            contentType(ContentType.Application.FormUrlEncoded)
-            body = converter.toPostHomeWorkJson(payload)
+            body = FormDataContent(Parameters.build {
+                append("datepickerFrom", payload.dateFrom)
+                append("datepickerTo", payload.dateTo)
+                append("changeDate", payload.changeDate)
+                append("orderBy", payload.orderBy.toString())
+                append("lessonSelect", payload.lessonSelect.toString())
+            })
         }
     }
 
@@ -119,9 +139,13 @@ class BackendApiImpl(
 
     override suspend fun postControlWork(payload: PostControlWork): String {
         return client.post {
-            url(CONTROL_WORK_POST.replace("{group_id}", payload.selectedGroup.toString()))
-            contentType(ContentType.Application.FormUrlEncoded)
-            body = converter.toPostControlWorkJson(payload)
+            url(CONTROL_WORK_POST.replace("/{group_id}", ""))
+            body = FormDataContent(Parameters.build {
+                append("datepickerFrom", payload.dateFrom)
+                append("datepickerTo", payload.dateTo)
+                append("changeDate", payload.changeDate)
+                append("selectGroup", payload.selectedGroup.toString())
+            })
         }
     }
 

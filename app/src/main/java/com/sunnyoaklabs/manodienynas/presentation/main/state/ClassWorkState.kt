@@ -5,5 +5,5 @@ import com.sunnyoaklabs.manodienynas.domain.model.Event
 
 data class ClassWorkState(
     val classWork: List<ClassWork> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = true
 )

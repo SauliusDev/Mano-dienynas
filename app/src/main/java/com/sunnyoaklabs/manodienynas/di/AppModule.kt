@@ -43,6 +43,7 @@ object AppModule {
     fun provideMarksFragmentViewModel(
         getMarks: GetMarks,
         getMarksByCondition: GetMarksByCondition,
+        getMarksEventItem: GetMarksEventItem,
         getAttendance: GetAttendance,
         getClassWork: GetClassWork,
         getClassWorkByCondition: GetClassWorkByCondition,
@@ -54,6 +55,7 @@ object AppModule {
         return MarksFragmentViewModel(
             getMarks,
             getMarksByCondition,
+            getMarksEventItem,
             getAttendance,
             getClassWork,
             getClassWorkByCondition,
@@ -118,10 +120,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideBackendApi(
-        converter: Converter
-    ): BackendApi {
-        return BackendApi.create(converter)
+    fun provideBackendApi(): BackendApi {
+        return BackendApi.create()
     }
 
     @Provides
@@ -189,6 +189,12 @@ object AppModule {
     @Singleton
     fun provideGetMarksByConditionUseCase(repository: Repository): GetMarksByCondition {
         return GetMarksByCondition(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMarksEventItemByConditionUseCase(repository: Repository): GetMarksEventItem {
+        return GetMarksEventItem(repository)
     }
 
     @Provides

@@ -17,6 +17,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostMarks
+import com.sunnyoaklabs.manodienynas.domain.model.MarksEventItem
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,6 +36,7 @@ import javax.inject.Inject
 class MarksFragmentViewModel @Inject constructor(
     private val getMarks: GetMarks,
     private val getMarksByCondition: GetMarksByCondition,
+    private val getMarksEventItem: GetMarksEventItem,
     private val getAttendance: GetAttendance,
     private val getClassWork: GetClassWork,
     private val getClassWorkByCondition: GetClassWorkByCondition,
@@ -43,6 +45,9 @@ class MarksFragmentViewModel @Inject constructor(
     private val getControlWork: GetControlWork,
     private val getControlWorkByCondition: GetControlWorkByCondition
 ) : ViewModel() {
+
+    private val _marksEventItemFlow = MutableSharedFlow<MarksEventItem>()
+    val marksEventItemFlow = _marksEventItemFlow.asSharedFlow()
 
     private val _markTimeRange = mutableStateOf(Pair("", ""))
     val markTimeRange = _markTimeRange
@@ -112,6 +117,35 @@ class MarksFragmentViewModel @Inject constructor(
                             marks = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        _eventFlow.emit(
+                            UIEvent.ShowSnackbar(
+                                it.message ?: Errors.UNKNOWN_ERROR
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun initMarksEventItem(infoUrl: String) {
+        viewModelScope.launch {
+            getMarksEventItem(infoUrl).collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        it.data?.let { item ->
+                            _marksEventItemFlow.emit(item)
+                        }
+                    }
+                    is Resource.Success -> {
+                        it.data?.let { item ->
+                            _marksEventItemFlow.emit(item)
+                        }
+                    }
+                    is Resource.Error -> {
+                        it.data?.let { item ->
+                            _marksEventItemFlow.emit(item)
+                        }
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -526,8 +560,8 @@ class MarksFragmentViewModel @Inject constructor(
 
     private fun getPostControlWorkPayload(): PostControlWork {
         return PostControlWork(
-            markTimeRange.value.first,
-            markTimeRange.value.second,
+            _controlWorkTimeRange.value.first,
+            _controlWorkTimeRange.value.second,
             "",
             0
         )
@@ -535,8 +569,8 @@ class MarksFragmentViewModel @Inject constructor(
 
     private fun getPostHomeWorkPayload(): PostHomeWork {
         return PostHomeWork(
-            markTimeRange.value.first,
-            markTimeRange.value.second,
+            _homeWorkTimeRange.value.first,
+            _homeWorkTimeRange.value.second,
             "",
             0,
             0
@@ -545,8 +579,8 @@ class MarksFragmentViewModel @Inject constructor(
 
     private fun getPostClassWorkPayload(): PostClassWork {
         return PostClassWork(
-            markTimeRange.value.first,
-            markTimeRange.value.second,
+            _classWorkTimeRange.value.first,
+            _classWorkTimeRange.value.second,
             "",
             0,
             0

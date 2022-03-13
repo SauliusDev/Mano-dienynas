@@ -42,6 +42,7 @@ import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentPurple
 import com.sunnyoaklabs.manodienynas.ui.theme.accentRed
 import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun MarksCard(
@@ -51,6 +52,14 @@ fun MarksCard(
     val marksState = marksFragmentViewModel.markState.value
     val attendanceState = marksFragmentViewModel.attendanceState.value
     val collapsableSectionMarks = mutableListOf<CollapsableSectionMarks>()
+    // TODO
+    //  -show some sort loading animation
+    //  -show dialog when !isLoading
+    LaunchedEffect(key1 = true) {
+        marksFragmentViewModel.marksEventItemFlow.collect {
+            Log.e("console log", ": "+it)
+        }
+    }
     for (i in marksState.marks.indices) {
         val attendance = attendanceState.attendance.find { attendance ->
             attendance.teacher == marksState.marks[i].teacher
@@ -111,6 +120,7 @@ fun MarksCard(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 CollapsableLazyColumnMarks(
+                    marksFragmentViewModel = marksFragmentViewModel,
                     sections = collapsableSectionMarks
                 )
             }
@@ -120,6 +130,7 @@ fun MarksCard(
 
 @Composable
 fun CollapsableLazyColumnMarks(
+    marksFragmentViewModel: MarksFragmentViewModel,
     sections: List<CollapsableSectionMarks>,
     modifier: Modifier = Modifier
 ) {
@@ -133,7 +144,7 @@ fun CollapsableLazyColumnMarks(
                 }
             } else {
                 item {
-                    MarksItem(i, dataItem, collapsedState, collapsed)
+                    MarksItem(marksFragmentViewModel, i, dataItem, collapsedState, collapsed)
                 }
             }
         }
@@ -142,6 +153,7 @@ fun CollapsableLazyColumnMarks(
 
 @Composable
 fun MarksItem(
+    marksFragmentViewModel: MarksFragmentViewModel,
     i: Int,
     dataItem: CollapsableSectionMarks,
     collapsedState: SnapshotStateList<Boolean>,
@@ -237,6 +249,7 @@ fun MarksItem(
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(dataItem.mark.markEvent) {
                 MarkEventItem(
+                    marksFragmentViewModel,
                     it
                 )
             }
@@ -381,6 +394,7 @@ fun AttendanceAllItem(
 
 @Composable
 fun MarkEventItem(
+    marksFragmentViewModel: MarksFragmentViewModel,
     markEvent: MarkEvent,
     modifier: Modifier = Modifier
 ) {
@@ -391,8 +405,7 @@ fun MarkEventItem(
             .clip(RoundedCornerShape(5.dp))
             .background(accentRed)
             .clickable {
-                // TODO call viewModel to make event details request
-                Log.e("console log", "mark event url: " + markEvent.infoUrl)
+                marksFragmentViewModel.initMarksEventItem(markEvent.infoUrl)
             },
     ) {
         Column(
