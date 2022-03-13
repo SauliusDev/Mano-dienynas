@@ -16,6 +16,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.HOME_WORK_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.LOGIN_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.LOGOUT_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MARKS_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MARKS_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_DELETED_LIST_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_GOTTEN_LIST_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_INDIVIDUAL_GET
@@ -74,6 +75,14 @@ class BackendApiImpl(
 
     override suspend fun getMarks(): String {
         return client.get { url(MARKS_GET) }
+    }
+
+    override suspend fun postMarks(payload: PostMarks, schoolId: String): String {
+        return client.post {
+            url(MARKS_POST.replace("{school_id}", schoolId))
+            contentType(ContentType.Application.FormUrlEncoded)
+            body = converter.toPostMarkJson(payload)
+        }
     }
 
     override suspend fun getAttendance(): String {

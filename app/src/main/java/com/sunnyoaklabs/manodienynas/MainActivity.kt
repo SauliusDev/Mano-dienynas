@@ -2,12 +2,14 @@ package com.sunnyoaklabs.manodienynas
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.activity.viewModels
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private val splashViewModel: SplashViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /** Handles initial login **/

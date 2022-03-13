@@ -4,10 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,20 +27,50 @@ fun ChangeDateButton(
     modifier: Modifier = Modifier
 ) {
     val markFragmentTypeState = marksFragmentViewModel.markFragmentTypeState.value
-    val datePickedFirst = remember {
-        mutableStateOf("")
+    val markDateRange = marksFragmentViewModel.markTimeRange.value
+    val controlWorkDateRange = marksFragmentViewModel.controlWorkTimeRange.value
+    val homeWorkDateRange = marksFragmentViewModel.homeWorkTimeRange.value
+    val classWorkDateRange = marksFragmentViewModel.classWorkTimeRange.value
+    val dateRangePicked = remember {
+        mutableStateOf(markDateRange)
     }
-    val datePickedSecond = remember {
-        mutableStateOf("")
+    when {
+        markFragmentTypeState.markTypeIsSelected -> {
+            dateRangePicked.value = markDateRange.copy(
+                markDateRange.first,
+                markDateRange.second
+            )
+        }
+        markFragmentTypeState.controlWorkTypeIsSelected -> {
+            dateRangePicked.value = controlWorkDateRange.copy(
+                controlWorkDateRange.first,
+                controlWorkDateRange.second
+            )
+        }
+        markFragmentTypeState.homeWorkTypeIsSelected -> {
+            dateRangePicked.value = homeWorkDateRange.copy(
+                homeWorkDateRange.first,
+                homeWorkDateRange.second
+            )
+        }
+        markFragmentTypeState.classWorkTypeIsSelected -> {
+            dateRangePicked.value = classWorkDateRange.copy(
+                classWorkDateRange.first,
+                classWorkDateRange.second
+            )
+        }
     }
     val updatedDate = { dateFirst : Long?, dateSecond : Long? ->
+        val timeRangeFormatted = marksFragmentViewModel.formatTimeRange(
+            Pair(dateFirst ?: "".toLong(), dateSecond ?: "".toLong())
+        )
+        marksFragmentViewModel.updateTimeRange(timeRangeFormatted)
         marksFragmentViewModel.initDataByCondition()
-        datePickedFirst.value = marksFragmentViewModel.formatDateFromMillis(dateFirst) ?: ""
-        datePickedSecond.value = marksFragmentViewModel.formatDateFromMillis(dateSecond) ?: ""
+        dateRangePicked.value = timeRangeFormatted
     }
     DatePickerView(
         fragmentManager,
-        datePickedFirst.value + " - " + datePickedSecond.value,
+        dateRangePicked.value.first + " - " + dateRangePicked.value.second,
         updatedDate,
         modifier
             .padding(horizontal = 4.dp, vertical = 4.dp)
@@ -66,7 +93,7 @@ fun MarksCardButton(
         onClick = {
             marksFragmentViewModel.updateMarkMarkFragmentTypeState()
         },
-        elevation = ButtonDefaults.elevation(5.dp)
+        elevation = ButtonDefaults.elevation(2.dp)
     ) {
         Column(
             modifier = Modifier.padding(2.dp),
@@ -99,7 +126,7 @@ fun ControlWorkCardButton(
         onClick = {
             marksFragmentViewModel.updateControlWorkMarkFragmentTypeState()
         },
-        elevation = ButtonDefaults.elevation(5.dp)
+        elevation = ButtonDefaults.elevation(2.dp)
     ) {
         Column(
             modifier = Modifier.padding(2.dp),
@@ -132,7 +159,7 @@ fun HomeWorkCardButton(
         onClick = {
             marksFragmentViewModel.updateHomeWorkMarkFragmentTypeState()
         },
-        elevation = ButtonDefaults.elevation(5.dp)
+        elevation = ButtonDefaults.elevation(2.dp)
     ) {
         Column(
             modifier = Modifier.padding(2.dp),
@@ -165,7 +192,7 @@ fun ClassWorkCardButton(
         onClick = {
             marksFragmentViewModel.updateClassWorkMarkFragmentTypeState()
         },
-        elevation = ButtonDefaults.elevation(5.dp)
+        elevation = ButtonDefaults.elevation(2.dp)
     ) {
         Column(
             modifier = Modifier.padding(2.dp),

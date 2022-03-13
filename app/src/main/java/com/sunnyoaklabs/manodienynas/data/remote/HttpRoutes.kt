@@ -18,6 +18,7 @@ object HttpRoutes {
     const val EVENTS_GET = "$BASE_URL/1/lt/page/sf/resolve_post/event/list"
 
     const val MARKS_GET = "$BASE_URL/1/lt/page/marks_pupil/marks"
+    const val MARKS_POST = "$BASE_URL/1/lt/page/marks_pupil/marks/{school_id}"
 
     const val ATTENDANCE_GET = "$BASE_URL/1/lt/page/marks_pupil/pupil_attendance"
 

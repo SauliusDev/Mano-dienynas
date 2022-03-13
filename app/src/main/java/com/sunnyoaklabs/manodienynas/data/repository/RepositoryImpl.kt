@@ -137,6 +137,35 @@ class RepositoryImpl(
         emit(Resource.Success(newMarks))
     }
 
+    override fun getMarksByCondition(payload: PostMarks): Flow<Resource<List<Mark>>> = flow {
+        emit(Resource.Loading())
+        val marksLocal = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
+        emit(Resource.Loading(data = marksLocal))
+        try {
+            val schoolId = dataSource.getSettings()?.let {
+                converter.toSettingsFromEntity(it)
+            }?.selectedSchool?.schoolId
+            if (schoolId == null) {
+                emit(Resource.Error(message = UNKNOWN_ERROR))
+            }
+            val response = api.postMarks(payload, schoolId ?: "")
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
+                val marksApi = converter.toMarks(response)
+                dataSource.deleteAllMarks()
+                marksApi.forEach { dataSource.insertMark(it) }
+            } else {
+                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
+        }
+        val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
+        emit(Resource.Success(newMarks))
+    }
+
     override fun getAttendance(): Flow<Resource<List<Attendance>>> = flow {
         emit(Resource.Loading())
         val attendanceLocal = dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }

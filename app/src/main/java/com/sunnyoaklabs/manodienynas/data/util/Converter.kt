@@ -1,10 +1,7 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
 import com.google.gson.reflect.TypeToken
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostLogin
+import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import manodienynas.db.*
 
@@ -82,6 +79,13 @@ class Converter(
         return jsonParser.toJson(
             payload,
             object : TypeToken<PostLogin>(){}.type
+        ) ?: "[]"
+    }
+
+    fun toPostMarkJson(payload: PostMarks): String {
+        return jsonParser.toJson(
+            payload,
+            object : TypeToken<PostMarks>(){}.type
         ) ?: "[]"
     }
 

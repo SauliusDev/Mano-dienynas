@@ -20,6 +20,7 @@ interface Repository {
     fun getEvents(): Flow<Resource<List<Event>>>
 
     fun getMarks(): Flow<Resource<List<Mark>>>
+    fun getMarksByCondition(payload: PostMarks): Flow<Resource<List<Mark>>>
 
     fun getAttendance(): Flow<Resource<List<Attendance>>>
 

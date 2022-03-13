@@ -42,6 +42,7 @@ object AppModule {
     @Singleton
     fun provideMarksFragmentViewModel(
         getMarks: GetMarks,
+        getMarksByCondition: GetMarksByCondition,
         getAttendance: GetAttendance,
         getClassWork: GetClassWork,
         getClassWorkByCondition: GetClassWorkByCondition,
@@ -52,6 +53,7 @@ object AppModule {
     ): MarksFragmentViewModel {
         return MarksFragmentViewModel(
             getMarks,
+            getMarksByCondition,
             getAttendance,
             getClassWork,
             getClassWorkByCondition,
@@ -181,6 +183,12 @@ object AppModule {
     @Singleton
     fun provideGetEventsPageUseCase(repository: Repository): GetEventsPage {
         return GetEventsPage(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMarksByConditionUseCase(repository: Repository): GetMarksByCondition {
+        return GetMarksByCondition(repository)
     }
 
     @Provides

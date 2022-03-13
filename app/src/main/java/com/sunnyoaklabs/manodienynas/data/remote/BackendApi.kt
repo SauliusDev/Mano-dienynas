@@ -23,6 +23,7 @@ interface BackendApi {
     suspend fun getEvents(): String
 
     suspend fun getMarks(): String
+    suspend fun postMarks(payload: PostMarks, schoolId: String): String
 
     suspend fun getAttendance(): String
 

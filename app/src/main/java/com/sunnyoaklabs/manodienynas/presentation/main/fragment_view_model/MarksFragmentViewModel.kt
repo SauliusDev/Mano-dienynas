@@ -1,7 +1,9 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
 import android.app.Application
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -14,6 +16,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
+import com.sunnyoaklabs.manodienynas.data.remote.dto.PostMarks
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,11 +27,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
 class MarksFragmentViewModel @Inject constructor(
     private val getMarks: GetMarks,
+    private val getMarksByCondition: GetMarksByCondition,
     private val getAttendance: GetAttendance,
     private val getClassWork: GetClassWork,
     private val getClassWorkByCondition: GetClassWorkByCondition,
@@ -117,6 +123,38 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
+    fun initMarksByCondition() {
+        viewModelScope.launch {
+            getMarksByCondition(getPostMarksPayload()).collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        _markState.value = markState.value.copy(
+                            marks = it.data ?: emptyList(),
+                            isLoading = true
+                        )
+                    }
+                    is Resource.Success -> {
+                        _markState.value = markState.value.copy(
+                            marks = it.data ?: emptyList(),
+                            isLoading = false
+                        )
+                    }
+                    is Resource.Error -> {
+                        _markState.value = markState.value.copy(
+                            marks = it.data ?: emptyList(),
+                            isLoading = true
+                        )
+                        _eventFlow.emit(
+                            UIEvent.ShowSnackbar(
+                                it.message ?: Errors.UNKNOWN_ERROR
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun initAttendance() {
         viewModelScope.launch {
             getAttendance().collect {
@@ -182,9 +220,9 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initClassWorkByCondition(payload: PostClassWork, page: Int) {
+    fun initClassWorkByCondition() {
         viewModelScope.launch {
-            getClassWorkByCondition(payload, page).collect {
+            getClassWorkByCondition(getPostClassWorkPayload(), 0).collect {
                 when (it) {
                     is Resource.Loading -> {
                         _classWorkState.value = classWorkState.value.copy(
@@ -247,9 +285,9 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initHomeWorkByCondition(payload: PostHomeWork, page: Int) {
+    fun initHomeWorkByCondition() {
         viewModelScope.launch {
-            getHomeWorkByCondition(payload, page).collect {
+            getHomeWorkByCondition(getPostHomeWorkPayload(), 0).collect {
                 when (it) {
                     is Resource.Loading -> {
                         _homeWorkState.value = homeWorkState.value.copy(
@@ -312,9 +350,9 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initControlWorkByCondition(payload: PostControlWork, page: Int) {
+    fun initControlWorkByCondition() {
         viewModelScope.launch {
-            getControlWorkByCondition(payload, page).collect {
+            getControlWorkByCondition(getPostControlWorkPayload(), 0).collect {
                 when (it) {
                     is Resource.Loading -> {
                         _controlWorkState.value = controlWorkState.value.copy(
@@ -388,13 +426,62 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initDataByCondition() {
-        viewModelScope.launch {
-            // TODO init data by condition or date
+    fun updateTimeRange(timeRange: Pair<String, String>) {
+        when {
+            _markFragmentTypeState.value.markTypeIsSelected -> {
+                _markTimeRange.value = markTimeRange.value.copy(
+                    timeRange.first,
+                    timeRange.second
+                )
+            }
+            _markFragmentTypeState.value.controlWorkTypeIsSelected -> {
+                _controlWorkTimeRange.value = controlWorkTimeRange.value.copy(
+                    timeRange.first,
+                    timeRange.second
+                )
+            }
+            _markFragmentTypeState.value.homeWorkTypeIsSelected -> {
+                _homeWorkTimeRange.value = homeWorkTimeRange.value.copy(
+                    timeRange.first,
+                    timeRange.second
+                )
+            }
+            _markFragmentTypeState.value.classWorkTypeIsSelected -> {
+                _classWorkTimeRange.value = classWorkTimeRange.value.copy(
+                    timeRange.first,
+                    timeRange.second
+                )
+            }
         }
     }
 
-    fun formatDateFromMillis(milliseconds : Long?) : String?{
+    fun initDataByCondition() {
+        viewModelScope.launch {
+            when {
+                _markFragmentTypeState.value.markTypeIsSelected -> {
+                    initMarksByCondition()
+                }
+                _markFragmentTypeState.value.controlWorkTypeIsSelected -> {
+                    initControlWorkByCondition()
+                }
+                _markFragmentTypeState.value.homeWorkTypeIsSelected -> {
+                    initHomeWorkByCondition()
+                }
+                _markFragmentTypeState.value.classWorkTypeIsSelected -> {
+                    initClassWorkByCondition()
+                }
+            }
+        }
+    }
+
+    fun formatTimeRange(timeRange: Pair<Long, Long>): Pair<String, String> {
+        return Pair(
+            formatDateFromMillis(timeRange.first) ?: "",
+            formatDateFromMillis(timeRange.second) ?: "",
+        )
+    }
+
+    private fun formatDateFromMillis(milliseconds : Long?) : String?{
         milliseconds?.let{
             val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
             val calendar: Calendar = Calendar.getInstance()
@@ -404,39 +491,65 @@ class MarksFragmentViewModel @Inject constructor(
         return null
     }
 
-    fun updateMarkTimeRange(timeRange: Pair<String, String>) {
-        viewModelScope.launch {
-            _markTimeRange.value = markTimeRange.value.copy(
-                timeRange.first,
-                timeRange.second
-            )
-        }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun setInitialTimeRanges() {
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val current = LocalDateTime.now()
+        _markTimeRange.value = markTimeRange.value.copy(
+            current.minusMonths(2).format(dateFormatter),
+            current.plusMonths(2).format(dateFormatter)
+        )
+        _controlWorkTimeRange.value = controlWorkTimeRange.value.copy(
+            current.minusMonths(1).format(dateFormatter),
+            current.plusMonths(1).format(dateFormatter)
+        )
+        _homeWorkTimeRange.value = homeWorkTimeRange.value.copy(
+            current.minusMonths(1).format(dateFormatter),
+            current.plusMonths(1).format(dateFormatter)
+        )
+        _classWorkTimeRange.value = classWorkTimeRange.value.copy(
+            current.minusMonths(1).format(dateFormatter),
+            current.plusMonths(1).format(dateFormatter)
+        )
     }
 
-    fun updateControlWorkTimeRange(timeRange: Pair<String, String>) {
-        viewModelScope.launch {
-            _controlWorkTimeRange.value = controlWorkTimeRange.value.copy(
-                timeRange.first,
-                timeRange.second
-            )
-        }
+    private fun getPostMarksPayload(): PostMarks {
+        return PostMarks(
+            markTimeRange.value.first,
+            markTimeRange.value.second,
+            "",
+            "/1/lt/page/marks_pupil/marks",
+            "",
+            ""
+        )
     }
 
-    fun updateHomeWorkTimeRange(timeRange: Pair<String, String>) {
-        viewModelScope.launch {
-            _homeWorkTimeRange.value = homeWorkTimeRange.value.copy(
-                timeRange.first,
-                timeRange.second
-            )
-        }
+    private fun getPostControlWorkPayload(): PostControlWork {
+        return PostControlWork(
+            markTimeRange.value.first,
+            markTimeRange.value.second,
+            "",
+            0
+        )
     }
 
-    fun updateClassWorkTimeRange(timeRange: Pair<String, String>) {
-        viewModelScope.launch {
-            _classWorkTimeRange.value = classWorkTimeRange.value.copy(
-                timeRange.first,
-                timeRange.second
-            )
-        }
+    private fun getPostHomeWorkPayload(): PostHomeWork {
+        return PostHomeWork(
+            markTimeRange.value.first,
+            markTimeRange.value.second,
+            "",
+            0,
+            0
+        )
+    }
+
+    private fun getPostClassWorkPayload(): PostClassWork {
+        return PostClassWork(
+            markTimeRange.value.first,
+            markTimeRange.value.second,
+            "",
+            0,
+            0
+        )
     }
 }

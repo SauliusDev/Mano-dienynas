@@ -17,6 +17,7 @@ val accentOrange = Color(0xFFEF682D)
 val accentGreenLight = Color(0xFF87F05A)
 val accentGreenLightest = Color(0xFFCAD4C5)
 val accentGrey = Color(0xFFF0F0F0)
+val accentGreyLight = Color(0xFFF8F8F8)
 val accentPurpleLight = Color(0xFFC844AB)
 
 

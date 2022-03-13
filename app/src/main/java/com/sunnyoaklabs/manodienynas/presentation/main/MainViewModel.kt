@@ -9,6 +9,7 @@ import android.net.NetworkCapabilities.*
 import android.os.Build
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -22,6 +23,7 @@ import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
+import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
 import com.sunnyoaklabs.manodienynas.domain.model.Event
 import com.sunnyoaklabs.manodienynas.domain.model.Person
 import com.sunnyoaklabs.manodienynas.domain.model.Settings
@@ -63,6 +65,7 @@ class MainViewModel @Inject constructor(
     private val _userState = mutableStateOf(UserStateState())
     val userState: State<UserStateState> = _userState
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun initSessionCookies() {
         viewModelScope.launch {
             // TODO testing
@@ -80,6 +83,7 @@ class MainViewModel @Inject constructor(
                             )
                         )
                         changeRole().join()
+                        setInitialValues().join()
                         initData().join()
                     }
                     is Resource.Error -> {
@@ -101,6 +105,13 @@ class MainViewModel @Inject constructor(
                     else -> {}
                 }
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setInitialValues(): Job {
+        return viewModelScope.launch {
+            marksFragmentViewModel.setInitialTimeRanges()
         }
     }
 
@@ -126,7 +137,8 @@ class MainViewModel @Inject constructor(
             marksFragmentViewModel.initMarks()
             marksFragmentViewModel.initAttendance()
             marksFragmentViewModel.initClassWork()
-            marksFragmentViewModel.initHomeWork()
+            //marksFragmentViewModel.initHomeWork()
+            marksFragmentViewModel.initHomeWorkByCondition()
             marksFragmentViewModel.initControlWork()
             // all other initializations ..................
         }
