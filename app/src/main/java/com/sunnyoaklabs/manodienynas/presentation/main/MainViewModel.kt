@@ -134,11 +134,15 @@ class MainViewModel @Inject constructor(
         return CoroutineScope(IO).launch {
 //            val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
 //            initPerson(eventsJob)
-            marksFragmentViewModel.initMarksByCondition()
-            marksFragmentViewModel.initAttendance()
-            marksFragmentViewModel.initControlWorkByCondition()
-            marksFragmentViewModel.initClassWorkByCondition()
-            marksFragmentViewModel.initHomeWorkByCondition()
+//            marksFragmentViewModel.initMarksByCondition()
+//            marksFragmentViewModel.initAttendance()
+//            marksFragmentViewModel.initControlWorkByCondition()
+//            marksFragmentViewModel.initClassWorkByCondition()
+//            marksFragmentViewModel.initHomeWorkByCondition()
+            messagesFragmentViewModel.initMessagesGotten()
+            messagesFragmentViewModel.initMessagesSent()
+            messagesFragmentViewModel.initMessagesStarred()
+            messagesFragmentViewModel.initMessagesDeleted()
             // all other initializations ..................
         }
     }

@@ -10,10 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -31,17 +28,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
-import com.sunnyoaklabs.manodienynas.domain.model.Attendance
-import com.sunnyoaklabs.manodienynas.domain.model.AttendanceRange
-import com.sunnyoaklabs.manodienynas.domain.model.Mark
-import com.sunnyoaklabs.manodienynas.domain.model.MarkEvent
+import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
-import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
-import com.sunnyoaklabs.manodienynas.ui.theme.accentPurple
-import com.sunnyoaklabs.manodienynas.ui.theme.accentRed
-import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
+import com.sunnyoaklabs.manodienynas.ui.theme.*
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -49,22 +40,37 @@ fun MarksCard(
     marksFragmentViewModel: MarksFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    val marksEventItem = remember {
+        mutableStateOf(
+            MarksEventItem(
+                "",
+                "",
+                "",
+                "",
+                ""
+            )
+        )
+    }
     val marksState = marksFragmentViewModel.markState.value
     val attendanceState = marksFragmentViewModel.attendanceState.value
     val collapsableSectionMarks = mutableListOf<CollapsableSectionMarks>()
-    // TODO
-    //  -show some sort loading animation
-    //  -show dialog when !isLoading
     LaunchedEffect(key1 = true) {
         marksFragmentViewModel.marksEventItemFlow.collect {
-            Log.e("console log", ": "+it)
+            // TODO
+            //  -show some sort loading animation
+            //  -show dialog when !isLoading
+            it.marksEventItem?.let { marksEventItemIt ->
+                marksEventItem.value = marksEventItemIt
+            }
+            setShowDialog(true)
         }
     }
     for (i in marksState.marks.indices) {
         val attendance = attendanceState.attendance.find { attendance ->
             attendance.teacher == marksState.marks[i].teacher
         }
-        if (i == marksState.marks.size-1) {
+        if (i == marksState.marks.size - 1) {
             collapsableSectionMarks.add(
                 CollapsableSectionMarks(
                     Mark("", "", "", listOf(), 0),
@@ -83,6 +89,11 @@ fun MarksCard(
     val scope = rememberCoroutineScope()
     val state = rememberLazyListState()
     state.disableScrolling(scope)
+    EventDialog(
+        showDialog,
+        marksEventItem.value,
+        setShowDialog
+    )
     when {
         marksState.isLoading || attendanceState.isLoading -> {
             LazyColumn(
@@ -336,7 +347,10 @@ fun AttendanceAllItem(
                             .size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = stringResource(id = R.string.all_lesson_attendance), fontSize = 16.sp)
+                    Text(
+                        text = stringResource(id = R.string.all_lesson_attendance),
+                        fontSize = 16.sp
+                    )
                 }
             }
             Icon(
@@ -518,5 +532,42 @@ fun EmptyMarksItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun EventDialog(
+    showDialog: Boolean,
+    marksEventItem: MarksEventItem,
+    setShowDialog: (Boolean) -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            modifier = Modifier.padding(0.dp),
+            onDismissRequest = {
+            },
+            confirmButton = {},
+            dismissButton = {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(primaryGreenAccent),
+                    onClick = {
+                        setShowDialog(false)
+                    },
+                ) {
+                    Text(stringResource(id = R.string.cancel))
+                }
+            },
+            title = {
+                Text(
+                    marksEventItem.writer + "\n" +
+                        marksEventItem.date + "\n" +
+                        marksEventItem.evaluation + "\n" +
+                        marksEventItem.type + "\n" +
+                        marksEventItem.lesson
+                )
+            },
+        )
     }
 }

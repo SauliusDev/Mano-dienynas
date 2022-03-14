@@ -46,7 +46,7 @@ class MarksFragmentViewModel @Inject constructor(
     private val getControlWorkByCondition: GetControlWorkByCondition
 ) : ViewModel() {
 
-    private val _marksEventItemFlow = MutableSharedFlow<MarksEventItem>()
+    private val _marksEventItemFlow = MutableSharedFlow<MarksEventItemState>()
     val marksEventItemFlow = _marksEventItemFlow.asSharedFlow()
 
     private val _markTimeRange = mutableStateOf(Pair("", ""))
@@ -91,7 +91,11 @@ class MarksFragmentViewModel @Inject constructor(
         getDataJob = viewModelScope.launch {
             delay(500L)
             if (!_markState.value.isLoading) {
-//                initMarks()
+//                initMarksByCondition()
+//                initAttendance()
+//                initControlWorkByCondition()
+//                initClassWorkByCondition()
+//                initHomeWorkByCondition()
             }
         }
     }
@@ -134,17 +138,17 @@ class MarksFragmentViewModel @Inject constructor(
                 when (it) {
                     is Resource.Loading -> {
                         it.data?.let { item ->
-                            _marksEventItemFlow.emit(item)
+                            _marksEventItemFlow.emit(MarksEventItemState(item, true))
                         }
                     }
                     is Resource.Success -> {
                         it.data?.let { item ->
-                            _marksEventItemFlow.emit(item)
+                            _marksEventItemFlow.emit(MarksEventItemState(item, false))
                         }
                     }
                     is Resource.Error -> {
                         it.data?.let { item ->
-                            _marksEventItemFlow.emit(item)
+                            _marksEventItemFlow.emit(MarksEventItemState(item, false))
                         }
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
@@ -530,8 +534,8 @@ class MarksFragmentViewModel @Inject constructor(
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val current = LocalDateTime.now()
         _markTimeRange.value = markTimeRange.value.copy(
-            current.minusMonths(2).format(dateFormatter),
-            current.plusMonths(2).format(dateFormatter)
+            current.minusMonths(4).format(dateFormatter),
+            current.format(dateFormatter)
         )
         _controlWorkTimeRange.value = controlWorkTimeRange.value.copy(
             current.minusMonths(1).format(dateFormatter),
