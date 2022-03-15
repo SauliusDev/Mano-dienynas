@@ -1,4 +1,4 @@
-package com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp
+package com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.comp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,29 +23,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
-import com.sunnyoaklabs.manodienynas.domain.model.ClassWork
+import com.sunnyoaklabs.manodienynas.domain.model.Message
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
+import com.sunnyoaklabs.manodienynas.ui.theme.accentGreenDark
 
 @Composable
-fun ClassWorkCard(
-    marksFragmentViewModel: MarksFragmentViewModel,
+fun MessagesDeletedCard(
+    messagesFragmentViewModel: MessagesFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
-    val classWorkState = marksFragmentViewModel.classWorkState.value
+    val messagesDeletedState = messagesFragmentViewModel.messagesDeletedState.value
 
     val scope = rememberCoroutineScope()
     val state = rememberLazyListState()
     state.disableScrolling(scope)
     when {
-        classWorkState.isLoading -> {
-            LoadingList(10, state)
+        messagesDeletedState.isLoading -> {
+            LoadingList(items = 10, state = state)
         }
-        classWorkState.classWork.isEmpty() -> {
-            EmptyClassWorkItem(marksFragmentViewModel)
+        messagesDeletedState.messagesDeleted.isEmpty() -> {
+            EmptyMessagesDeletedItem(messagesFragmentViewModel)
         }
         else -> {
             Column(
@@ -53,25 +55,11 @@ fun ClassWorkCard(
                     .fillMaxWidth()
                     .padding(vertical = 4.dp, horizontal = 4.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(id = R.drawable.ic_class_work),
-                        contentDescription = stringResource(R.string.marks_fragment_class_work),
-                        tint = accentBlue
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(id = R.string.marks_fragment_class_work),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = accentBlue
-                    )
-                }
+                MessagesDeletedTypeText()
                 Spacer(modifier = Modifier.height(4.dp))
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(classWorkState.classWork) {
-                        ClassWorkItem(it)
+                    items(messagesDeletedState.messagesDeleted) {
+                        MessagesDeletedItem(message = it)
                     }
                 }
             }
@@ -80,8 +68,8 @@ fun ClassWorkCard(
 }
 
 @Composable
-private fun ClassWorkItem(
-    classWork: ClassWork,
+private fun MessagesDeletedItem(
+    message: Message,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -93,43 +81,30 @@ private fun ClassWorkItem(
             .fillMaxWidth(),
         elevation = 2.dp,
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth(),
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, start = 4.dp, end = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(text = classWork.lesson, color = accentBlue)
-                    Text(text = classWork.teacher, fontSize = 12.sp)
-                }
-                Text(text = classWork.dateAddition, fontSize = 12.sp, color = Color.Gray)
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Spacer(
-                modifier = Modifier
-                    .height(1.dp)
-                    .background(Color.Gray)
-                    .fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = classWork.description,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 4.dp)
+                text = message.date,
+                color = Color.Gray,
+                modifier = Modifier.padding(horizontal = 12.dp),
+                fontWeight = FontWeight.Bold
             )
+            Column {
+                Text(text = message.theme)
+                Text(text = message.sender, fontSize = 12.sp, color = Color.Gray)
+            }
         }
     }
 }
 
+
 @Composable
-private fun EmptyClassWorkItem(
-    marksFragmentViewModel: MarksFragmentViewModel,
+private fun EmptyMessagesDeletedItem(
+    messagesFragmentViewModel: MessagesFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -153,7 +128,7 @@ private fun EmptyClassWorkItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    marksFragmentViewModel.initClassWork()
+                    messagesFragmentViewModel.initMessagesDeleted()
                 },
                 enabled = !isLoading.value
             ) {
@@ -167,5 +142,24 @@ private fun EmptyClassWorkItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun MessagesDeletedTypeText() {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            modifier = Modifier.size(16.dp),
+            painter = painterResource(id = R.drawable.ic_messages_deleted),
+            contentDescription = stringResource(R.string.messages_fragment_deleted),
+            tint = Color.Gray
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = stringResource(id = R.string.messages_fragment_deleted),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
     }
 }

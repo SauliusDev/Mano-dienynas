@@ -1,13 +1,17 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment.events
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Center
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,13 +33,11 @@ import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CONTROL_WORK_EVENT_TYP
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.Event
-import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
+import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
+import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.launch
 
 @Composable
 fun EventsFragment(
@@ -56,14 +58,7 @@ fun EventsFragment(
         state.disableScrolling(scope)
         when {
             eventsFragmentViewModel.eventState.value.isLoading -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = state
-                ) {
-                    items(10) {
-                        LoadingItem(1f/(it+1))
-                    }
-                }
+                LoadingList(items = 10, state = state)
             }
             events.isEmpty() -> {
                 EmptyEventsItem(eventsFragmentViewModel)
@@ -89,16 +84,8 @@ fun EventsFragment(
     }
 }
 
-fun LazyListState.disableScrolling(scope: CoroutineScope) {
-    scope.launch {
-        scroll(scrollPriority = MutatePriority.PreventUserInput) {
-            awaitCancellation()
-        }
-    }
-}
-
 @Composable
-fun EmptyEventsItem(
+private fun EmptyEventsItem(
     eventsFragmentViewModel: EventsFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -128,7 +115,9 @@ fun EmptyEventsItem(
                 enabled = !isLoading.value
             ) {
                 Icon(
-                    modifier = Modifier.width(50.dp).height(50.dp),
+                    modifier = Modifier
+                        .width(50.dp)
+                        .height(50.dp),
                     painter = painterResource(id = R.drawable.ic_download),
                     contentDescription = stringResource(id = R.string.reload),
                     tint = accentBlueLight
@@ -139,7 +128,7 @@ fun EmptyEventsItem(
 }
 
 @Composable
-fun EventCard(
+private fun EventCard(
     event: Event,
     modifier: Modifier = Modifier
 ) {
@@ -176,7 +165,7 @@ fun EventCard(
                         modifier = Modifier.weight(2.5f),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        setIcon(event = event)
+                        SetIcon(event = event)
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             if (event.title.isNotBlank()) {
@@ -281,7 +270,7 @@ private fun getEventColor(event: Event): Color {
 }
 
 @Composable
-private fun setIcon(event: Event) {
+private fun SetIcon(event: Event) {
     when (event.title) {
         CONTROL_WORK_EVENT_TYPE -> {
             Icon(

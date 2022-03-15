@@ -70,16 +70,24 @@ object AppModule {
     @Singleton
     fun provideMessagesFragmentViewModel(
         getMessagesGotten: GetMessagesGotten,
+        getMessagesGottenByCondition: GetMessagesGottenByCondition,
         getMessagesSent: GetMessagesSent,
+        getMessagesSentByCondition: GetMessagesSentByCondition,
         getMessagesStarred: GetMessagesStarred,
+        getMessagesStarredByCondition: GetMessagesStarredByCondition,
         getMessagesDeleted: GetMessagesDeleted,
+        getMessagesDeletedByCondition: GetMessagesDeletedByCondition,
         getMessageIndividual: GetMessageIndividual
     ): MessagesFragmentViewModel {
         return MessagesFragmentViewModel(
             getMessagesGotten,
+            getMessagesGottenByCondition,
             getMessagesSent,
+            getMessagesSentByCondition,
             getMessagesStarred,
+            getMessagesStarredByCondition,
             getMessagesDeleted,
+            getMessagesDeletedByCondition,
             getMessageIndividual
         )
     }
@@ -225,6 +233,30 @@ object AppModule {
     @Singleton
     fun provideGetClassWorkByConditionUseCase(repository: Repository): GetClassWorkByCondition {
         return GetClassWorkByCondition(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesGottenByConditionUseCase(repository: Repository): GetMessagesGottenByCondition {
+        return GetMessagesGottenByCondition(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesSentByConditionUseCase(repository: Repository): GetMessagesSentByCondition {
+        return GetMessagesSentByCondition(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesStarredByConditionUseCase(repository: Repository): GetMessagesStarredByCondition {
+        return GetMessagesStarredByCondition(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesDeletedByConditionUseCase(repository: Repository): GetMessagesDeletedByCondition {
+        return GetMessagesDeletedByCondition(repository)
     }
 
     @Provides

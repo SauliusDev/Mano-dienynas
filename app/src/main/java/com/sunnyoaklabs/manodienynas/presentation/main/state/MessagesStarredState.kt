@@ -5,5 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Message
 
 data class MessagesStarredState(
     val messagesStarred: List<Message> = emptyList(),
+    val page: Int = 1,
     val isLoading: Boolean = false
 )

@@ -24,12 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.ControlWork
-import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
+import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
-import com.sunnyoaklabs.manodienynas.ui.theme.accentOrange
-import com.sunnyoaklabs.manodienynas.ui.theme.accentPurple
 import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
 
 @Composable
@@ -44,14 +42,7 @@ fun ControlWorkCard(
     state.disableScrolling(scope)
     when {
         controlWorkState.isLoading -> {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = state
-            ) {
-                items(10) {
-                    LoadingItem(1f / (it + 1))
-                }
-            }
+            LoadingList(10, state)
         }
         controlWorkState.controlWork.isEmpty() -> {
             EmptyControlWorkItem(marksFragmentViewModel)
@@ -89,7 +80,7 @@ fun ControlWorkCard(
 }
 
 @Composable
-fun ControlWorkItem(
+private fun ControlWorkItem(
     controlWork: ControlWork,
     modifier: Modifier = Modifier
 ) {
@@ -147,7 +138,7 @@ fun ControlWorkItem(
 }
 
 @Composable
-fun EmptyControlWorkItem(
+private fun EmptyControlWorkItem(
     marksFragmentViewModel: MarksFragmentViewModel,
     modifier: Modifier = Modifier
 ) {

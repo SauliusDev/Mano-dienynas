@@ -12,7 +12,7 @@ CREATE TABLE messageIndividualEntity (
 getMessageIndividualById:
 SELECT *
 FROM messageIndividualEntity
-WHERE id = :id;
+WHERE messageId = :messageId;
 
 getAllMessagesIndividual:
 SELECT *

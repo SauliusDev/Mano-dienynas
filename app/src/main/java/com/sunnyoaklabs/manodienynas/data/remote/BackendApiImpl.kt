@@ -19,10 +19,14 @@ import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.LOGOUT_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MARKS_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MARKS_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_DELETED_LIST_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_DELETED_LIST_PAGE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_GOTTEN_LIST_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_GOTTEN_LIST_PAGE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_INDIVIDUAL_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_SENT_LIST_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_SENT_LIST_PAGE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_STARRED_LIST_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.MESSAGE_STARRED_LIST_PAGE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.PARENT_MEETINGS_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.SCHEDULE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.TERM_GET
@@ -157,16 +161,32 @@ class BackendApiImpl(
         return client.get { url(MESSAGE_GOTTEN_LIST_GET) }
     }
 
+    override suspend fun getMessagesGottenByCondition(page: String): String {
+        return client.get { url(MESSAGE_GOTTEN_LIST_PAGE_GET.replace("{page}", page)) }
+    }
+
     override suspend fun getMessagesSent(): String {
         return client.get { url(MESSAGE_SENT_LIST_GET) }
+    }
+
+    override suspend fun getMessagesSentByCondition(page: String): String {
+        return client.get { url(MESSAGE_SENT_LIST_PAGE_GET.replace("{page}", page)) }
     }
 
     override suspend fun getMessagesStarred(): String {
         return client.get { url(MESSAGE_STARRED_LIST_GET) }
     }
 
+    override suspend fun getMessagesStarredByCondition(page: String): String {
+        return client.get { url(MESSAGE_STARRED_LIST_PAGE_GET.replace("{page}", page)) }
+    }
+
     override suspend fun getMessagesDeleted(): String {
         return client.get { url(MESSAGE_DELETED_LIST_GET) }
+    }
+
+    override suspend fun getMessagesDeletedByCondition(page: String): String {
+        return client.get { url(MESSAGE_DELETED_LIST_PAGE_GET.replace("{page}", page)) }
     }
 
     override suspend fun getMessageIndividual(id: String): String {

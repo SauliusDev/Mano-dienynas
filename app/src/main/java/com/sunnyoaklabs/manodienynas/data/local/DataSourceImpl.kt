@@ -423,7 +423,7 @@ class DataSourceImpl @Inject constructor(
 
     override suspend fun getMessageIndividualById(id: Long): MessageIndividualEntity? {
         return withContext(dispatchers.io) {
-            db.messagesIndividualEntityQueries.getMessageIndividualById(id).executeAsOneOrNull()
+            db.messagesIndividualEntityQueries.getMessageIndividualById(id.toString()).executeAsOneOrNull()
         }
     }
 

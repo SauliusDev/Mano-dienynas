@@ -1,6 +1,5 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.*
-import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
+import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 import kotlinx.coroutines.flow.collect
@@ -96,14 +95,7 @@ fun MarksCard(
     )
     when {
         marksState.isLoading || attendanceState.isLoading -> {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = state
-            ) {
-                items(10) {
-                    LoadingItem(1f / (it + 1))
-                }
-            }
+            LoadingList(10, state)
         }
         marksState.marks.isEmpty() || attendanceState.attendance.isEmpty() -> {
             EmptyMarksItem(marksFragmentViewModel)
@@ -140,7 +132,7 @@ fun MarksCard(
 }
 
 @Composable
-fun CollapsableLazyColumnMarks(
+private fun CollapsableLazyColumnMarks(
     marksFragmentViewModel: MarksFragmentViewModel,
     sections: List<CollapsableSectionMarks>,
     modifier: Modifier = Modifier
@@ -163,7 +155,7 @@ fun CollapsableLazyColumnMarks(
 }
 
 @Composable
-fun MarksItem(
+private fun MarksItem(
     marksFragmentViewModel: MarksFragmentViewModel,
     i: Int,
     dataItem: CollapsableSectionMarks,
@@ -305,7 +297,7 @@ fun MarksItem(
 }
 
 @Composable
-fun AttendanceAllItem(
+private fun AttendanceAllItem(
     collapsableSectionMarks: CollapsableSectionMarks,
     modifier: Modifier = Modifier
 ) {
@@ -407,7 +399,7 @@ fun AttendanceAllItem(
 }
 
 @Composable
-fun MarkEventItem(
+private fun MarkEventItem(
     marksFragmentViewModel: MarksFragmentViewModel,
     markEvent: MarkEvent,
     modifier: Modifier = Modifier
@@ -433,7 +425,7 @@ fun MarkEventItem(
 }
 
 @Composable
-fun AttendanceEventItem(
+private fun AttendanceEventItem(
     attendance: List<Int>,
     attendanceRange: AttendanceRange,
     modifier: Modifier = Modifier
@@ -465,7 +457,7 @@ fun AttendanceEventItem(
 }
 
 @Composable
-fun AttendanceEventConditionItem(
+private fun AttendanceEventConditionItem(
     condition: String,
     lessons: Int,
     modifier: Modifier = Modifier
@@ -490,10 +482,10 @@ fun AttendanceEventConditionItem(
     }
 }
 
-data class CollapsableSectionMarks(val mark: Mark, val attendance: Attendance)
+private data class CollapsableSectionMarks(val mark: Mark, val attendance: Attendance)
 
 @Composable
-fun EmptyMarksItem(
+private fun EmptyMarksItem(
     marksFragmentViewModel: MarksFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -536,7 +528,7 @@ fun EmptyMarksItem(
 }
 
 @Composable
-fun EventDialog(
+private fun EventDialog(
     showDialog: Boolean,
     marksEventItem: MarksEventItem,
     setShowDialog: (Boolean) -> Unit

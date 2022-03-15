@@ -1,6 +1,8 @@
 package com.sunnyoaklabs.manodienynas.presentation.core
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.Composable
@@ -10,7 +12,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingItem(
+fun LoadingList(
+    items: Int,
+    state: LazyListState
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = state
+    ) {
+        items(items) {
+            LoadingItem(1f / (it + 1))
+        }
+    }
+}
+
+@Composable
+private fun LoadingItem(
     transparency: Float,
     modifier: Modifier = Modifier
 ) {

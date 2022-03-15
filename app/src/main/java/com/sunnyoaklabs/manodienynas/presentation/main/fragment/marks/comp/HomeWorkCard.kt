@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.HomeWork
-import com.sunnyoaklabs.manodienynas.presentation.core.LoadingItem
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
+import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
@@ -42,14 +42,7 @@ fun HomeWorkCard(
     state.disableScrolling(scope)
     when {
         homeWorkState.isLoading -> {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = state
-            ) {
-                items(10) {
-                    LoadingItem(1f / (it + 1))
-                }
-            }
+            LoadingList(10, state)
         }
         homeWorkState.homeWork.isEmpty() -> {
             EmptyHomeWorkItem(marksFragmentViewModel)
@@ -87,7 +80,7 @@ fun HomeWorkCard(
 }
 
 @Composable
-fun HomeWorkItem(
+private fun HomeWorkItem(
     homeWork: HomeWork,
     modifier: Modifier = Modifier
 ) {
@@ -142,7 +135,7 @@ fun HomeWorkItem(
 }
 
 @Composable
-fun EmptyHomeWorkItem(
+private fun EmptyHomeWorkItem(
     marksFragmentViewModel: MarksFragmentViewModel,
     modifier: Modifier = Modifier
 ) {

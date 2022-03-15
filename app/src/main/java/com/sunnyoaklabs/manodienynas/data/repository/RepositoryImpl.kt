@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
+import android.util.Log
 import com.sunnyoaklabs.manodienynas.core.util.*
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
@@ -12,6 +13,7 @@ import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.jsoup.Jsoup
 import java.io.IOException
 import java.lang.Exception
 
@@ -392,6 +394,30 @@ class RepositoryImpl(
         emit(Resource.Success(newMessagesGotten))
     }
 
+    override fun getMessagesGottenByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
+        emit(Resource.Loading())
+        val messagesGottenLocal = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+        emit(Resource.Loading(data = messagesGottenLocal))
+        try {
+            val response = api.getMessagesGottenByCondition(page.toString())
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
+                val messagesGottenApi = converter.toMessages(response)
+                dataSource.deleteAllMessageGotten()
+                messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
+            } else {
+                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
+        }
+        var newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+        newMessagesGotten = newMessagesGotten.subList(messagesGottenLocal.size, newMessagesGotten.size)
+        emit(Resource.Success(newMessagesGotten))
+    }
+
     override fun getMessagesSent(): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
         val messagesSentLocal = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
@@ -412,6 +438,30 @@ class RepositoryImpl(
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
         val newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+        emit(Resource.Success(newMessagesSent))
+    }
+
+    override fun getMessagesSentByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
+        emit(Resource.Loading())
+        val messagesSentLocal = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+        emit(Resource.Loading(data = messagesSentLocal))
+        try {
+            val response = api.getMessagesSentByCondition(page.toString())
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
+                val messagesSentApi = converter.toMessages(response)
+                dataSource.deleteAllMessageSent()
+                messagesSentApi.forEach { dataSource.insertMessageSent(it) }
+            } else {
+                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
+        }
+        var newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+        newMessagesSent = newMessagesSent.subList(messagesSentLocal.size, newMessagesSent.size)
         emit(Resource.Success(newMessagesSent))
     }
 
@@ -438,6 +488,30 @@ class RepositoryImpl(
         emit(Resource.Success(newMessagesStarred))
     }
 
+    override fun getMessagesStarredByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
+        emit(Resource.Loading())
+        val messagesStarredLocal = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+        emit(Resource.Loading(data = messagesStarredLocal))
+        try {
+            val response = api.getMessagesStarredByCondition(page.toString())
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
+                val messagesStarredApi = converter.toMessages(response)
+                dataSource.deleteAllMessageStarred()
+                messagesStarredApi.forEach { dataSource.insertMessageStarred(it) }
+            } else {
+                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
+        }
+        var newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+        newMessagesStarred = newMessagesStarred.subList(messagesStarredLocal.size, newMessagesStarred.size)
+        emit(Resource.Success(newMessagesStarred))
+    }
+
     override fun getMessagesDeleted(): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
         val messagesDeletedLocal = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
@@ -461,6 +535,30 @@ class RepositoryImpl(
         emit(Resource.Success(newMessagesDeleted))
     }
 
+    override fun getMessagesDeletedByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
+        emit(Resource.Loading())
+        val messagesDeletedLocal = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+        emit(Resource.Loading(data = messagesDeletedLocal))
+        try {
+            val response = api.getMessagesDeletedByCondition(page.toString())
+            val person = converter.toPerson(response)
+            if (person.name.isNotBlank()) {
+                val messagesDeletedApi = converter.toMessages(response)
+                dataSource.deleteAllMessageDeleted()
+                messagesDeletedApi.forEach { dataSource.insertMessageDeleted(it) }
+            } else {
+                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
+        }
+        var newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+        newMessagesDeleted = newMessagesDeleted.subList(messagesDeletedLocal.size, newMessagesDeleted.size)
+        emit(Resource.Success(newMessagesDeleted))
+    }
+
     override fun getMessageIndividual(id: String): Flow<Resource<MessageIndividual>> = flow {
         emit(Resource.Loading())
         val messageIndividualLocal = converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
@@ -472,6 +570,7 @@ class RepositoryImpl(
                 val messagesIndividualApi = converter.toMessagesIndividual(response)
                 dataSource.deleteMessageIndividualById(id.toLong())
                 dataSource.insertMessageIndividual(messagesIndividualApi)
+                Log.e("console log", "1: "+messagesIndividualApi)
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }

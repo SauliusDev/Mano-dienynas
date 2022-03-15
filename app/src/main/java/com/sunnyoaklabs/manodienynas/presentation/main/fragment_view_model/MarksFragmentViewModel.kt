@@ -58,12 +58,7 @@ class MarksFragmentViewModel @Inject constructor(
     private val _classWorkTimeRange = mutableStateOf(Pair("", ""))
     val classWorkTimeRange = _classWorkTimeRange
 
-    private val _markFragmentTypeState = mutableStateOf(MarkFragmentTypeState(
-        markTypeIsSelected = true,
-        controlWorkTypeIsSelected = false,
-        homeWorkTypeIsSelected = false,
-        classWorkTypeIsSelected = false,
-    ))
+    private val _markFragmentTypeState = mutableStateOf(MarkFragmentTypeState())
     val markFragmentTypeState: State<MarkFragmentTypeState> = _markFragmentTypeState
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()

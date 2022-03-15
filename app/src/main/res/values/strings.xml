@@ -60,4 +60,12 @@
     <string name="ic_homework_description">Namų darbai</string>
     <string name="ic_classwork_description">Klasės darbao</string>
 
+    <string name="messages_fragment_gotten">Gauti pranešimai</string>
+    <string name="messages_fragment_sent">Išsiųsti pranešimai</string>
+    <string name="messages_fragment_starred">Svarbūs pranešimai</string>
+    <string name="messages_fragment_deleted">Ištrinti pranešimai</string>
+
+    <string name="ic_message_seen_description">Žinutė matyta</string>
+    <string name="ic_message_unseen_description">Žinutė nematyta</string>
+
 </resources>

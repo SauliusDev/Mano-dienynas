@@ -40,12 +40,16 @@ interface BackendApi {
     suspend fun getTerm(): String
 
     suspend fun getMessagesGotten(): String
+    suspend fun getMessagesGottenByCondition(page: String): String
 
     suspend fun getMessagesSent(): String
+    suspend fun getMessagesSentByCondition(page: String): String
 
     suspend fun getMessagesStarred(): String
+    suspend fun getMessagesStarredByCondition(page: String): String
 
     suspend fun getMessagesDeleted(): String
+    suspend fun getMessagesDeletedByCondition(page: String): String
 
     suspend fun getMessageIndividual(id: String): String
 
@@ -68,7 +72,7 @@ interface BackendApi {
             return BackendApiImpl(
                 client = HttpClient(Android) {
 //                    install(Logging) {
-//                        level = LogLevel.HEADERS
+//                        level = LogLevel.ALL
 //                    }
                     install(JsonFeature) {
                         serializer = KotlinxSerializer()

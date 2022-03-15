@@ -23,11 +23,18 @@ import javax.inject.Inject
 
 class MessagesFragmentViewModel @Inject constructor(
     private val getMessagesGotten: GetMessagesGotten,
+    private val getMessagesGottenByCondition: GetMessagesGottenByCondition,
     private val getMessagesSent: GetMessagesSent,
+    private val getMessagesSentByCondition: GetMessagesSentByCondition,
     private val getMessagesStarred: GetMessagesStarred,
+    private val getMessagesStarredByCondition: GetMessagesStarredByCondition,
     private val getMessagesDeleted: GetMessagesDeleted,
+    private val getMessagesDeletedByCondition: GetMessagesDeletedByCondition,
     private val getMessageIndividual: GetMessageIndividual
 ) : ViewModel() {
+
+    private val _messagesFragmentTypeState = mutableStateOf(MessagesFragmentTypeState())
+    val messagesFragmentTypeState: State<MessagesFragmentTypeState> = _messagesFragmentTypeState
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -44,8 +51,8 @@ class MessagesFragmentViewModel @Inject constructor(
     private val _messagesDeletedState = mutableStateOf(MessagesDeletedState())
     val messagesDeletedState: State<MessagesDeletedState> = _messagesDeletedState
 
-    private val _messageIndividualState = mutableStateOf(MessageIndividualState())
-    val messageIndividualState: State<MessageIndividualState> = _messageIndividualState
+    private val _messageIndividualFlow = MutableSharedFlow<MessageIndividualState>()
+    val messageIndividualFlow = _messageIndividualFlow.asSharedFlow()
 
     private var getDataJob: Job? = null
 
@@ -72,10 +79,8 @@ class MessagesFragmentViewModel @Inject constructor(
                             messagesGotten = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "MESSAGE GOTTEN: "+_messagesGottenState.value.messagesGotten)
                     }
                     is Resource.Error -> {
-                        Log.e("console log", "MESSAGE GOTTEN: "+it.message)
                         _messagesGottenState.value = messagesGottenState.value.copy(
                             messagesGotten = it.data ?: emptyList(),
                             isLoading = false
@@ -106,10 +111,8 @@ class MessagesFragmentViewModel @Inject constructor(
                             messagesSent = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "MESSAGE SENT: "+_messagesSentState.value.messagesSent)
                     }
                     is Resource.Error -> {
-                        Log.e("console log", "MESSAGE SENT: "+it.message)
                         _messagesSentState.value = messagesSentState.value.copy(
                             messagesSent = it.data ?: emptyList(),
                             isLoading = false
@@ -140,10 +143,8 @@ class MessagesFragmentViewModel @Inject constructor(
                             messagesStarred = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "MESSAGE STARRED: "+_messagesStarredState.value.messagesStarred)
                     }
                     is Resource.Error -> {
-                        Log.e("console log", "MESSAGE STARRED: "+it.message)
                         _messagesStarredState.value = messagesStarredState.value.copy(
                             messagesStarred = it.data ?: emptyList(),
                             isLoading = false
@@ -174,10 +175,8 @@ class MessagesFragmentViewModel @Inject constructor(
                             messagesDeleted = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "MESSAGE DELETED: "+_messagesDeletedState.value.messagesDeleted)
                     }
                     is Resource.Error -> {
-                        Log.e("console log", "MESSAGE DELETED: "+it.message)
                         _messagesDeletedState.value = messagesDeletedState.value.copy(
                             messagesDeleted = it.data ?: emptyList(),
                             isLoading = false
@@ -198,22 +197,45 @@ class MessagesFragmentViewModel @Inject constructor(
             getMessageIndividual(id).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _messageIndividualState.value = messageIndividualState.value.copy(
-                            messageIndividual = it.data,
-                            isLoading = true
-                        )
+                        // TODO loading progress bar
                     }
                     is Resource.Success -> {
-                        _messageIndividualState.value = messageIndividualState.value.copy(
-                            messageIndividual = it.data,
-                            isLoading = false
-                        )
-                        Log.e("console log", "MESSAGE INDIVIDUAL: "+_messageIndividualState.value.messageIndividual)
+                        Log.e("console log", "2: "+it.data)
+
+                        _messageIndividualFlow.emit(MessageIndividualState(it.data, false))
                     }
                     is Resource.Error -> {
-                        Log.e("console log", "MESSAGE INDIVIDUAL: "+it.message)
-                        _messageIndividualState.value = messageIndividualState.value.copy(
-                            messageIndividual = it.data,
+                        _messageIndividualFlow.emit(MessageIndividualState(it.data, false))
+                        _eventFlow.emit(
+                            UIEvent.ShowSnackbar(
+                                it.message ?: Errors.UNKNOWN_ERROR
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun initMessagesGottenByCondition() {
+        viewModelScope.launch {
+            getMessagesGottenByCondition(_messagesGottenState.value.page).collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        // TODO show loading
+                    }
+                    is Resource.Success -> {
+                        val newList = _messagesGottenState.value.messagesGotten+(it.data ?: emptyList())
+                        _messagesGottenState.value = messagesGottenState.value.copy(
+                            messagesGotten = newList,
+                            page = _messagesGottenState.value.page+1,
+                            isLoading = false
+                        )
+                        Log.e("console log", "MESSAGE GOTTEN PAGE: "+_messagesGottenState.value.messagesGotten)
+                    }
+                    is Resource.Error -> {
+                        _messagesGottenState.value = messagesGottenState.value.copy(
+                            messagesGotten = it.data ?: emptyList(),
                             isLoading = false
                         )
                         _eventFlow.emit(
@@ -226,4 +248,61 @@ class MessagesFragmentViewModel @Inject constructor(
             }
         }
     }
+
+    fun initMessagesSentByCondition() {
+        // TODO
+    }
+
+    fun initMessagesStarredByCondition() {
+        // TODO
+    }
+
+    fun initMessagesDeletedByCondition() {
+        // TODO
+    }
+
+    fun updateMessagesGottenFragmentTypeState() {
+        viewModelScope.launch {
+            _messagesFragmentTypeState.value = messagesFragmentTypeState.value.copy(
+                gottenIsSelected = true,
+                sentIsSelected = false,
+                starredIsSelected = false,
+                deletedIsSelected = false,
+            )
+        }
+    }
+
+    fun updateMessagesSentFragmentTypeState() {
+        viewModelScope.launch {
+            _messagesFragmentTypeState.value = messagesFragmentTypeState.value.copy(
+                gottenIsSelected = false,
+                sentIsSelected = true,
+                starredIsSelected = false,
+                deletedIsSelected = false,
+            )
+        }
+    }
+
+    fun updateMessagesStarredFragmentTypeState() {
+        viewModelScope.launch {
+            _messagesFragmentTypeState.value = messagesFragmentTypeState.value.copy(
+                gottenIsSelected = false,
+                sentIsSelected = false,
+                starredIsSelected = true,
+                deletedIsSelected = false,
+            )
+        }
+    }
+
+    fun updateMessagesDeletedFragmentTypeState() {
+        viewModelScope.launch {
+            _messagesFragmentTypeState.value = messagesFragmentTypeState.value.copy(
+                gottenIsSelected = false,
+                sentIsSelected = false,
+                starredIsSelected = false,
+                deletedIsSelected = true,
+            )
+        }
+    }
+
 }

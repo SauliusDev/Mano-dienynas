@@ -37,12 +37,16 @@ interface Repository {
     fun getTerm(): Flow<Resource<List<Term>>>
 
     fun getMessagesGotten(): Flow<Resource<List<Message>>>
+    fun getMessagesGottenByCondition(page: Int): Flow<Resource<List<Message>>>
 
     fun getMessagesSent(): Flow<Resource<List<Message>>>
+    fun getMessagesSentByCondition(page: Int): Flow<Resource<List<Message>>>
 
     fun getMessagesStarred(): Flow<Resource<List<Message>>>
+    fun getMessagesStarredByCondition(page: Int): Flow<Resource<List<Message>>>
 
     fun getMessagesDeleted(): Flow<Resource<List<Message>>>
+    fun getMessagesDeletedByCondition(page: Int): Flow<Resource<List<Message>>>
 
     fun getMessageIndividual(id: String): Flow<Resource<MessageIndividual>>
 

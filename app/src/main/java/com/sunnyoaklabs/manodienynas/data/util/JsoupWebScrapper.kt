@@ -7,6 +7,7 @@ import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import org.jsoup.Jsoup
+import org.jsoup.select.Elements
 
 class JsoupWebScrapper() : WebScrapper {
 
@@ -403,18 +404,22 @@ class JsoupWebScrapper() : WebScrapper {
         val messageList: MutableList<Message> = mutableListOf()
         val elementMessagesTable =
             document.getElementsByClass("messageListTable hoverTr hover-table")
+        val elementMessagesNew = elementMessagesTable[0].getElementsByTag("tr")
         val elementMessages = elementMessagesTable[1].getElementsByTag("tr")
-        for (i in elementMessages.indices) {
-            val elementMessage = elementMessages[i]
-            val elements = elementMessage.getElementsByTag("td")
-            val messageId = elements[0].getElementsByTag("input").attr("value")
-            val isStarred =
-                elements[1].getElementsByTag("a")[0].className() != "messageNotStarredLink"
-            val wasSeen = elements[3].getElementsByTag("span")[0].className() == "readMessage"
-            val date = elements[3].getElementsByTag("a").text()
-            val theme = elements[4].getElementsByTag("a").text()
-            val sender = elements[5].getElementById("message-receivers-$messageId").text()
-            messageList.add(Message(messageId, isStarred, wasSeen, date, theme, sender))
+        elementMessagesNew.addAll(elementMessages)
+        for (i in elementMessagesNew.indices) {
+            try {
+                val elementMessage = elementMessagesNew[i]
+                val elements = elementMessage.getElementsByTag("td")
+                val messageId = elements[0].getElementsByTag("input").attr("value")
+                val isStarred =
+                    elements[1].getElementsByTag("a")[0].className() != "messageNotStarredLink"
+                val wasSeen = elements[3].getElementsByTag("span")[0].className() == "readMessage"
+                val date = elements[3].getElementsByTag("a").text()
+                val theme = elements[4].getElementsByTag("a").text()
+                val sender = elements[5].getElementById("message-receivers-$messageId").text()
+                messageList.add(Message(messageId, isStarred, wasSeen, date, theme, sender))
+            } catch (e: Exception) {}
         }
         return messageList
     }
