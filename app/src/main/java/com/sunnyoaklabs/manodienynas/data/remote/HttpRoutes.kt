@@ -38,7 +38,8 @@ object HttpRoutes {
     const val MESSAGE_SENT_LIST_GET = "$BASE_URL/1/lt/page/message_new/sent_list"
     const val MESSAGE_STARRED_LIST_GET = "$BASE_URL/1/lt/page/message_new/starred_list"
     const val MESSAGE_DELETED_LIST_GET = "$BASE_URL/1/lt/page/message_new/deleted_list"
-    const val MESSAGE_INDIVIDUAL_GET = "$BASE_URL/1/lt/page/message_new/message/{message_id}" // 1013064
+    const val MESSAGE_INDIVIDUAL_GET = "$BASE_URL/1/lt/page/message_new/message/{message_id}"
+    //const val MESSAGE_INDIVIDUAL_FILE_GET = "$BASE_URL{message_url}"
     const val MESSAGE_GOTTEN_LIST_PAGE_GET = "$BASE_URL/1/lt/page/message_new/message_list/date_desc/{page}"
     const val MESSAGE_SENT_LIST_PAGE_GET = "$BASE_URL/1/lt/page/message_new/sent_list/date_desc/{page}"
     const val MESSAGE_STARRED_LIST_PAGE_GET = "$BASE_URL/1/lt/page/message_new/starred_list/date_desc/{page}"

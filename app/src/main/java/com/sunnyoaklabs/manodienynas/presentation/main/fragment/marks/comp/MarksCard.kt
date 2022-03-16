@@ -30,6 +30,7 @@ import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.dialog.MarkEventDialog
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 import kotlinx.coroutines.flow.collect
@@ -39,7 +40,7 @@ fun MarksCard(
     marksFragmentViewModel: MarksFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
     val marksEventItem = remember {
         mutableStateOf(
             MarksEventItem(
@@ -62,7 +63,7 @@ fun MarksCard(
             it.marksEventItem?.let { marksEventItemIt ->
                 marksEventItem.value = marksEventItemIt
             }
-            setShowDialog(true)
+            showDialog = true
         }
     }
     for (i in marksState.marks.indices) {
@@ -88,10 +89,11 @@ fun MarksCard(
     val scope = rememberCoroutineScope()
     val state = rememberLazyListState()
     state.disableScrolling(scope)
-    EventDialog(
+    MarkEventDialog(
         showDialog,
         marksEventItem.value,
-        setShowDialog
+        onDismiss = {showDialog = false},
+        onNegativeClick = {showDialog = false}
     )
     when {
         marksState.isLoading || attendanceState.isLoading -> {
@@ -524,42 +526,5 @@ private fun EmptyMarksItem(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun EventDialog(
-    showDialog: Boolean,
-    marksEventItem: MarksEventItem,
-    setShowDialog: (Boolean) -> Unit
-) {
-    if (showDialog) {
-        AlertDialog(
-            modifier = Modifier.padding(0.dp),
-            onDismissRequest = {
-            },
-            confirmButton = {},
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(primaryGreenAccent),
-                    onClick = {
-                        setShowDialog(false)
-                    },
-                ) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            },
-            title = {
-                Text(
-                    marksEventItem.writer + "\n" +
-                        marksEventItem.date + "\n" +
-                        marksEventItem.evaluation + "\n" +
-                        marksEventItem.type + "\n" +
-                        marksEventItem.lesson
-                )
-            },
-        )
     }
 }

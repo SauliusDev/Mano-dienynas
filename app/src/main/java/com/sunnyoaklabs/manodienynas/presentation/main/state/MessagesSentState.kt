@@ -6,5 +6,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Message
 data class MessagesSentState(
     val messagesSent: List<Message> = emptyList(),
     val page: Int = 1,
-    val isLoading: Boolean = false
+    val isEverythingLoaded: Boolean = false,
+    val isLoading: Boolean = true
 )

@@ -559,18 +559,22 @@ class RepositoryImpl(
         emit(Resource.Success(newMessagesDeleted))
     }
 
-    override fun getMessageIndividual(id: String): Flow<Resource<MessageIndividual>> = flow {
+    override fun getMessageIndividual(id: String, isSent: Boolean): Flow<Resource<MessageIndividual>> = flow {
         emit(Resource.Loading())
+        dataSource.deleteAllMessageIndividual()
         val messageIndividualLocal = converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
         emit(Resource.Loading(data = messageIndividualLocal))
         try {
             val response = api.getMessageIndividual(id)
             val person = converter.toPerson(response)
             if (person.name.isNotBlank()) {
-                val messagesIndividualApi = converter.toMessagesIndividual(response)
+                val messagesIndividualApi = if (!isSent) {
+                    converter.toMessagesIndividual(response)
+                } else {
+                    converter.toMessagesIndividualSent(response)
+                }
                 dataSource.deleteMessageIndividualById(id.toLong())
                 dataSource.insertMessageIndividual(messagesIndividualApi)
-                Log.e("console log", "1: "+messagesIndividualApi)
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }

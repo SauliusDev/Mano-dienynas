@@ -5,10 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,12 +26,10 @@ import com.sunnyoaklabs.manodienynas.domain.model.Message
 import com.sunnyoaklabs.manodienynas.domain.model.MessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.dialog.DialogMessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
-import com.sunnyoaklabs.manodienynas.presentation.main.state.MessagesGottenState
-import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentGreenDark
-import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -37,6 +38,7 @@ fun MessagesGottenCard(
     modifier: Modifier = Modifier
 ) {
     val messagesGottenState = messagesFragmentViewModel.messagesGottenState.value
+
     val messageIndividual = remember {
         mutableStateOf(
             MessageIndividual(
@@ -44,18 +46,14 @@ fun MessagesGottenCard(
             )
         )
     }
-
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = true) {
         messagesFragmentViewModel.messageIndividualFlow.collect {
-            // TODO
-            //  -show some sort loading animation
-            //  -show dialog when !isLoading
             it.messageIndividual?.let { marksEventItemIt ->
                 messageIndividual.value = marksEventItemIt
             }
             if (messageIndividual.value.messageId.isNotBlank()) {
-                setShowDialog(true)
+                showDialog = true
             }
         }
     }
@@ -71,6 +69,7 @@ fun MessagesGottenCard(
             EmptyMessagesGottenItem(messagesFragmentViewModel)
         }
         else -> {
+            val lastIndex = messagesGottenState.messagesGotten.lastIndex
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -79,56 +78,24 @@ fun MessagesGottenCard(
                 MessagesGottenTypeText()
                 Spacer(modifier = Modifier.height(4.dp))
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(messagesGottenState.messagesGotten) {
-                        MessagesGottenItem(messagesFragmentViewModel, it)
+                    itemsIndexed(messagesGottenState.messagesGotten) { i, message ->
+                        if (lastIndex == i) {
+                            if (!messagesGottenState.isEverythingLoaded) {
+                                messagesFragmentViewModel.initMessagesGottenByCondition()
+                            }
+                        }
+                        MessagesGottenItem(messagesFragmentViewModel, message)
                     }
                 }
             }
         }
     }
-
-    MessageIndividualDialog(
+    DialogMessageIndividual(
         showDialog,
         messageIndividual.value,
-        setShowDialog
+        onNegativeClick = {showDialog = false},
+        onDismiss = {showDialog = false}
     )
-}
-
-@Composable
-fun MessageIndividualDialog(
-    showDialog: Boolean,
-    messageIndividual: MessageIndividual,
-    setShowDialog: (Boolean) -> Unit
-) {
-    if (showDialog) {
-        AlertDialog(
-            modifier = Modifier.padding(0.dp),
-            onDismissRequest = {
-            },
-            title = {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                    Text(messageIndividual.title)
-                    Text(messageIndividual.date, fontSize = 12.sp, color = Color.Gray)
-                }
-            },
-            text = {
-                Text(messageIndividual.content)
-            },
-            confirmButton = {},
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(primaryGreenAccent),
-                    onClick = {
-                        setShowDialog(false)
-                    },
-                ) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            },
-        )
-    }
 }
 
 @Composable
@@ -145,7 +112,6 @@ private fun MessagesGottenItem(
             )
             .fillMaxWidth()
             .clickable {
-                // TODO dialog with full message
                 messagesFragmentViewModel.initMessagesIndividual(message.messageId)
             },
         elevation = 2.dp,

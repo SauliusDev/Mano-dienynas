@@ -437,17 +437,33 @@ class JsoupWebScrapper() : WebScrapper {
         val content = messageContainer.getElementsByClass("messageText").text()
         val recipients = messageContainer.getElementsByClass("recipients-block").text()
         val files: MutableList<MessageFile> = mutableListOf()
-        val elementFiles =
+        val elementFiles = try {
             messageContainer.getElementsByClass("messageFilesContainer")[0].getElementsByTag("a")
-        for (i in elementFiles.indices) {
-            files.add(
-                MessageFile(
-                    elementFiles[i].attr("title"),
-                    elementFiles[i].attr("href")
+        } catch (e: Exception) { emptyList() }
+        try {
+            for (i in elementFiles.indices) {
+                files.add(
+                    MessageFile(
+                        elementFiles[i].attr("title"),
+                        elementFiles[i].attr("href")
+                    )
                 )
-            )
-        }
+            }
+        } catch (e: Exception) {}
         return MessageIndividual(messageId, title, sender, date, content, recipients, files)
+    }
+
+    override fun toMessagesIndividualSent(html: String): MessageIndividual {
+        val document = Jsoup.parse(html)
+        val messageContainer = document.getElementsByClass("messageContainer mySendMessage")[0]
+        val messageId = messageContainer.id().replace("messageContainer-", "")
+        val title = document.getElementsByClass("subTitle")[0].text()
+        val sender = messageContainer.getElementsByClass("messageInboxSenderLabel").text()
+        val date = messageContainer.getElementsByClass("messageInboxDateLabel").text()
+        val content = messageContainer.getElementsByClass("messageText").text()
+        val recipients = messageContainer.getElementsByClass("recipients-block")[0].getElementsByTag("span").text()
+        return MessageIndividual(messageId, title, sender,
+            "$date | Kam: $recipients", content, recipients, emptyList())
     }
 
     override fun toHoliday(html: String): List<Holiday> {

@@ -17,8 +17,8 @@ class GetMessageIndividual(
     private val repository: Repository
 ) {
 
-    operator fun invoke(id: String): Flow<Resource<MessageIndividual>> {
-        return repository.getMessageIndividual(id)
+    operator fun invoke(id: String, isSent: Boolean): Flow<Resource<MessageIndividual>> {
+        return repository.getMessageIndividual(id, isSent)
     }
 
 }

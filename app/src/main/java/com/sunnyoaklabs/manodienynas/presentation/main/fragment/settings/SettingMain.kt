@@ -10,10 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -37,7 +34,11 @@ import com.sunnyoaklabs.manodienynas.domain.model.SchoolInfo
 import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
 import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.LoginFragmentDestination
+import com.sunnyoaklabs.manodienynas.presentation.login.fragment.settings.dialog.DialogTextSettingsLogin
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.settings.dialog.DialogChangeRole
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.settings.dialog.DialogLogout
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.settings.dialog.DialogTextSettingsMain
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.SettingsMainFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
@@ -121,7 +122,7 @@ fun ItemAppDescription(
     appDescription: String,
     modifier: Modifier = Modifier
 ) {
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.padding(
@@ -135,7 +136,7 @@ fun ItemAppDescription(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable {
-                    setShowDialog(true)
+                    showDialog = true
                 }
         ) {
             Row(
@@ -157,11 +158,12 @@ fun ItemAppDescription(
                     modifier = Modifier.padding(start = LocalSpacing.current.small),
                     text = AnnotatedString(stringResource(id = R.string.app_description)),
                 )
-                TextDialog(
+                DialogTextSettingsMain(
                     showDialog,
                     stringResource(id = R.string.app_description),
                     appDescription,
-                    setShowDialog
+                    onDismiss = {showDialog = false},
+                    onNegativeClick = {showDialog = false}
                 )
             }
         }
@@ -173,7 +175,7 @@ fun ItemAppLicense(
     appLicense: String,
     modifier: Modifier = Modifier,
 ) {
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.padding(
@@ -187,7 +189,7 @@ fun ItemAppLicense(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable {
-                    setShowDialog(true)
+                    showDialog = true
                 }
         ) {
             Row(
@@ -209,11 +211,12 @@ fun ItemAppLicense(
                     modifier = Modifier.padding(start = LocalSpacing.current.small),
                     text = AnnotatedString(stringResource(id = R.string.app_license)),
                 )
-                TextDialog(
+                DialogTextSettingsMain(
                     showDialog,
                     stringResource(id = R.string.app_license),
                     appLicense,
-                    setShowDialog
+                    onDismiss = {showDialog = false},
+                    onNegativeClick = {showDialog = false}
                 )
             }
         }
@@ -226,7 +229,7 @@ fun ItemSchoolSelected(
     modifier: Modifier = Modifier,
     settingsMainFragmentViewModel: SettingsMainFragmentViewModel = mainViewModel.settingsMainFragmentViewModel
 ) {
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
     val person = mainViewModel.personState.value.person
     val settings = settingsMainFragmentViewModel.settingsState.value.settings
 
@@ -243,7 +246,7 @@ fun ItemSchoolSelected(
                 .fillMaxWidth()
                 .clickable {
                     if (!mainViewModel.personState.value.isLoading) {
-                        setShowDialog(true)
+                        showDialog = true
                     }
                 }
         ) {
@@ -286,12 +289,12 @@ fun ItemSchoolSelected(
                         }
                     }
                 }
-                TextDialogChangeRole(
+                DialogChangeRole(
                     person,
-                    mainViewModel,
                     mainViewModel.settingsMainFragmentViewModel,
                     showDialog,
-                    setShowDialog
+                    onNegativeClick = {showDialog = false},
+                    onDismiss = {showDialog = false}
                 )
             }
             if (mainViewModel.personState.value.isLoading || settingsMainFragmentViewModel.settingsState.value.isLoading) {
@@ -308,7 +311,7 @@ fun ItemLogout(
     settingsMainFragmentViewModel: SettingsMainFragmentViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.padding(
@@ -322,7 +325,7 @@ fun ItemLogout(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable {
-                    setShowDialog(true)
+                    showDialog = true
                 }
         ) {
             Row(
@@ -344,208 +347,14 @@ fun ItemLogout(
                     modifier = Modifier.padding(start = LocalSpacing.current.small),
                     text = AnnotatedString(stringResource(id = R.string.logout)),
                 )
-                TextDialogLogout(
-                    settingsMainFragmentViewModel,
+                DialogLogout(
                     showDialog,
                     stringResource(id = R.string.logout_notice),
-                    setShowDialog
+                    onPositiveClick = {settingsMainFragmentViewModel.logout()},
+                    onNegativeClick = {showDialog = false},
+                    onDismiss = {showDialog = false}
                 )
             }
         }
-    }
-}
-
-@Composable
-fun TextDialogChangeRole(
-    person: Person?,
-    mainViewModel: MainViewModel,
-    settingsMainFragmentViewModel: SettingsMainFragmentViewModel,
-    showDialog: Boolean,
-    setShowDialog: (Boolean) -> Unit
-) {
-    if (showDialog) {
-        AlertDialog(
-            modifier = Modifier.padding(0.dp),
-            onDismissRequest = {},
-            confirmButton = {},
-            title = {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                ) {
-                    items(person?.schoolsNames ?: emptyList()) {
-                        ChangeRoleListItem(it, mainViewModel, settingsMainFragmentViewModel,  setShowDialog)
-                    }
-                }
-            },
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(primaryGreenAccent),
-                    onClick = {
-                        setShowDialog(false)
-                    },
-                ) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            },
-        )
-    }
-}
-
-@Composable
-fun ChangeRoleListItem(
-    schoolInfo: SchoolInfo,
-    mainViewModel: MainViewModel,
-    settingsMainFragmentViewModel: SettingsMainFragmentViewModel,
-    setShowDialog: (Boolean) -> Unit,
-    context: Context  = LocalContext.current,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = Modifier
-            .padding(
-                top = 2.dp,
-                bottom = 2.dp
-            )
-            .fillMaxWidth(),
-        elevation = 10.dp
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    val settings = settingsMainFragmentViewModel.settingsState.value.settings
-                    if (schoolInfo.schoolId != settings?.selectedSchool?.schoolId) {
-                        CoroutineScope(IO).launch {
-                            settingsMainFragmentViewModel.updateSettings(
-                                Settings(
-                                    settings?.keepSignedIn ?: false,
-                                    schoolInfo
-                                )
-                            ).join()
-                            setShowDialog(false)
-                            val intent = Intent(context, MainActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            context.startActivity(intent)
-                        }
-                    } else {
-                        setShowDialog(false)
-                    }
-                }
-        ) {
-            Row(
-                modifier = modifier
-                    .padding(
-                        horizontal = LocalSpacing.current.medium,
-                        vertical = LocalSpacing.current.medium
-                    )
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    tint = Color.Gray,
-                    painter = painterResource(id = R.drawable.ic_code),
-                    contentDescription = stringResource(id = R.string.logout),
-                    modifier = Modifier
-                        .width(30.dp)
-                        .height(30.dp)
-                )
-                Column(
-                    modifier = Modifier.padding(start = LocalSpacing.current.small)
-                ) {
-                    Text(
-                        text = AnnotatedString(schoolInfo.schoolName),
-                    )
-                    Text(
-                        text = AnnotatedString(schoolInfo.role),
-                        color = Color.Gray
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun TextDialog(
-    showDialog: Boolean,
-    title: String,
-    description: String,
-    setShowDialog: (Boolean) -> Unit
-) {
-    if (showDialog) {
-        AlertDialog(
-            modifier = Modifier.padding(0.dp),
-            onDismissRequest = {
-            },
-            title = {
-                Text(title)
-            },
-            confirmButton = {},
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(primaryGreenAccent),
-                    onClick = {
-                        setShowDialog(false)
-                    },
-                ) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            },
-            text = {
-                Text(description)
-            },
-        )
-    }
-}
-
-
-@Composable
-fun TextDialogLogout(
-    settingsMainFragmentViewModel: SettingsMainFragmentViewModel,
-    showDialog: Boolean,
-    title: String,
-    setShowDialog: (Boolean) -> Unit
-) {
-    if (showDialog) {
-        AlertDialog(
-            modifier = Modifier.padding(0.dp),
-            onDismissRequest = {
-            },
-            title = {
-                Text(title)
-            },
-            confirmButton = {},
-            dismissButton = {
-                Row {
-                    Button(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(top = 2.dp, bottom = 2.dp, start = 2.dp, end = 2.dp),
-                        colors = ButtonDefaults.buttonColors(primaryGreenAccent),
-                        onClick = {
-                            settingsMainFragmentViewModel.logout()
-                        },
-                    ) {
-                        Text(stringResource(id = R.string.ok))
-                    }
-                    Button(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(top = 2.dp, bottom = 2.dp, start = 2.dp, end = 2.dp),
-                        colors = ButtonDefaults.buttonColors(primaryGreenAccent),
-                        onClick = {
-                            setShowDialog(false)
-                        },
-                    ) {
-                        Text(stringResource(id = R.string.cancel))
-                    }
-                }
-            },
-        )
     }
 }

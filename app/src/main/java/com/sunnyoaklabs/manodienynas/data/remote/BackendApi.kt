@@ -52,6 +52,7 @@ interface BackendApi {
     suspend fun getMessagesDeletedByCondition(page: String): String
 
     suspend fun getMessageIndividual(id: String): String
+    //suspend fun getMessageIndividualFile(url: String): String
 
     //suspend fun getMessageDelete(id: String): String
     //suspend fun getMessageReply(id: String): String

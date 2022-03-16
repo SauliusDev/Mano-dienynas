@@ -26,6 +26,8 @@ interface WebScrapper {
 
     fun toMessagesIndividual(html: String): MessageIndividual
 
+    fun toMessagesIndividualSent(html: String): MessageIndividual
+
     fun toHoliday(html: String): List<Holiday>
 
     fun toParentMeetings(html: String): List<ParentMeeting>

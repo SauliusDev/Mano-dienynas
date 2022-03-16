@@ -193,6 +193,10 @@ class BackendApiImpl(
         return client.get { url(MESSAGE_INDIVIDUAL_GET.replace("{message_id}", id)) }
     }
 
+//    override suspend fun getMessageIndividualFile(url: String): String {
+//        return client.get { url(MESSAGE_INDIVIDUAL_FILE_GET) }
+//    }
+
     override suspend fun getHoliday(): String {
         return client.get { url(HOLIDAY_GET) }
     }

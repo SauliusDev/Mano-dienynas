@@ -48,7 +48,7 @@ interface Repository {
     fun getMessagesDeleted(): Flow<Resource<List<Message>>>
     fun getMessagesDeletedByCondition(page: Int): Flow<Resource<List<Message>>>
 
-    fun getMessageIndividual(id: String): Flow<Resource<MessageIndividual>>
+    fun getMessageIndividual(id: String, isSent: Boolean): Flow<Resource<MessageIndividual>>
 
     fun getHoliday(): Flow<Resource<List<Holiday>>>
 

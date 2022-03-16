@@ -1,6 +1,5 @@
 package com.sunnyoaklabs.manodienynas.presentation.login.fragment
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -19,6 +18,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
 import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.LoginFragmentDestination
+import com.sunnyoaklabs.manodienynas.presentation.login.fragment.settings.dialog.DialogTextSettingsLogin
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 
@@ -119,7 +119,7 @@ fun ItemAppDescription(
     appDescription: String,
     modifier: Modifier = Modifier
 ) {
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.padding(
@@ -133,7 +133,7 @@ fun ItemAppDescription(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable {
-                    setShowDialog(true)
+                    showDialog = true
                 }
         ) {
             Row(
@@ -155,11 +155,12 @@ fun ItemAppDescription(
                     modifier = Modifier.padding(start = LocalSpacing.current.small),
                     text = AnnotatedString(stringResource(id = R.string.app_description)),
                 )
-                TextDialog(
+                DialogTextSettingsLogin(
                     showDialog,
                     stringResource(id = R.string.app_description),
                     appDescription,
-                    setShowDialog
+                    onDismiss = {showDialog = false},
+                    onNegativeClick = {showDialog = false}
                 )
             }
         }
@@ -171,7 +172,7 @@ fun ItemAppLicense(
     appLicense: String,
     modifier: Modifier = Modifier,
 ) {
-    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.padding(
@@ -185,7 +186,7 @@ fun ItemAppLicense(
             modifier = modifier
                 .fillMaxWidth()
                 .clickable {
-                    setShowDialog(true)
+                    showDialog = true
                 }
         ) {
             Row(
@@ -207,48 +208,14 @@ fun ItemAppLicense(
                     modifier = Modifier.padding(start = LocalSpacing.current.small),
                     text = AnnotatedString(stringResource(id = R.string.app_license)),
                 )
-                TextDialog(
+                DialogTextSettingsLogin(
                     showDialog,
                     stringResource(id = R.string.app_license),
                     appLicense,
-                    setShowDialog
+                    onDismiss = {showDialog = false},
+                    onNegativeClick = {showDialog = false}
                 )
             }
         }
-    }
-}
-
-@Composable
-fun TextDialog(
-    showDialog: Boolean,
-    title: String,
-    description: String,
-    setShowDialog: (Boolean) -> Unit
-) {
-    if (showDialog) {
-        AlertDialog(
-            modifier = Modifier.padding(0.dp),
-            onDismissRequest = {
-            },
-            title = {
-                Text(title)
-            },
-            confirmButton = {},
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(primaryGreenAccent),
-                    onClick = {
-                        setShowDialog(false)
-                    },
-                ) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            },
-            text = {
-                Text(description)
-            },
-        )
     }
 }

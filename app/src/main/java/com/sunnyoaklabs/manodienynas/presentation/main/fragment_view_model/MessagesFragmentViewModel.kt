@@ -192,16 +192,14 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesIndividual(id: String) {
+    fun initMessagesIndividual(id: String, isSent: Boolean = false) {
         viewModelScope.launch {
-            getMessageIndividual(id).collect {
+            getMessageIndividual(id, isSent).collect {
                 when (it) {
                     is Resource.Loading -> {
                         // TODO loading progress bar
                     }
                     is Resource.Success -> {
-                        Log.e("console log", "2: "+it.data)
-
                         _messageIndividualFlow.emit(MessageIndividualState(it.data, false))
                     }
                     is Resource.Error -> {

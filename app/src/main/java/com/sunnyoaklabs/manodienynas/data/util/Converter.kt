@@ -118,6 +118,10 @@ class Converter(
         return webScrapper.toMessagesIndividual(html = html)
     }
 
+    fun toMessagesIndividualSent(html: String): MessageIndividual {
+        return webScrapper.toMessagesIndividualSent(html = html)
+    }
+
     fun toHoliday(html: String): List<Holiday> {
         return webScrapper.toHoliday(html = html)
     }

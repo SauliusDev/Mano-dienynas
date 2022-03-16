@@ -67,5 +67,6 @@
 
     <string name="ic_message_seen_description">Žinutė matyta</string>
     <string name="ic_message_unseen_description">Žinutė nematyta</string>
+    <string name="ic_attachment_description">Failas</string>
 
 </resources>

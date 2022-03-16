@@ -1,7 +1,9 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.comp
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,10 +12,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,13 +23,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.Message
+import com.sunnyoaklabs.manodienynas.domain.model.MessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.dialog.DialogMessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentGreenDark
 import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun MessagesSentCard(
@@ -38,6 +40,25 @@ fun MessagesSentCard(
     modifier: Modifier = Modifier
 ) {
     val messagesSentState = messagesFragmentViewModel.messagesSentState.value
+
+    val messageIndividual = remember {
+        mutableStateOf(
+            MessageIndividual(
+                "", "", "", "", "", "", emptyList(), 0
+            )
+        )
+    }
+    var showDialog by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = true) {
+        messagesFragmentViewModel.messageIndividualFlow.collect {
+            it.messageIndividual?.let { marksEventItemIt ->
+                messageIndividual.value = marksEventItemIt
+            }
+            if (messageIndividual.value.messageId.isNotBlank()) {
+                showDialog = true
+            }
+        }
+    }
 
     val scope = rememberCoroutineScope()
     val state = rememberLazyListState()
@@ -59,16 +80,23 @@ fun MessagesSentCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     items(messagesSentState.messagesSent) {
-                        MessagesSentItem(it)
+                        MessagesSentItem(messagesFragmentViewModel, it)
                     }
                 }
             }
         }
     }
+    DialogMessageIndividual(
+        showDialog,
+        messageIndividual.value,
+        onNegativeClick = {showDialog = false},
+        onDismiss = {showDialog = false}
+    )
 }
 
 @Composable
 private fun MessagesSentItem(
+    messagesFragmentViewModel: MessagesFragmentViewModel,
     message: Message,
     modifier: Modifier = Modifier
 ) {
@@ -78,7 +106,10 @@ private fun MessagesSentItem(
                 vertical = 2.dp,
                 horizontal = 2.dp
             )
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                messagesFragmentViewModel.initMessagesIndividual(message.messageId, true)
+            },
         elevation = 2.dp,
     ) {
         Row(
