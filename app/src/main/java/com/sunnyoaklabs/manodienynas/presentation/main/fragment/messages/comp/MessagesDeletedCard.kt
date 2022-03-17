@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -70,6 +71,7 @@ fun MessagesDeletedCard(
             EmptyMessagesDeletedItem(messagesFragmentViewModel)
         }
         else -> {
+            val lastIndex = messagesDeletedState.messagesDeleted.lastIndex
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -78,8 +80,13 @@ fun MessagesDeletedCard(
                 MessagesDeletedTypeText()
                 Spacer(modifier = Modifier.height(4.dp))
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(messagesDeletedState.messagesDeleted) {
-                        MessagesDeletedItem(messagesFragmentViewModel, message = it)
+                    itemsIndexed(messagesDeletedState.messagesDeleted) { i, message ->
+                        if (lastIndex == i) {
+                            if (!messagesDeletedState.isEverythingLoaded) {
+                                messagesFragmentViewModel.initMessagesDeletedByCondition()
+                            }
+                        }
+                        MessagesDeletedItem(messagesFragmentViewModel, message)
                     }
                 }
             }

@@ -405,8 +405,11 @@ class JsoupWebScrapper() : WebScrapper {
         val elementMessagesTable =
             document.getElementsByClass("messageListTable hoverTr hover-table")
         val elementMessagesNew = elementMessagesTable[0].getElementsByTag("tr")
-        val elementMessages = elementMessagesTable[1].getElementsByTag("tr")
-        elementMessagesNew.addAll(elementMessages)
+        try {
+            elementMessagesNew.addAll(
+                elementMessagesTable[1].getElementsByTag("tr")
+            )
+        }catch (e: Exception) {}
         for (i in elementMessagesNew.indices) {
             try {
                 val elementMessage = elementMessagesNew[i]

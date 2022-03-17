@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -71,6 +72,7 @@ fun MessagesSentCard(
             EmptyMessagesSentItem(messagesFragmentViewModel)
         }
         else -> {
+            val lastIndex = messagesSentState.messagesSent.lastIndex
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -79,8 +81,13 @@ fun MessagesSentCard(
                 MessagesSentTypeText()
                 Spacer(modifier = Modifier.height(4.dp))
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(messagesSentState.messagesSent) {
-                        MessagesSentItem(messagesFragmentViewModel, it)
+                    itemsIndexed(messagesSentState.messagesSent) { i, message ->
+                        if (lastIndex == i) {
+                            if (!messagesSentState.isEverythingLoaded) {
+                                messagesFragmentViewModel.initMessagesSentByCondition()
+                            }
+                        }
+                        MessagesSentItem(messagesFragmentViewModel, message)
                     }
                 }
             }

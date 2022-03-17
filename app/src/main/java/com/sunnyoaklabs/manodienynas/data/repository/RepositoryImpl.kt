@@ -399,11 +399,10 @@ class RepositoryImpl(
         val messagesGottenLocal = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
         emit(Resource.Loading(data = messagesGottenLocal))
         try {
-            val response = api.getMessagesGottenByCondition(page.toString())
+            val response = api.getMessagesGottenByCondition((page+1).toString())
             val person = converter.toPerson(response)
             if (person.name.isNotBlank()) {
                 val messagesGottenApi = converter.toMessages(response)
-                dataSource.deleteAllMessageGotten()
                 messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
@@ -411,6 +410,7 @@ class RepositoryImpl(
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
         var newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }

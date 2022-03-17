@@ -96,7 +96,7 @@ class EventsFragmentViewModel @Inject constructor(
             getEventsPage().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        // todo show progress bar
+                        // NOTE: could show loading animation
                     }
                     is Resource.Success -> {
                         val newList = _eventState.value.events+(it.data ?: emptyList())

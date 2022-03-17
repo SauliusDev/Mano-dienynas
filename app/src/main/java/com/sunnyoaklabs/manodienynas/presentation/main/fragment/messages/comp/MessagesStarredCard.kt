@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -69,6 +70,7 @@ fun MessagesStarredCard(
             EmptyMessagesStarredItem(messagesFragmentViewModel)
         }
         else -> {
+            val lastIndex = messagesStarredState.messagesStarred.lastIndex
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -77,8 +79,13 @@ fun MessagesStarredCard(
                 MessagesStarredTypeText()
                 Spacer(modifier = Modifier.height(4.dp))
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(messagesStarredState.messagesStarred) {
-                        MessagesStarredItem(messagesFragmentViewModel, it)
+                    itemsIndexed(messagesStarredState.messagesStarred) { i, message ->
+                        if (lastIndex == i) {
+                            if (!messagesStarredState.isEverythingLoaded) {
+                                messagesFragmentViewModel.initMessagesStarredByCondition()
+                            }
+                        }
+                        MessagesStarredItem(messagesFragmentViewModel, message)
                     }
                 }
             }

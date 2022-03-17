@@ -197,7 +197,7 @@ class MessagesFragmentViewModel @Inject constructor(
             getMessageIndividual(id, isSent).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        // TODO loading progress bar
+                        // NOTE: could show loading animation
                     }
                     is Resource.Success -> {
                         _messageIndividualFlow.emit(MessageIndividualState(it.data, false))
@@ -220,16 +220,16 @@ class MessagesFragmentViewModel @Inject constructor(
             getMessagesGottenByCondition(_messagesGottenState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        // TODO show loading
+                        // NOTE: could show loading
                     }
                     is Resource.Success -> {
                         val newList = _messagesGottenState.value.messagesGotten+(it.data ?: emptyList())
                         _messagesGottenState.value = messagesGottenState.value.copy(
                             messagesGotten = newList,
                             page = _messagesGottenState.value.page+1,
+                            isEverythingLoaded = (it.data ?: emptyList()).isEmpty(),
                             isLoading = false
                         )
-                        Log.e("console log", "MESSAGE GOTTEN PAGE: "+_messagesGottenState.value.messagesGotten)
                     }
                     is Resource.Error -> {
                         _messagesGottenState.value = messagesGottenState.value.copy(
@@ -248,15 +248,99 @@ class MessagesFragmentViewModel @Inject constructor(
     }
 
     fun initMessagesSentByCondition() {
-        // TODO
+        viewModelScope.launch {
+            getMessagesSentByCondition(_messagesSentState.value.page).collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        // NOTE: could show loading
+                    }
+                    is Resource.Success -> {
+                        val newList = _messagesSentState.value.messagesSent+(it.data ?: emptyList())
+                        _messagesSentState.value = messagesSentState.value.copy(
+                            messagesSent = newList,
+                            page = _messagesSentState.value.page+1,
+                            isEverythingLoaded = (it.data ?: emptyList()).isEmpty(),
+                            isLoading = false
+                        )
+                    }
+                    is Resource.Error -> {
+                        _messagesSentState.value = messagesSentState.value.copy(
+                            messagesSent = it.data ?: emptyList(),
+                            isLoading = false
+                        )
+                        _eventFlow.emit(
+                            UIEvent.ShowSnackbar(
+                                it.message ?: Errors.UNKNOWN_ERROR
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun initMessagesStarredByCondition() {
-        // TODO
+        viewModelScope.launch {
+            getMessagesStarredByCondition(_messagesStarredState.value.page).collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        // NOTE: could show loading
+                    }
+                    is Resource.Success -> {
+                        val newList = _messagesStarredState.value.messagesStarred+(it.data ?: emptyList())
+                        _messagesStarredState.value = messagesStarredState.value.copy(
+                            messagesStarred = newList,
+                            page = _messagesStarredState.value.page+1,
+                            isEverythingLoaded = (it.data ?: emptyList()).isEmpty(),
+                            isLoading = false
+                        )
+                    }
+                    is Resource.Error -> {
+                        _messagesStarredState.value = messagesStarredState.value.copy(
+                            messagesStarred = it.data ?: emptyList(),
+                            isLoading = false
+                        )
+                        _eventFlow.emit(
+                            UIEvent.ShowSnackbar(
+                                it.message ?: Errors.UNKNOWN_ERROR
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun initMessagesDeletedByCondition() {
-        // TODO
+        viewModelScope.launch {
+            getMessagesDeletedByCondition(_messagesDeletedState.value.page).collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        // NOTE: could show loading
+                    }
+                    is Resource.Success -> {
+                        val newList = _messagesDeletedState.value.messagesDeleted+(it.data ?: emptyList())
+                        _messagesDeletedState.value = messagesDeletedState.value.copy(
+                            messagesDeleted = newList,
+                            page = _messagesDeletedState.value.page+1,
+                            isEverythingLoaded = (it.data ?: emptyList()).isEmpty(),
+                            isLoading = false
+                        )
+                    }
+                    is Resource.Error -> {
+                        _messagesDeletedState.value = messagesDeletedState.value.copy(
+                            messagesDeleted = it.data ?: emptyList(),
+                            isLoading = false
+                        )
+                        _eventFlow.emit(
+                            UIEvent.ShowSnackbar(
+                                it.message ?: Errors.UNKNOWN_ERROR
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun updateMessagesGottenFragmentTypeState() {

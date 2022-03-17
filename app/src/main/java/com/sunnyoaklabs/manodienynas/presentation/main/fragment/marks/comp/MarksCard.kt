@@ -57,9 +57,6 @@ fun MarksCard(
     val collapsableSectionMarks = mutableListOf<CollapsableSectionMarks>()
     LaunchedEffect(key1 = true) {
         marksFragmentViewModel.marksEventItemFlow.collect {
-            // TODO
-            //  -show some sort loading animation
-            //  -show dialog when !isLoading
             it.marksEventItem?.let { marksEventItemIt ->
                 marksEventItem.value = marksEventItemIt
             }

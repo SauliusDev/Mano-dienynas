@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -55,7 +56,9 @@ fun DialogMessageIndividual(
                         Spacer(modifier = Modifier.height(4.dp))
                         LazyColumn(Modifier.heightIn(0.dp, 300.dp)) {
                             item {
-                                Text(messageIndividual.content)
+                                SelectionContainer {
+                                    Text(messageIndividual.content)
+                                }
                             }
                         }
                     }

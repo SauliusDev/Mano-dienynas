@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.remote
 
+import android.util.Log
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.ATTENDANCE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_EVENT_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_GET
@@ -162,6 +163,7 @@ class BackendApiImpl(
     }
 
     override suspend fun getMessagesGottenByCondition(page: String): String {
+        Log.e("console log", "page url: "+MESSAGE_GOTTEN_LIST_PAGE_GET.replace("{page}", page))
         return client.get { url(MESSAGE_GOTTEN_LIST_PAGE_GET.replace("{page}", page)) }
     }
 
