@@ -38,6 +38,7 @@ interface BackendApi {
     suspend fun postControlWork(payload: PostControlWork): String
 
     suspend fun getTerm(): String
+    suspend fun getTermMarkDialog(url: String): String
 
     suspend fun getMessagesGotten(): String
     suspend fun getMessagesGottenByCondition(page: String): String

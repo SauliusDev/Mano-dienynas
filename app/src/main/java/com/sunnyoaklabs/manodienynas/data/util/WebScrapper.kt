@@ -22,6 +22,8 @@ interface WebScrapper {
 
     fun toTerm(html: String): List<Term>
 
+    fun toTermMarkDialogItem(html: String, url: String): TermMarkDialogItem
+
     fun toMessages(html: String): List<Message>
 
     fun toMessagesIndividual(html: String): MessageIndividual

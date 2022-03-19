@@ -21,7 +21,7 @@ fun MarksFragment(
     val marksFragmentViewModel = mainViewModel.marksFragmentViewModel
     val markFragmentTypeState = marksFragmentViewModel.markFragmentTypeState.value
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         ConstraintLayout {
             val (cards) = createRefs()

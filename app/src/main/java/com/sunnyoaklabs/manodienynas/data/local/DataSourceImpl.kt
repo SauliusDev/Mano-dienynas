@@ -5,6 +5,7 @@ import com.sunnyoaklabs.manodienynas.core.util.DispatcherProvider
 import com.sunnyoaklabs.manodienynas.core.util.toLong
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
 import kotlinx.coroutines.withContext
 import manodienynas.db.*
 import javax.inject.Inject
@@ -297,6 +298,39 @@ class DataSourceImpl @Inject constructor(
                 term.yearAdditionalWorks,
                 term.yearExams,
                 converter.toTermRangeJson(term.termRange)
+            )
+        }
+    }
+
+    override suspend fun getTermMarkDialogByUrl(url: String): TermMarkDialogEntity? {
+        return db.termMarkDialogEntityQueries.getTermMarkDialogByUrl(url).executeAsOneOrNull()
+    }
+
+    override fun getAllTermMarkDialog(): List<TermMarkDialogEntity> {
+        return db.termMarkDialogEntityQueries.getAllTermMarkDialog().executeAsList()
+    }
+
+    override suspend fun deleteAllTermMarkDialog() {
+        withContext(dispatchers.io) {
+            db.termMarkDialogEntityQueries.deleteAllTermMarkDialog()
+        }
+    }
+
+    override suspend fun deleteTermMarkDialogByUrl(url: String) {
+        withContext(dispatchers.io) {
+            db.termMarkDialogEntityQueries.deleteTermMarkDialogByUrl(url)
+        }
+    }
+
+    override suspend fun insertTermMarkDialog(termMarkDialogItem: TermMarkDialogItem) {
+        return withContext(dispatchers.io) {
+            db.termMarkDialogEntityQueries.insertTermMarkDialog(
+                termMarkDialogItem.url,
+                termMarkDialogItem.writer,
+                termMarkDialogItem.date,
+                termMarkDialogItem.mark,
+                termMarkDialogItem.course,
+                termMarkDialogItem.remarks,
             )
         }
     }

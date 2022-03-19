@@ -52,6 +52,7 @@ class MainViewModel @Inject constructor(
     val eventsFragmentViewModel: EventsFragmentViewModel,
     val marksFragmentViewModel: MarksFragmentViewModel,
     val messagesFragmentViewModel: MessagesFragmentViewModel,
+    val termsFragmentViewModel: TermsFragmentViewModel,
     val moreFragmentViewModel: MoreFragmentViewModel,
     val settingsMainFragmentViewModel: SettingsMainFragmentViewModel
 ) : AndroidViewModel(app) {
@@ -139,10 +140,11 @@ class MainViewModel @Inject constructor(
 //            marksFragmentViewModel.initControlWorkByCondition()
 //            marksFragmentViewModel.initClassWorkByCondition()
 //            marksFragmentViewModel.initHomeWorkByCondition()
-            messagesFragmentViewModel.initMessagesGotten()
-            messagesFragmentViewModel.initMessagesSent()
-            messagesFragmentViewModel.initMessagesStarred()
-            messagesFragmentViewModel.initMessagesDeleted()
+//            messagesFragmentViewModel.initMessagesGotten()
+//            messagesFragmentViewModel.initMessagesSent()
+//            messagesFragmentViewModel.initMessagesStarred()
+//            messagesFragmentViewModel.initMessagesDeleted()
+            termsFragmentViewModel.initTerm()
             // all other initializations ..................
         }
     }

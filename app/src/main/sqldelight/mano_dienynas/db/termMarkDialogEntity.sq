@@ -1,0 +1,29 @@
+CREATE TABLE termMarkDialogEntity (
+    url TEXT,
+    writer TEXT,
+    date TEXT,
+    mark TEXT,
+    course TEXT,
+    remarks TEXT
+);
+
+getTermMarkDialogByUrl:
+SELECT *
+FROM termMarkDialogEntity
+WHERE url = :url;
+
+getAllTermMarkDialog:
+SELECT *
+FROM termMarkDialogEntity;
+
+insertTermMarkDialog:
+INSERT OR REPLACE
+INTO termMarkDialogEntity
+VALUES(?, ?, ?, ?, ?, ?);
+
+deleteTermMarkDialogByUrl:
+DELETE FROM termMarkDialogEntity
+WHERE url = :url;
+
+deleteAllTermMarkDialog:
+DELETE FROM termMarkDialogEntity;

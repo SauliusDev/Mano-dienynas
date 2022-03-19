@@ -120,6 +120,17 @@ class DataSourceObjectParserImpl(
         )
     }
 
+    override fun toTermMarkDialogItemFromEntity(termMarkDialogEntity: TermMarkDialogEntity?): TermMarkDialogItem {
+        return TermMarkDialogItem(
+            termMarkDialogEntity?.url ?: "",
+            termMarkDialogEntity?.writer ?: "",
+            termMarkDialogEntity?.date ?: "",
+            termMarkDialogEntity?.mark ?: "",
+            termMarkDialogEntity?.course ?: "",
+            termMarkDialogEntity?.remarks ?: "",
+        )
+    }
+
     override fun toMessageGottenFromEntity(messageGottenEntity: MessageGottenEntity?): Message {
         return Message(
             messageGottenEntity?.messageId ?: "",

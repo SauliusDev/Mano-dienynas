@@ -11,6 +11,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.jsoup.Jsoup
@@ -369,6 +370,24 @@ class RepositoryImpl(
         }
         val newTerms = dataSource.getAllTerms().map { converter.toTermFromEntity(it) }
         emit(Resource.Success(newTerms))
+    }
+
+    override fun getTermMarkDialog(url: String): Flow<Resource<TermMarkDialogItem>> = flow {
+        emit(Resource.Loading())
+        val termMarkDialogItemLocal = converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
+        emit(Resource.Loading(data = termMarkDialogItemLocal))
+        try {
+            val response = api.getTermMarkDialog(url)
+            val termMarkDialogItem = converter.toTermMarkDialogItem(response, url)
+            dataSource.deleteTermMarkDialogByUrl(url)
+            dataSource.insertTermMarkDialog(termMarkDialogItem)
+        } catch (e: IOException) {
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
+        }
+        val newTermMarkDialog = converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
+        emit(Resource.Success(newTermMarkDialog))
     }
 
     override fun getMessagesGotten(): Flow<Resource<List<Message>>> = flow {

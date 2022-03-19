@@ -337,9 +337,19 @@ class JsoupWebScrapper() : WebScrapper {
                     terms++
                     val termRange = elementsRanges[h].text().split("(")[0]
                     val termDate = "(" + elementsRanges[h].text().split("(")[1]
-                    termRangeList.add(TermRange(termRange, termDate))
+                    if (termRange.startsWith("Pirmas") ||
+                        termRange.startsWith("Antras") ||
+                        termRange.startsWith("Trečias") ||
+                        termRange.startsWith("Metinis")) {
+                        termRangeList.add(TermRange(termRange, termDate))
+                    }
                 } else if (isShown != "display: none;") {
-                    termRangeList.add(TermRange(elementsRanges[h].text(), elementsRanges[h].text()))
+                    if (elementsRanges[h].text().startsWith("Pirmas") ||
+                        elementsRanges[h].text().startsWith("Antras") ||
+                        elementsRanges[h].text().startsWith("Trečias") ||
+                        elementsRanges[h].text().startsWith("Metinis")) {
+                        termRangeList.add(TermRange(elementsRanges[h].text(), elementsRanges[h].text()))
+                    }
                 }
             }
             for (h in 0 until terms) {
@@ -397,6 +407,17 @@ class JsoupWebScrapper() : WebScrapper {
             )
         }
         return termList
+    }
+
+    override fun toTermMarkDialogItem(html: String, url: String): TermMarkDialogItem {
+        val document = Jsoup.parse(html)
+        val tableOfTermMarksElements = document.getElementsByTag("table")[0].getElementsByTag("tr")
+        val writer = tableOfTermMarksElements[0].getElementsByTag("td")[1].text()
+        val date = tableOfTermMarksElements[1].getElementsByTag("td")[1].text()
+        val mark = tableOfTermMarksElements[2].getElementsByTag("td")[1].text()
+        val course = tableOfTermMarksElements[3].getElementsByTag("td")[1].text()
+        val remarks = tableOfTermMarksElements[4].getElementsByTag("td")[1].text()
+        return TermMarkDialogItem(url, writer, date, mark, course, remarks)
     }
 
     override fun toMessages(html: String): List<Message> {

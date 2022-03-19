@@ -25,6 +25,8 @@ interface DataSourceObjectParser {
 
     fun toTermFromEntity(termEntity: TermEntity?): Term
 
+    fun toTermMarkDialogItemFromEntity(termMarkDialogEntity: TermMarkDialogEntity?): TermMarkDialogItem
+
     fun toMessageGottenFromEntity(messageGottenEntity: MessageGottenEntity?): Message
 
     fun toMessageSentFromEntity(messageSentEntity: MessageSentEntity?): Message

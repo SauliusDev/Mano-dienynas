@@ -69,4 +69,8 @@
     <string name="ic_message_unseen_description">Žinutė nematyta</string>
     <string name="ic_attachment_description">Failas</string>
 
+    <string name="terms_fragment_name">Trimestrai, pusmečiai</string>
+
+    <string name="ic_terms_description">Trimestrai, pusmečiai</string>
+
 </resources>

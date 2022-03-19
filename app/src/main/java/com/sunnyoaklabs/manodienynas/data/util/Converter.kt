@@ -110,6 +110,10 @@ class Converter(
         return webScrapper.toTerm(html = html)
     }
 
+    fun toTermMarkDialogItem(html: String, url: String): TermMarkDialogItem {
+        return webScrapper.toTermMarkDialogItem(html = html, url = url)
+    }
+
     fun toMessages(html: String): List<Message> {
         return webScrapper.toMessages(html = html)
     }
@@ -180,6 +184,10 @@ class Converter(
 
     fun toTermFromEntity(termEntity: TermEntity?): Term {
         return dataSourceObjectParser.toTermFromEntity(termEntity)
+    }
+
+    fun toTermMarkDialogItemFromEntity(termMarkDialogEntity: TermMarkDialogEntity?): TermMarkDialogItem {
+        return dataSourceObjectParser.toTermMarkDialogItemFromEntity(termMarkDialogEntity)
     }
 
     fun toMessageGottenFromEntity(messageGottenEntity: MessageGottenEntity?): Message {

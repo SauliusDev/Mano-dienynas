@@ -3,6 +3,7 @@ package com.sunnyoaklabs.manodienynas.domain.repository
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.domain.model.*
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
@@ -35,6 +36,7 @@ interface Repository {
     fun getControlWorkByCondition(payload: PostControlWork, page: Int): Flow<Resource<List<ControlWork>>>
 
     fun getTerm(): Flow<Resource<List<Term>>>
+    fun getTermMarkDialog(url: String): Flow<Resource<TermMarkDialogItem>>
 
     fun getMessagesGotten(): Flow<Resource<List<Message>>>
     fun getMessagesGottenByCondition(page: Int): Flow<Resource<List<Message>>>

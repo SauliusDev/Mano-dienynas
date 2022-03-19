@@ -15,10 +15,7 @@ import com.sunnyoaklabs.manodienynas.data.repository.RepositoryImpl
 import com.sunnyoaklabs.manodienynas.data.util.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -89,6 +86,18 @@ object AppModule {
             getMessagesDeleted,
             getMessagesDeletedByCondition,
             getMessageIndividual
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideTermsFragmentViewModel(
+        getTerm: GetTerm,
+        getTermMarkDialogItem: GetTermMarkDialogItem
+    ): TermsFragmentViewModel {
+        return TermsFragmentViewModel(
+            getTerm,
+            getTermMarkDialogItem
         )
     }
 
@@ -305,6 +314,12 @@ object AppModule {
     @Singleton
     fun provideGetMessagesDeletedUseCase(repository: Repository): GetMessagesDeleted {
         return GetMessagesDeleted(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetTermMarkDialogItemUseCase(repository: Repository): GetTermMarkDialogItem {
+        return GetTermMarkDialogItem(repository)
     }
 
     @Provides

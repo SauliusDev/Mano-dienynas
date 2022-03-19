@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.data.local
 
 import com.sunnyoaklabs.manodienynas.domain.model.*
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
 import manodienynas.db.*
 
 interface DataSource {
@@ -51,6 +52,12 @@ interface DataSource {
     fun getAllTerms(): List<TermEntity>
     suspend fun deleteAllTerm()
     suspend fun insertTerm(term: Term)
+
+    suspend fun getTermMarkDialogByUrl(url: String): TermMarkDialogEntity?
+    fun getAllTermMarkDialog(): List<TermMarkDialogEntity>
+    suspend fun deleteAllTermMarkDialog()
+    suspend fun deleteTermMarkDialogByUrl(url: String)
+    suspend fun insertTermMarkDialog(termMarkDialogItem: TermMarkDialogItem)
 
     suspend fun getMessageGottenById(id: Long): MessageGottenEntity?
     fun getAllMessagesGotten(): List<MessageGottenEntity>

@@ -12,6 +12,7 @@ import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
 import com.sunnyoaklabs.manodienynas.domain.model.CalendarEvent
+import com.sunnyoaklabs.manodienynas.domain.model.TermMarkDialogItem
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,13 +26,17 @@ import javax.inject.Inject
 
 class TermsFragmentViewModel @Inject constructor(
     private val getTerm: GetTerm,
-    ) : ViewModel() {
+    private val getTermMarkDialogItem: GetTermMarkDialogItem,
+) : ViewModel() {
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private val _termState = mutableStateOf(TermState())
     val termState: State<TermState> = _termState
+
+    private val _termMarkDialogItemFlow = MutableSharedFlow<TermMarkDialogItemState>()
+    val termMarkDialogItemFlow = _termMarkDialogItemFlow.asSharedFlow()
 
     private var getDataJob: Job? = null
 
@@ -64,6 +69,29 @@ class TermsFragmentViewModel @Inject constructor(
                             terms = it.data ?: emptyList(),
                             isLoading = false
                         )
+                        _eventFlow.emit(
+                            UIEvent.ShowSnackbar(
+                                it.message ?: Errors.UNKNOWN_ERROR
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun initTermMarkDialogItem(url: String) {
+        viewModelScope.launch {
+            getTermMarkDialogItem(url).collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        // NOTE: could show loading animation
+                    }
+                    is Resource.Success -> {
+                        _termMarkDialogItemFlow.emit(TermMarkDialogItemState(it.data, false))
+                    }
+                    is Resource.Error -> {
+                        _termMarkDialogItemFlow.emit(TermMarkDialogItemState(it.data, false))
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
