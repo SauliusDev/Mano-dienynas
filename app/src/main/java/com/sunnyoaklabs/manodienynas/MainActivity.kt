@@ -37,6 +37,7 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment.*
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.EventsFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.MarksFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.MessagesFragment
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.more.MoreFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.TermsFragment
 import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
@@ -98,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                         NavHost(
                             navController = navController,
                             // TODO just for testing
-                            startDestination = Screen.Terms.route
+                            startDestination = Screen.More.route
                         ) {
                             composable(Screen.Events.route) {
                                 EventsFragment(mainViewModel)

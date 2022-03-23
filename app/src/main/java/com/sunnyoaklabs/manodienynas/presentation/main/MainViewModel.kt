@@ -144,7 +144,11 @@ class MainViewModel @Inject constructor(
 //            messagesFragmentViewModel.initMessagesSent()
 //            messagesFragmentViewModel.initMessagesStarred()
 //            messagesFragmentViewModel.initMessagesDeleted()
-            termsFragmentViewModel.initTerm()
+//            termsFragmentViewModel.initTerm()
+//            moreFragmentViewModel.initHoliday()
+//            moreFragmentViewModel.initParentMeetings()
+            moreFragmentViewModel.initSchedule()
+//            moreFragmentViewModel.initCalendar()
             // all other initializations ..................
         }
     }

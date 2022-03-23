@@ -541,7 +541,7 @@ class DataSourceImpl @Inject constructor(
                 parentMeeting.id,
                 parentMeeting.className,
                 parentMeeting.description,
-                parentMeeting.creationDate,
+                parentMeeting.date,
                 parentMeeting.location,
                 converter.toParentMeetingFilesJson(parentMeeting.attachmentUrls),
                 parentMeeting.creationDate

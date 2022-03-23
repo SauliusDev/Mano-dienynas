@@ -31,6 +31,9 @@ class MoreFragmentViewModel @Inject constructor(
     private val getCalendarEvent: GetCalendarEvent,
 ) : ViewModel() {
 
+    private val _moreFragmentTypeState = mutableStateOf(MoreFragmentTypeState())
+    val moreFragmentTypeState: State<MoreFragmentTypeState> = _moreFragmentTypeState
+
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -74,10 +77,8 @@ class MoreFragmentViewModel @Inject constructor(
                             holiday = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "holiday: "+_holidayState.value.holiday)
                     }
                     is Resource.Error -> {
-                        Log.e("console log", "holiday: "+it.message)
                         _holidayState.value = holidayState.value.copy(
                             holiday = it.data ?: emptyList(),
                             isLoading = false
@@ -108,10 +109,8 @@ class MoreFragmentViewModel @Inject constructor(
                             parentMeetings = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "parent meetings: "+_parentMeetingState.value.parentMeetings)
                     }
                     is Resource.Error -> {
-                        Log.e("console log", "parent meetings: "+it.message)
                         _parentMeetingState.value = parentMeetingState.value.copy(
                             parentMeetings = it.data ?: emptyList(),
                             isLoading = false
@@ -228,4 +227,50 @@ class MoreFragmentViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateScheduleMoreFragmentTypeState() {
+        viewModelScope.launch {
+            _moreFragmentTypeState.value = moreFragmentTypeState.value.copy(
+                scheduleIsSelected = true,
+                calendarIsSelected = false,
+                holidayIsSelected = false,
+                parentMeetingsIsSelected = false,
+            )
+        }
+    }
+
+    fun updateCalendarMoreFragmentTypeState() {
+        viewModelScope.launch {
+            _moreFragmentTypeState.value = moreFragmentTypeState.value.copy(
+                scheduleIsSelected = false,
+                calendarIsSelected = true,
+                holidayIsSelected = false,
+                parentMeetingsIsSelected = false,
+            )
+        }
+    }
+
+    fun updateHolidayMoreFragmentTypeState() {
+        viewModelScope.launch {
+            _moreFragmentTypeState.value = moreFragmentTypeState.value.copy(
+                scheduleIsSelected = false,
+                calendarIsSelected = false,
+                holidayIsSelected = true,
+                parentMeetingsIsSelected = false,
+            )
+        }
+    }
+
+    fun updateParentMeetingsMoreFragmentTypeState() {
+        viewModelScope.launch {
+            _moreFragmentTypeState.value = moreFragmentTypeState.value.copy(
+                scheduleIsSelected = false,
+                calendarIsSelected = false,
+                holidayIsSelected = false,
+                parentMeetingsIsSelected = true,
+            )
+        }
+    }
+
+
 }

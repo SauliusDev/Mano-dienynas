@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
+import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.sunnyoaklabs.manodienynas.core.util.toBoolean
 import com.sunnyoaklabs.manodienynas.domain.model.*

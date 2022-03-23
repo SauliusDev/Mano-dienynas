@@ -73,4 +73,17 @@
 
     <string name="ic_terms_description">Trimestrai, pusmečiai</string>
 
+    <string name="more_fragment_schedule">Tvarkaraštis</string>
+    <string name="more_fragment_calendar">Kalendorius</string>
+    <string name="more_fragment_holiday">Atostogos</string>
+    <string name="more_fragment_parent_meetings">Tėvų susirinkimai</string>
+
+    <string name="ic_schedule_description">Tvarkaraštis</string>
+    <string name="ic_calendar_more_description">Kalendorius</string>
+    <string name="ic_holiday_description">Atostogos</string>
+    <string name="ic_parent_meetings_description">Tėvų susirinkimai</string>
+
+    <string name="ic_location_description">Vieta</string>
+    <string name="ic_date_description">Vieta</string>
+
 </resources>
