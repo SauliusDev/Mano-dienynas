@@ -1,7 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.local
 
 import com.sunnyoaklabs.manodienynas.domain.model.*
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
 import manodienynas.db.*
 
 interface DataSource {
@@ -97,8 +96,9 @@ interface DataSource {
 
     suspend fun getScheduleById(id: Long): ScheduleEntity?
     fun getAllSchedule(): List<ScheduleEntity>
+    fun getAllScheduleByWeekDay(weekDay: Long): List<ScheduleEntity>
     suspend fun deleteAllSchedule()
-    suspend fun insertSchedule(schedule: Schedule)
+    suspend fun insertSchedule(scheduleOneLesson: ScheduleOneLesson)
 
     suspend fun getCalendarById(id: Long): CalendarEntity?
     fun getAllCalendars(): List<CalendarEntity>

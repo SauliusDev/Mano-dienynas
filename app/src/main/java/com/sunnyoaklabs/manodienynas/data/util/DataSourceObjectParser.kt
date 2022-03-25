@@ -41,7 +41,7 @@ interface DataSourceObjectParser {
 
     fun toParentMeetingFromEntity(parentMeetingEntity: ParentMeetingEntity?): ParentMeeting
 
-    fun toScheduleFromEntity(scheduleEntity: ScheduleEntity?): Schedule
+    fun toScheduleFromEntity(scheduleEntity: ScheduleEntity?): ScheduleOneLesson
 
     fun toCalendarFromEntity(calendarEntity: CalendarEntity?): Calendar
 

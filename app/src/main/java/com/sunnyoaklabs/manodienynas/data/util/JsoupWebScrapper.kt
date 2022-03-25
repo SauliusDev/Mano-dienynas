@@ -1,13 +1,11 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
-import android.util.Log
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.ATTENDANCE_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CHANGED_MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import org.jsoup.Jsoup
-import org.jsoup.select.Elements
 
 class JsoupWebScrapper() : WebScrapper {
 
@@ -546,9 +544,9 @@ class JsoupWebScrapper() : WebScrapper {
         return parentMeetingList
     }
 
-    override fun toSchedule(html: String): List<Schedule> {
+    override fun toSchedule(html: String): List<ScheduleOneLesson> {
         val document = Jsoup.parse(html)
-        val scheduleList: MutableList<Schedule> = mutableListOf()
+        val scheduleOneLessonList: MutableList<ScheduleOneLesson> = mutableListOf()
         val elementScheduleTable = document.getElementById("sheduleContTable")
         val elementScheduleRows = elementScheduleTable.getElementsByClass("schedule_day_table")
         val elementScheduleTimeTable = elementScheduleTable.getElementsByClass("schedule_time_table")[0]
@@ -564,10 +562,10 @@ class JsoupWebScrapper() : WebScrapper {
                 val timeRange = timeList[h]
                 val lessonOrder = h+1
                 val lesson = elementScheduleRow[h].getElementsByTag("a")[0].text()
-                scheduleList.add(Schedule(weekDay.toLong(), timeRange, lessonOrder.toLong(), lesson))
+                scheduleOneLessonList.add(ScheduleOneLesson(weekDay.toLong(), timeRange, lessonOrder.toLong(), lesson))
             }
         }
-        return scheduleList
+        return scheduleOneLessonList
     }
 
     override fun toCalendarEvent(html: String): CalendarEvent {

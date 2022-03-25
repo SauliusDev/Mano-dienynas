@@ -15,6 +15,11 @@ getAllSchedule:
 SELECT *
 FROM scheduleEntity;
 
+getAllScheduleByWeekDay:
+SELECT *
+FROM scheduleEntity
+WHERE weekDay = :weekDay;
+
 insertSchedule:
 INSERT OR REPLACE
 INTO scheduleEntity

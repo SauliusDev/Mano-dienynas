@@ -34,7 +34,7 @@ interface WebScrapper {
 
     fun toParentMeetings(html: String): List<ParentMeeting>
 
-    fun toSchedule(html: String): List<Schedule>
+    fun toSchedule(html: String): List<ScheduleOneLesson>
 
     fun toCalendarEvent(html: String): CalendarEvent
 

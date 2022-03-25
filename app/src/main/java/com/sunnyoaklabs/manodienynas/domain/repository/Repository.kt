@@ -3,7 +3,6 @@ package com.sunnyoaklabs.manodienynas.domain.repository
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.domain.model.*
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
@@ -56,7 +55,7 @@ interface Repository {
 
     fun getParentMeetings(): Flow<Resource<List<ParentMeeting>>>
 
-    fun getSchedule(): Flow<Resource<List<Schedule>>>
+    fun getSchedule(): Flow<Resource<List<ScheduleDay>>>
 
     fun getCalendar(payload: GetCalendarDto): Flow<Resource<List<Calendar>>>
 

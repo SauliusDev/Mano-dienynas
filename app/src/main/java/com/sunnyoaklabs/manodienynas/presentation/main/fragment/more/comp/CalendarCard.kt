@@ -27,32 +27,32 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreF
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
 
-@Composable
-fun CalendarCard(
-    moreFragmentViewModel: MoreFragmentViewModel,
-    modifier: Modifier = Modifier
-) {
-    val calendarState = moreFragmentViewModel.calendarState.value
-
-    val scope = rememberCoroutineScope()
-    val state = rememberLazyListState()
-    state.disableScrolling(scope)
-    when {
-        calendarState.isLoading -> {
-            LoadingList(10, state)
-        }
-        calendarState.calendar.isEmpty() -> {
-            EmptyCalendarItem(moreFragmentViewModel)
-        }
-        else -> {
-            Column {
-                CalendarTopText()
-                Spacer(modifier = Modifier.height(4.dp))
-                // TODO custom calendar view
-            }
-        }
-    }
-}
+//@Composable
+//fun CalendarCard(
+//    moreFragmentViewModel: MoreFragmentViewModel,
+//    modifier: Modifier = Modifier
+//) {
+//    val calendarState = moreFragmentViewModel.calendarState.value
+//
+//    val scope = rememberCoroutineScope()
+//    val state = rememberLazyListState()
+//    state.disableScrolling(scope)
+//    when {
+//        calendarState.isLoading -> {
+//            LoadingList(10, state)
+//        }
+//        calendarState.calendar.isEmpty() -> {
+//            EmptyCalendarItem(moreFragmentViewModel)
+//        }
+//        else -> {
+//            Column {
+//                CalendarTopText()
+//                Spacer(modifier = Modifier.height(4.dp))
+//                // TODO custom calendar view
+//            }
+//        }
+//    }
+//}
 
 @Composable
 private fun CalendarTopText(
@@ -106,7 +106,7 @@ private fun EmptyCalendarItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    moreFragmentViewModel.initCalendar(GetCalendarDto("", "", "", 0, 0))
+                    //moreFragmentViewModel.initCalendar(GetCalendarDto("", "", "", 0, 0))
                 },
                 enabled = !isLoading.value
             ) {

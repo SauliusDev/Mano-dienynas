@@ -11,10 +11,8 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.jsoup.Jsoup
 import java.io.IOException
 import java.lang.Exception
 
@@ -652,16 +650,19 @@ class RepositoryImpl(
         emit(Resource.Success(newParentMeetings))
     }
 
-    override fun getSchedule(): Flow<Resource<List<Schedule>>> = flow {
+    override fun getSchedule(): Flow<Resource<List<ScheduleDay>>> = flow {
         emit(Resource.Loading())
-        val scheduleLocal = dataSource.getAllSchedule().map { converter.toScheduleFromEntity(it) }
+        val scheduleLocal = mutableListOf<ScheduleDay>()
+        for (i in 1..7) {
+            scheduleLocal.add(ScheduleDay(dataSource.getAllScheduleByWeekDay(i.toLong()).map { converter.toScheduleFromEntity(it) }))
+        }
         emit(Resource.Loading(data = scheduleLocal))
         try {
             val response = api.getSchedule()
             val person = converter.toPerson(response)
             if (person.name.isNotBlank()) {
                 val scheduleApi = converter.toSchedule(response)
-                dataSource.deleteAllMarks()
+                dataSource.deleteAllSchedule()
                 scheduleApi.forEach { dataSource.insertSchedule(it) }
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
@@ -671,7 +672,10 @@ class RepositoryImpl(
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newSchedule = dataSource.getAllSchedule().map { converter.toScheduleFromEntity(it) }
+        val newSchedule = mutableListOf<ScheduleDay>()
+        for (i in 1..7) {
+            newSchedule.add(ScheduleDay(dataSource.getAllScheduleByWeekDay(i.toLong()).map { converter.toScheduleFromEntity(it) }))
+        }
         emit(Resource.Success(newSchedule))
     }
 
@@ -684,7 +688,7 @@ class RepositoryImpl(
             val person = converter.toPerson(response)
             if (person.name.isNotBlank()) {
                 val calendarDateApi = converter.toCalendar(response)
-                dataSource.deleteAllMarks()
+                dataSource.deleteAllSchedule()
                 calendarDateApi.forEach { dataSource.insertCalendar(it) }
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))

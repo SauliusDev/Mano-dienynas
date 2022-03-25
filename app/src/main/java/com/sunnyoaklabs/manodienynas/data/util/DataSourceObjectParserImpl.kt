@@ -1,6 +1,5 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
-import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.sunnyoaklabs.manodienynas.core.util.toBoolean
 import com.sunnyoaklabs.manodienynas.domain.model.*
@@ -207,8 +206,8 @@ class DataSourceObjectParserImpl(
         )
     }
 
-    override fun toScheduleFromEntity(scheduleEntity: ScheduleEntity?): Schedule {
-        return Schedule(
+    override fun toScheduleFromEntity(scheduleEntity: ScheduleEntity?): ScheduleOneLesson {
+        return ScheduleOneLesson(
             scheduleEntity?.weekDay!!.toLong(),
             scheduleEntity.timeRange ?: "",
             scheduleEntity.lessonOrder!!.toLong(),

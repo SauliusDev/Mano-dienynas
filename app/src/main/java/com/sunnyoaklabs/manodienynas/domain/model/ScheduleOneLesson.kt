@@ -1,6 +1,6 @@
 package com.sunnyoaklabs.manodienynas.domain.model
 
-data class Schedule(
+data class ScheduleOneLesson(
     val weekDay: Long,
     val timeRange: String,
     val lessonOrder: Long,

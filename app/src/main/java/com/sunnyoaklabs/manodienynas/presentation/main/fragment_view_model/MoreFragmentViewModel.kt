@@ -1,20 +1,16 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
-import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
-import com.sunnyoaklabs.manodienynas.domain.model.CalendarEvent
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,8 +23,8 @@ class MoreFragmentViewModel @Inject constructor(
     private val getHoliday: GetHoliday,
     private val getParentMeetings: GetParentMeetings,
     private val getSchedule: GetSchedule,
-    private val getCalendar: GetCalendar,
-    private val getCalendarEvent: GetCalendarEvent,
+    //private val getCalendar: GetCalendar,
+    //private val getCalendarEvent: GetCalendarEvent,
 ) : ViewModel() {
 
     private val _moreFragmentTypeState = mutableStateOf(MoreFragmentTypeState())
@@ -46,8 +42,8 @@ class MoreFragmentViewModel @Inject constructor(
     private val _scheduleState = mutableStateOf(ScheduleState())
     val scheduleState: State<ScheduleState> = _scheduleState
 
-    private val _calendarState = mutableStateOf(CalendarState())
-    val calendarState: State<CalendarState> = _calendarState
+    //private val _calendarState = mutableStateOf(CalendarState())
+    //val calendarState: State<CalendarState> = _calendarState
 
     private val _calendarEventState = mutableStateOf(CalendarEventState())
     val calendarEventState: State<CalendarEventState> = _calendarEventState
@@ -141,80 +137,13 @@ class MoreFragmentViewModel @Inject constructor(
                             schedule = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "schedule: "+_scheduleState.value.schedule)
+                        it.data?.let { itemas ->
+                            Log.e("console log", ": "+itemas[0].dayLessons.size)
+                        }
                     }
                     is Resource.Error -> {
-                        Log.e("console log", "schedule: "+it.message)
                         _scheduleState.value = scheduleState.value.copy(
                             schedule = it.data ?: emptyList(),
-                            isLoading = false
-                        )
-                        _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
-                                it.message ?: Errors.UNKNOWN_ERROR
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    fun initCalendar(payload: GetCalendarDto) {
-        viewModelScope.launch {
-            getCalendar(payload).collect {
-                when (it) {
-                    is Resource.Loading -> {
-                        _calendarState.value = calendarState.value.copy(
-                            calendar = it.data ?: emptyList(),
-                            isLoading = true
-                        )
-                    }
-                    is Resource.Success -> {
-                        _calendarState.value = calendarState.value.copy(
-                            calendar = it.data ?: emptyList(),
-                            isLoading = false
-                        )
-                        Log.e("console log", "holiday: "+_calendarState.value.calendar)
-                    }
-                    is Resource.Error -> {
-                        Log.e("console log", "calendar: "+it.message)
-                        _calendarState.value = calendarState.value.copy(
-                            calendar = it.data ?: emptyList(),
-                            isLoading = false
-                        )
-                        _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
-                                it.message ?: Errors.UNKNOWN_ERROR
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    fun initCalendarEvent(id: String) {
-        viewModelScope.launch {
-            getCalendarEvent(id).collect {
-                when (it) {
-                    is Resource.Loading -> {
-                        _calendarEventState.value = calendarEventState.value.copy(
-                            calendar = it.data,
-                            isLoading = true
-                        )
-                    }
-                    is Resource.Success -> {
-                        _calendarEventState.value = calendarEventState.value.copy(
-                            calendar = it.data,
-                            isLoading = false
-                        )
-                        Log.e("console log", "calendar event: "+_calendarEventState.value.calendar)
-                    }
-                    is Resource.Error -> {
-                        Log.e("console log", "calendar event: "+it.message)
-                        _calendarEventState.value = calendarEventState.value.copy(
-                            calendar = it.data,
                             isLoading = false
                         )
                         _eventFlow.emit(
@@ -272,5 +201,72 @@ class MoreFragmentViewModel @Inject constructor(
         }
     }
 
+    //    fun initCalendar(payload: GetCalendarDto) {
+//        viewModelScope.launch {
+//            getCalendar(payload).collect {
+//                when (it) {
+//                    is Resource.Loading -> {
+//                        _calendarState.value = calendarState.value.copy(
+//                            calendar = it.data ?: emptyList(),
+//                            isLoading = true
+//                        )
+//                    }
+//                    is Resource.Success -> {
+//                        _calendarState.value = calendarState.value.copy(
+//                            calendar = it.data ?: emptyList(),
+//                            isLoading = false
+//                        )
+//                        Log.e("console log", "holiday: "+_calendarState.value.calendar)
+//                    }
+//                    is Resource.Error -> {
+//                        Log.e("console log", "calendar: "+it.message)
+//                        _calendarState.value = calendarState.value.copy(
+//                            calendar = it.data ?: emptyList(),
+//                            isLoading = false
+//                        )
+//                        _eventFlow.emit(
+//                            UIEvent.ShowSnackbar(
+//                                it.message ?: Errors.UNKNOWN_ERROR
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+//    fun initCalendarEvent(id: String) {
+//        viewModelScope.launch {
+//            getCalendarEvent(id).collect {
+//                when (it) {
+//                    is Resource.Loading -> {
+//                        _calendarEventState.value = calendarEventState.value.copy(
+//                            calendar = it.data,
+//                            isLoading = true
+//                        )
+//                    }
+//                    is Resource.Success -> {
+//                        _calendarEventState.value = calendarEventState.value.copy(
+//                            calendar = it.data,
+//                            isLoading = false
+//                        )
+//                        Log.e("console log", "calendar event: "+_calendarEventState.value.calendar)
+//                    }
+//                    is Resource.Error -> {
+//                        Log.e("console log", "calendar event: "+it.message)
+//                        _calendarEventState.value = calendarEventState.value.copy(
+//                            calendar = it.data,
+//                            isLoading = false
+//                        )
+//                        _eventFlow.emit(
+//                            UIEvent.ShowSnackbar(
+//                                it.message ?: Errors.UNKNOWN_ERROR
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 }

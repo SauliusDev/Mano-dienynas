@@ -35,8 +35,8 @@ fun MoreFragment(
                 ) {
                     ScheduleCardButton(moreFragmentViewModel, Modifier.weight(1f))
                     Spacer(modifier = Modifier.width(4.dp))
-                    CalendarCardButton(moreFragmentViewModel, Modifier.weight(1f))
-                    Spacer(modifier = Modifier.width(4.dp))
+                    //CalendarCardButton(moreFragmentViewModel, Modifier.weight(1f))
+                    //Spacer(modifier = Modifier.width(4.dp))
                     HolidayCardButton(moreFragmentViewModel, Modifier.weight(1f))
                     Spacer(modifier = Modifier.width(4.dp))
                     ParentMeetingsCardButton(moreFragmentViewModel, Modifier.weight(1f))
@@ -48,9 +48,9 @@ fun MoreFragment(
             AnimatedVisibility(visible = moreFragmentTypeState.scheduleIsSelected) {
                 ScheduleCard(moreFragmentViewModel = moreFragmentViewModel)
             }
-            AnimatedVisibility(visible = moreFragmentTypeState.calendarIsSelected) {
-                CalendarCard(moreFragmentViewModel = moreFragmentViewModel)
-            }
+            //AnimatedVisibility(visible = moreFragmentTypeState.calendarIsSelected) {
+            //    CalendarCard(moreFragmentViewModel = moreFragmentViewModel)
+            //}
             AnimatedVisibility(visible = moreFragmentTypeState.holidayIsSelected) {
                 HolidayCard(moreFragmentViewModel = moreFragmentViewModel)
             }

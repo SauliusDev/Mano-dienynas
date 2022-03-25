@@ -148,7 +148,6 @@ class MainViewModel @Inject constructor(
 //            moreFragmentViewModel.initHoliday()
 //            moreFragmentViewModel.initParentMeetings()
             moreFragmentViewModel.initSchedule()
-//            moreFragmentViewModel.initCalendar()
             // all other initializations ..................
         }
     }

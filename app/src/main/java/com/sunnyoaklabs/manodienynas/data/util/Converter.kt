@@ -134,7 +134,7 @@ class Converter(
         return webScrapper.toParentMeetings(html = html)
     }
 
-    fun toSchedule(html: String): List<Schedule> {
+    fun toSchedule(html: String): List<ScheduleOneLesson> {
         return webScrapper.toSchedule(html = html)
     }
 
@@ -218,7 +218,7 @@ class Converter(
         return dataSourceObjectParser.toParentMeetingFromEntity(parentMeetingEntity)
     }
 
-    fun toScheduleFromEntity(scheduleEntity: ScheduleEntity?): Schedule {
+    fun toScheduleFromEntity(scheduleEntity: ScheduleEntity?): ScheduleOneLesson {
         return dataSourceObjectParser.toScheduleFromEntity(scheduleEntity)
     }
 

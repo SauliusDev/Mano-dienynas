@@ -107,15 +107,15 @@ object AppModule {
         getHoliday: GetHoliday,
         getParentMeetings: GetParentMeetings,
         getSchedule: GetSchedule,
-        getCalendar: GetCalendar,
-        getCalendarEvent: GetCalendarEvent
+        //getCalendar: GetCalendar,
+        //getCalendarEvent: GetCalendarEvent
     ): MoreFragmentViewModel {
         return MoreFragmentViewModel(
             getHoliday,
             getParentMeetings,
             getSchedule,
-            getCalendar,
-            getCalendarEvent
+            //getCalendar,
+            //getCalendarEvent
         )
     }
 

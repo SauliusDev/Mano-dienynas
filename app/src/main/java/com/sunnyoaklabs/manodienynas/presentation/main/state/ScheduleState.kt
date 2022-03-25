@@ -1,9 +1,9 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.state
 
-import com.sunnyoaklabs.manodienynas.domain.model.Event
-import com.sunnyoaklabs.manodienynas.domain.model.Schedule
+import com.sunnyoaklabs.manodienynas.domain.model.ScheduleDay
+import com.sunnyoaklabs.manodienynas.domain.model.ScheduleOneLesson
 
 data class ScheduleState(
-    val schedule: List<Schedule> = emptyList(),
+    val schedule: List<ScheduleDay> = emptyList(),
     val isLoading: Boolean = false
 )

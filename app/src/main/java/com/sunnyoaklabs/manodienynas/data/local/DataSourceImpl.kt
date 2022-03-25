@@ -5,7 +5,7 @@ import com.sunnyoaklabs.manodienynas.core.util.DispatcherProvider
 import com.sunnyoaklabs.manodienynas.core.util.toLong
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
+import io.ktor.util.date.*
 import kotlinx.coroutines.withContext
 import manodienynas.db.*
 import javax.inject.Inject
@@ -559,20 +559,24 @@ class DataSourceImpl @Inject constructor(
         return db.scheduleEntityQueries.getAllSchedule().executeAsList()
     }
 
+    override fun getAllScheduleByWeekDay(weekDay: Long): List<ScheduleEntity> {
+        return db.scheduleEntityQueries.getAllScheduleByWeekDay(weekDay).executeAsList()
+    }
+
     override suspend fun deleteAllSchedule() {
         withContext(dispatchers.io) {
             db.scheduleEntityQueries.deleteAllSchedule()
         }
     }
 
-    override suspend fun insertSchedule(schedule: Schedule) {
+    override suspend fun insertSchedule(scheduleOneLesson: ScheduleOneLesson) {
         return withContext(dispatchers.io) {
             db.scheduleEntityQueries.insertSchedule(
-                schedule.id,
-                schedule.weekDay,
-                schedule.timeRange,
-                schedule.lessonOrder,
-                schedule.lesson
+                scheduleOneLesson.id,
+                scheduleOneLesson.weekDay,
+                scheduleOneLesson.timeRange,
+                scheduleOneLesson.lessonOrder,
+                scheduleOneLesson.lesson
             )
         }
     }
