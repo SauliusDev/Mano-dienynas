@@ -5,5 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.ParentMeeting
 
 data class ParentMeetingState(
     val parentMeetings: List<ParentMeeting> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isLoadingLocale: Boolean = true
 )

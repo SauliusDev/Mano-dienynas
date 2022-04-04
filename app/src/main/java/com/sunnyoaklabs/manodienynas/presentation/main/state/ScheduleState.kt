@@ -5,5 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.ScheduleOneLesson
 
 data class ScheduleState(
     val schedule: List<ScheduleDay> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isLoadingLocale: Boolean = true
 )

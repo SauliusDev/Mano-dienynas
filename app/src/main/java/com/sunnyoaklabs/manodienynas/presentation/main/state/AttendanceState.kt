@@ -6,5 +6,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Mark
 
 data class AttendanceState(
     val attendance: List<Attendance> = emptyList(),
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val isLoadingLocale: Boolean = true
 )

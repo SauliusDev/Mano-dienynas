@@ -31,7 +31,6 @@ class GetSessionCookies(
                 is Resource.Error -> {
                     emit(Resource.Error(it.message ?: UNKNOWN_ERROR,false))
                 }
-                else -> {}
             }
         }
     }

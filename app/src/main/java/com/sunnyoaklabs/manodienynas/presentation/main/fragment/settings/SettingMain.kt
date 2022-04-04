@@ -350,7 +350,10 @@ fun ItemLogout(
                 DialogLogout(
                     showDialog,
                     stringResource(id = R.string.logout_notice),
-                    onPositiveClick = {settingsMainFragmentViewModel.logout()},
+                    onPositiveClick = {
+                        settingsMainFragmentViewModel.logout()
+
+                    },
                     onNegativeClick = {showDialog = false},
                     onDismiss = {showDialog = false}
                 )

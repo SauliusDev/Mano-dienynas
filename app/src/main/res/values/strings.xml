@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mano dienynas</string>
+    <string name="app_name">Mano dienynas lite</string>
     <string name="title_activity_login">LoginActivity</string>
 
     <!-- Login activity -->

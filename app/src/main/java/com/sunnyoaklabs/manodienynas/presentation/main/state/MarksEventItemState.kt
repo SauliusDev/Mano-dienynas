@@ -4,5 +4,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.MarksEventItem
 
 data class MarksEventItemState(
     val marksEventItem: MarksEventItem? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isLoadingLocale: Boolean = true
 )

@@ -7,5 +7,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.TermMarkDialogItem
 
 data class TermMarkDialogItemState(
     val termMarkDialogItem: TermMarkDialogItem? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isLoadingLocale: Boolean = true
 )

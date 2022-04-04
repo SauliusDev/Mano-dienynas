@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import com.sunnyoaklabs.manodienynas.domain.model.Term
@@ -38,6 +39,7 @@ import javax.inject.Inject
 class EventsFragmentViewModel @Inject constructor(
     private val getEvents: GetEvents,
     private val getEventsPage: GetEventsPage,
+    val validator: Validator
 ) : ViewModel() {
 
     private val _eventState = mutableStateOf(EventState())
@@ -53,7 +55,7 @@ class EventsFragmentViewModel @Inject constructor(
         getDataJob = viewModelScope.launch {
             delay(500L)
             if (!_eventState.value.isLoading){
-//                initEventsAndPerson()
+                initEventsAndPerson()
             }
         }
     }

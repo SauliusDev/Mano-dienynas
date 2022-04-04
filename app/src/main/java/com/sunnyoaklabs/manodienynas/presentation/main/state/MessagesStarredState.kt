@@ -7,5 +7,6 @@ data class MessagesStarredState(
     val messagesStarred: List<Message> = emptyList(),
     val page: Int = 1,
     val isEverythingLoaded: Boolean = false,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val isLoadingLocale: Boolean = true
 )

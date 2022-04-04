@@ -5,5 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Term
 
 data class TermState(
     val terms: List<Term> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isLoadingLocale: Boolean = true
 )

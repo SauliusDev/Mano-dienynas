@@ -1,10 +1,10 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.START_ACTIVITY_LOGIN_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
@@ -43,6 +43,7 @@ class SettingsMainFragmentViewModel @Inject constructor(
         viewModelScope.launch {
             backendApi.getLogout()
             deleteEverythingInCache()
+            _eventFlow.emit(UIEvent.ShowSnackbar(START_ACTIVITY_LOGIN_EVENT_TYPE))
         }
     }
 

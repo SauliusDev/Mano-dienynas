@@ -5,5 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Holiday
 
 data class HolidayState(
     val holiday: List<Holiday> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isLoadingLocale: Boolean = true
 )

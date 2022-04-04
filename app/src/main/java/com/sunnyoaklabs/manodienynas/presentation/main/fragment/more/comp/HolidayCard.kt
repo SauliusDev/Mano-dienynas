@@ -30,10 +30,7 @@ import com.sunnyoaklabs.manodienynas.domain.model.Holiday
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
-import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
-import com.sunnyoaklabs.manodienynas.ui.theme.accentGreenLightest
-import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
-import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
+import com.sunnyoaklabs.manodienynas.ui.theme.*
 
 @Composable
 fun HolidayCard(
@@ -80,14 +77,14 @@ private fun HolidayTopText(
             modifier = Modifier.size(16.dp),
             painter = painterResource(id = R.drawable.ic_holiday),
             contentDescription = stringResource(R.string.ic_holiday_description),
-            tint = primaryVariantGreenLight
+            tint = accentCyan
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = stringResource(id = R.string.more_fragment_holiday),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = primaryVariantGreenLight
+            color = accentCyan
         )
     }
 }
@@ -105,23 +102,19 @@ private fun HolidayItem(
     ) {
         Column(
             modifier = modifier
-                .fillMaxWidth()
-                .padding(4.dp),
+                .fillMaxWidth(),
         ) {
-            Text(text = holiday.name)
-            Box(
-                modifier = modifier
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(accentGreenLightest)
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .background(accentCyan)) {
+                Text(text = holiday.name, modifier = Modifier.padding(4.dp))
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.padding(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Spacer(modifier = Modifier.width(2.dp))
-                    Text(text = "${holiday.rangeStart} - ${holiday.rangeEnd}")
-                    Spacer(modifier = Modifier.width(2.dp))
-                }
+                Text(text = "${holiday.rangeStart} - ${holiday.rangeEnd}")
             }
         }
     }

@@ -43,7 +43,7 @@ fun ScheduleCardButton(
                 modifier = Modifier,
                 painter = painterResource(id = R.drawable.ic_schedule),
                 contentDescription = stringResource(R.string.ic_schedule_description),
-                tint = primaryVariantGreenLight
+                tint = accentYellowDark
             )
         }
     }
@@ -109,7 +109,7 @@ fun HolidayCardButton(
                 modifier = Modifier,
                 painter = painterResource(id = R.drawable.ic_holiday),
                 contentDescription = stringResource(R.string.ic_holiday_description),
-                tint = primaryVariantGreenLight
+                tint = accentCyan
             )
         }
     }
@@ -142,7 +142,7 @@ fun ParentMeetingsCardButton(
                 modifier = Modifier,
                 painter = painterResource(id = R.drawable.ic_parent_meetings),
                 contentDescription = stringResource(R.string.ic_parent_meetings_description),
-                tint = primaryVariantGreenLight
+                tint = accentBlueLight
             )
         }
     }

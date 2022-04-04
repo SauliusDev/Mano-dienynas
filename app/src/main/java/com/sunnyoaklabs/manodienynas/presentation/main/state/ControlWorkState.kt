@@ -5,5 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Event
 
 data class ControlWorkState(
     val controlWork: List<ControlWork> = emptyList(),
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val isLoadingLocale: Boolean = true
 )

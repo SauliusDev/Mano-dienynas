@@ -5,5 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.MessageIndividual
 
 data class MessageIndividualState(
     val messageIndividual: MessageIndividual? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isLoadingLocale: Boolean = true
 )

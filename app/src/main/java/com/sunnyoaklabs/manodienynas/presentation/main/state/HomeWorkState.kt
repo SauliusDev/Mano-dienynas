@@ -5,5 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.HomeWork
 
 data class HomeWorkState(
     val homeWork: List<HomeWork> = emptyList(),
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val isLoadingLocale: Boolean = true
 )

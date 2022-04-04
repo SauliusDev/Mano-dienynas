@@ -6,5 +6,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Event
 
 data class CalendarEventState(
     val calendar: CalendarEvent? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isLoadingLocale: Boolean = true
 )

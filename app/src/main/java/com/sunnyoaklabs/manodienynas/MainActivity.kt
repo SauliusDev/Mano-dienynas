@@ -11,23 +11,34 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.ImageLoader
+import coil.compose.rememberImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.START_ACTIVITY_LOGIN_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.Screen
@@ -39,8 +50,7 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.MarksFragm
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.MessagesFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.more.MoreFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.TermsFragment
-import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
-import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
+import com.sunnyoaklabs.manodienynas.ui.theme.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -88,45 +98,52 @@ class MainActivity : AppCompatActivity() {
 
                 Scaffold(
                     topBar = {
-                        ToolbarMain(navController)
+                        ToolbarMain(mainViewModel.isDataBeingLoaded, this, navController)
                     },
                     bottomBar = {
                         BottomNavigationBar(navController, mainViewModel, bottomNavigationItems)
                     },
                     scaffoldState = scaffoldState
                 ) { innerPadding ->
-                    Box(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, innerPadding.calculateBottomPadding())) {
-                        NavHost(
-                            navController = navController,
-                            // TODO just for testing
-                            startDestination = Screen.More.route
-                        ) {
-                            composable(Screen.Events.route) {
-                                EventsFragment(mainViewModel)
-                            }
-                            composable(Screen.Marks.route) {
-                                MarksFragment(
-                                    mainViewModel,
-                                    (this@MainActivity as AppCompatActivity).supportFragmentManager,
-                                )
-                            }
-                            composable(Screen.Messages.route) {
-                                MessagesFragment(mainViewModel)
-                            }
-                            composable(Screen.Terms.route) {
-                                TermsFragment(mainViewModel)
-                            }
-                            composable(Screen.More.route) {
-                                MoreFragment(mainViewModel)
-                            }
-                            composable(Screen.Settings.route) {
-                                SettingsMainFragment(mainViewModel)
-                            }
-                        }
-                    }
+                    NavHostContainer(navController, innerPadding)
                 }
             }
         }
+    }
+
+    @Composable
+    fun NavHostContainer(
+        navController: NavHostController,
+        padding: PaddingValues
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Events.route,
+            modifier = Modifier.padding(paddingValues = padding),
+            builder = {
+                composable(Screen.Events.route) {
+                    EventsFragment(mainViewModel)
+                }
+                composable(Screen.Marks.route) {
+                    MarksFragment(
+                        mainViewModel,
+                        (this@MainActivity as AppCompatActivity).supportFragmentManager,
+                    )
+                }
+                composable(Screen.Messages.route) {
+                    MessagesFragment(mainViewModel)
+                }
+                composable(Screen.Terms.route) {
+                    TermsFragment(mainViewModel)
+                }
+                composable(Screen.More.route) {
+                    MoreFragment(mainViewModel)
+                }
+                composable(Screen.Settings.route) {
+                    SettingsMainFragment(mainViewModel)
+                }
+            }
+        )
     }
 
     private fun startActivityLogin(context: Context, message: String) {
@@ -169,6 +186,15 @@ class MainActivity : AppCompatActivity() {
                     message = event.message
                 )
             }
+            is UIEvent.StartActivity -> {
+                when(event.message) {
+                    START_ACTIVITY_LOGIN_EVENT_TYPE -> {
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        this.startActivity(intent)
+                    }
+                }
+            }
         }
     }
 }
@@ -180,24 +206,31 @@ fun BottomNavigationBar(
     bottomNavigationItems: List<Screen>
 ) {
     BottomNavigation(
-        backgroundColor = primaryVariantGreenLight,
+        backgroundColor = primaryGreenAccent,
     ) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
         bottomNavigationItems.forEach { screen ->
             BottomNavigationItem(
                 icon = {
                     Icon(
                         painter = painterResource(id = screen.icon),
                         contentDescription = LocalContext.current.resources.getString(screen.title),
-                        tint = Color.White
+                        tint = accentGreenDarkest
                     )
                 },
                 label = {
                     Text(
                         text = LocalContext.current.resources.getString(screen.title),
-                        color = Color.White
+                        color = accentGreenDarkest,
+                        fontSize = if (LocalContext.current.resources.getString(screen.title).length >= 9) {
+                            11.sp
+                        } else {
+                            12.sp
+                        }
                     )
                 },
-                selected = false,
+                selected = currentRoute == screen.route,
                 alwaysShowLabel = false,
                 onClick = {
                     when (screen.route) {
@@ -232,19 +265,44 @@ sealed class MenuAction(
     @DrawableRes val icon: Int,
     @ColorInt val color: Color
 ) {
-    object Settings : MenuAction(R.string.settings, R.drawable.ic_settings, Color.White)
+    object Settings : MenuAction(R.string.settings, R.drawable.ic_settings, accentGreenDarkest)
 }
 
 @Composable
 fun ToolbarMain(
+    isDataBeingLoaded: State<Boolean>,
+    context: Context,
     navController: NavHostController
 ) {
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
-        title = { Text(text = stringResource(id = R.string.app_name), color = Color.White) },
-        backgroundColor = primaryVariantGreenLight,
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val imageLoader = ImageLoader.Builder(context)
+                    .components {
+                        if (Build.VERSION.SDK_INT >= 28) {
+                            add(ImageDecoderDecoder.Factory())
+                        } else {
+                            add(GifDecoder.Factory())
+                        }
+                    }
+                    .build()
+                if (isDataBeingLoaded.value) {
+                    Image(
+                        painter = rememberImagePainter(data = R.drawable.loading_animation, imageLoader = imageLoader),
+                        contentDescription = "",
+                        modifier = Modifier.size(25.dp)
+                    )
+                } else {
+                    Image(painter = painterResource(id = R.drawable.ic_data_downloaded), contentDescription = "")
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = stringResource(id = R.string.app_name), color = primaryGreenAccent)
+            }
+        },
+        backgroundColor = primaryGreenAccent,
         actions = {
             AppBarIcon(
                 MenuAction.Settings
@@ -261,7 +319,9 @@ fun AppBarIcon(
     function: () -> Unit
 ) {
     IconButton(
-        modifier = Modifier.background(Color.Transparent).padding(end = 10.dp),
+        modifier = Modifier
+            .background(Color.Transparent)
+            .padding(end = 10.dp),
         onClick = {
             function.invoke()
         },

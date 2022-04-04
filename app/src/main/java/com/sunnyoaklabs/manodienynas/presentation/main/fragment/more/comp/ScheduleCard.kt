@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
@@ -34,6 +35,7 @@ import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
+import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
 
 @Composable
@@ -85,21 +87,23 @@ private fun ScheduleItem(
         Column {
             Column(
                 modifier = Modifier
-                    .background(accentBlueLight)
+                    .background(accentYellowDark)
                     .fillMaxWidth()
             ) {
-                Text(text = weekDays[scheduleDay.dayLessons[0].weekDay.toInt()], fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(4.dp))
+                Text(
+                    text = weekDays[scheduleDay.dayLessons[0].weekDay.toInt()],
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(4.dp).fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp)
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 scheduleDay.dayLessons.forEach {
                     Spacer(modifier = Modifier.height(2.dp))
                     Row(
                         horizontalArrangement = SpaceBetween,
                         verticalAlignment = CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().padding(4.dp)
                     ) {
                         Text(text = it.lessonOrder.toString(), modifier = Modifier.weight(0.05f))
                         Spacer(modifier = Modifier.width(8.dp))
@@ -128,7 +132,7 @@ private fun ScheduleTopText(
     modifier: Modifier = Modifier
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = CenterVertically,
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
@@ -137,14 +141,14 @@ private fun ScheduleTopText(
             modifier = Modifier.size(16.dp),
             painter = painterResource(id = R.drawable.ic_schedule),
             contentDescription = stringResource(R.string.ic_schedule_description),
-            tint = primaryVariantGreenLight
+            tint = accentYellowDark
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = stringResource(id = R.string.more_fragment_schedule),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = primaryVariantGreenLight
+            color = accentYellowDark
         )
     }
 }

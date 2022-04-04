@@ -32,6 +32,7 @@ import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CHANGED_MARK_EVENT_TYP
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CONTROL_WORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.validator.ValidatorImpl
 import com.sunnyoaklabs.manodienynas.domain.model.Event
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
@@ -45,6 +46,7 @@ fun EventsFragment(
     modifier: Modifier = Modifier,
 ) {
     val eventsFragmentViewModel = mainViewModel.eventsFragmentViewModel
+    val eventState = eventsFragmentViewModel.eventState.value
     val events = eventsFragmentViewModel.eventState.value.events
 
     Column(
@@ -57,29 +59,48 @@ fun EventsFragment(
         val state = rememberLazyListState()
         state.disableScrolling(scope)
         when {
-            eventsFragmentViewModel.eventState.value.isLoading -> {
+            eventsFragmentViewModel.validator.validateIsLoading(
+                eventState.isLoading,
+                eventState.isLoadingLocale,
+                events
+            ) -> {
                 LoadingList(items = 10, state = state)
             }
-            events.isEmpty() -> {
+            eventsFragmentViewModel.validator.validateIsEmpty(
+                eventState.isLoading,
+                eventState.isLoadingLocale,
+                events
+            ) -> {
                 EmptyEventsItem(eventsFragmentViewModel)
             }
             else -> {
-                val lastIndex = events.lastIndex
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    itemsIndexed(events) { i, event ->
-                        if (lastIndex == i) {
-                            if (!eventsFragmentViewModel.eventState.value.isEveryEventLoaded) {
-                                eventsFragmentViewModel.loadMoreEvents()
-                            }
-                        }
-                        EventCard(event = event)
-                    }
+                EventsListLazyColumn(
+                    events,
+                    eventsFragmentViewModel
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EventsListLazyColumn(
+    events: List<Event>,
+    eventsFragmentViewModel: EventsFragmentViewModel,
+    modifier: Modifier = Modifier
+) {
+    val lastIndex = events.lastIndex
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        itemsIndexed(events) { i, event ->
+            if (lastIndex == i) {
+                if (!eventsFragmentViewModel.eventState.value.isEveryEventLoaded) {
+                    eventsFragmentViewModel.loadMoreEvents()
                 }
             }
+            EventCard(event = event)
         }
     }
 }

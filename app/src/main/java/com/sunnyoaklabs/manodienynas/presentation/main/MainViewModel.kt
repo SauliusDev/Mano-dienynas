@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -66,11 +67,12 @@ class MainViewModel @Inject constructor(
     private val _userState = mutableStateOf(UserStateState())
     val userState: State<UserStateState> = _userState
 
+    private val _isDataBeingLoaded = getIsDataBeingLoaded()
+    val isDataBeingLoaded: State<Boolean> = _isDataBeingLoaded
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun initSessionCookies() {
         viewModelScope.launch {
-            // TODO testing
-            // this.cancel()
             getSessionCookies().collect { wasSessionCreated ->
                 when (wasSessionCreated) {
                     is Resource.Success -> {
@@ -135,20 +137,19 @@ class MainViewModel @Inject constructor(
         return CoroutineScope(IO).launch {
             val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
             initPerson(eventsJob)
-//            marksFragmentViewModel.initMarksByCondition()
-//            marksFragmentViewModel.initAttendance()
-//            marksFragmentViewModel.initControlWorkByCondition()
-//            marksFragmentViewModel.initClassWorkByCondition()
-//            marksFragmentViewModel.initHomeWorkByCondition()
-//            messagesFragmentViewModel.initMessagesGotten()
-//            messagesFragmentViewModel.initMessagesSent()
-//            messagesFragmentViewModel.initMessagesStarred()
-//            messagesFragmentViewModel.initMessagesDeleted()
-//            termsFragmentViewModel.initTerm()
-//            moreFragmentViewModel.initHoliday()
-//            moreFragmentViewModel.initParentMeetings()
+            marksFragmentViewModel.initMarksByCondition()
+            marksFragmentViewModel.initAttendance()
+            marksFragmentViewModel.initControlWorkByCondition()
+            marksFragmentViewModel.initClassWorkByCondition()
+            marksFragmentViewModel.initHomeWorkByCondition()
+            messagesFragmentViewModel.initMessagesGotten()
+            messagesFragmentViewModel.initMessagesSent()
+            messagesFragmentViewModel.initMessagesStarred()
+            messagesFragmentViewModel.initMessagesDeleted()
+            termsFragmentViewModel.initTerm()
+            moreFragmentViewModel.initHoliday()
+            moreFragmentViewModel.initParentMeetings()
             moreFragmentViewModel.initSchedule()
-            // all other initializations ..................
         }
     }
 
@@ -186,4 +187,23 @@ class MainViewModel @Inject constructor(
         return app.resources.openRawResource(R.raw.app_license)
             .bufferedReader().use(BufferedReader::readText)
     }
+
+    private fun getIsDataBeingLoaded(): MutableState<Boolean> {
+        return mutableStateOf(
+            eventsFragmentViewModel.eventState.value.isLoading ||
+                    marksFragmentViewModel.markState.value.isLoading ||
+                    marksFragmentViewModel.controlWorkState.value.isLoading ||
+                    marksFragmentViewModel.homeWorkState.value.isLoading ||
+                    marksFragmentViewModel.classWorkState.value.isLoading ||
+                    messagesFragmentViewModel.messagesGottenState.value.isLoading ||
+                    messagesFragmentViewModel.messagesSentState.value.isLoading ||
+                    messagesFragmentViewModel.messagesStarredState.value.isLoading ||
+                    messagesFragmentViewModel.messagesDeletedState.value.isLoading ||
+                    termsFragmentViewModel.termState.value.isLoading ||
+                    moreFragmentViewModel.scheduleState.value.isLoading ||
+                    moreFragmentViewModel.holidayState.value.isLoading ||
+                    moreFragmentViewModel.parentMeetingState.value.isLoading
+        )
+    }
+
 }

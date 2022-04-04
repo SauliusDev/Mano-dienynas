@@ -81,14 +81,14 @@ private fun ParentMeetingsTopText(
             modifier = Modifier.size(16.dp),
             painter = painterResource(id = R.drawable.ic_parent_meetings),
             contentDescription = stringResource(R.string.ic_parent_meetings_description),
-            tint = primaryVariantGreenLight
+            tint = accentBlueLight
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = stringResource(id = R.string.more_fragment_parent_meetings),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = primaryVariantGreenLight
+            color = accentBlueLight
         )
     }
 }
@@ -107,22 +107,20 @@ private fun ParentMeetingsItem(
         elevation = 2.dp,
     ) {
         Column(
-            modifier = modifier
-                .fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
         ) {
-            Row(
-                modifier = Modifier.padding(4.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(text = parentMeeting.className)
-                Text(text = parentMeeting.creationDate)
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Spacer(modifier = Modifier
+            Column(modifier = Modifier
                 .fillMaxWidth()
-                .height(0.5.dp)
-                .background(Color.Gray)
-            )
+                .background(accentBlueLight),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Text(text = parentMeeting.className)
+                    Text(text = parentMeeting.creationDate)
+                }
+            }
             Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.padding(4.dp),
