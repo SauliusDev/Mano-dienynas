@@ -50,7 +50,8 @@ object AppModule {
         getHomeWork: GetHomeWork,
         getHomeWorkByCondition: GetHomeWorkByCondition,
         getControlWork: GetControlWork,
-        getControlWorkByCondition: GetControlWorkByCondition
+        getControlWorkByCondition: GetControlWorkByCondition,
+        validator: Validator
     ): MarksFragmentViewModel {
         return MarksFragmentViewModel(
             getMarks,
@@ -62,7 +63,8 @@ object AppModule {
             getHomeWork,
             getHomeWorkByCondition,
             getControlWork,
-            getControlWorkByCondition
+            getControlWorkByCondition,
+            validator
         )
     }
 
@@ -77,7 +79,8 @@ object AppModule {
         getMessagesStarredByCondition: GetMessagesStarredByCondition,
         getMessagesDeleted: GetMessagesDeleted,
         getMessagesDeletedByCondition: GetMessagesDeletedByCondition,
-        getMessageIndividual: GetMessageIndividual
+        getMessageIndividual: GetMessageIndividual,
+        validator: Validator
     ): MessagesFragmentViewModel {
         return MessagesFragmentViewModel(
             getMessagesGotten,
@@ -88,7 +91,8 @@ object AppModule {
             getMessagesStarredByCondition,
             getMessagesDeleted,
             getMessagesDeletedByCondition,
-            getMessageIndividual
+            getMessageIndividual,
+            validator
         )
     }
 
@@ -96,11 +100,13 @@ object AppModule {
     @Singleton
     fun provideTermsFragmentViewModel(
         getTerm: GetTerm,
-        getTermMarkDialogItem: GetTermMarkDialogItem
+        getTermMarkDialogItem: GetTermMarkDialogItem,
+        validator: Validator
     ): TermsFragmentViewModel {
         return TermsFragmentViewModel(
             getTerm,
-            getTermMarkDialogItem
+            getTermMarkDialogItem,
+            validator
         )
     }
 
@@ -112,13 +118,15 @@ object AppModule {
         getSchedule: GetSchedule,
         //getCalendar: GetCalendar,
         //getCalendarEvent: GetCalendarEvent
+        validator: Validator
     ): MoreFragmentViewModel {
         return MoreFragmentViewModel(
             getHoliday,
             getParentMeetings,
             getSchedule,
             //getCalendar,
-            //getCalendarEvent
+            //getCalendarEvent,
+            validator
         )
     }
 

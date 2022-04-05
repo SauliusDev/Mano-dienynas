@@ -32,6 +32,7 @@ import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.core.getTermItemColor
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialog
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
@@ -79,10 +80,18 @@ fun TermsFragment(
         val state = rememberLazyListState()
         state.disableScrolling(scope)
         when {
-            termsFragmentViewModel.termState.value.isLoading -> {
+            termsFragmentViewModel.validator.validateIsLoading(
+                termsFragmentViewModel.termState.value.isLoading,
+                termsFragmentViewModel.termState.value.isLoadingLocale,
+                terms
+            ) -> {
                 LoadingList(items = 10, state = state)
             }
-            terms.isEmpty() -> {
+            termsFragmentViewModel.validator.validateIsLoading(
+                termsFragmentViewModel.termState.value.isLoading,
+                termsFragmentViewModel.termState.value.isLoadingLocale,
+                terms
+            ) -> {
                 EmptyTermsItem(termsFragmentViewModel)
             }
             else -> {
@@ -127,11 +136,7 @@ private fun TermListItem(
                 .fillMaxWidth()
                 .background(
                     colorResource(
-                        id = if (collapsed) {
-                            android.R.color.transparent
-                        } else {
-                            R.color.accent_grey
-                        }
+                       id = getTermItemColor(collapsed)
                     )
                 )
         ) {

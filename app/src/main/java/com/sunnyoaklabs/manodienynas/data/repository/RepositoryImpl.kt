@@ -1,10 +1,11 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
-import android.util.Log
-import com.sunnyoaklabs.manodienynas.core.util.*
+import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Resource
+import com.sunnyoaklabs.manodienynas.core.util.SessionValidationJsonResponses
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.data.remote.dto.*
@@ -14,7 +15,6 @@ import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
-import java.lang.Exception
 
 class RepositoryImpl(
     private val api: BackendApi,
@@ -68,14 +68,14 @@ class RepositoryImpl(
             val response = api.postEvents(postEvents)
             val eventsApi = converter.toEvents(response)
             eventsApi.forEach { dataSource.insertEvent(it) }
+            var newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
+            newEvents = newEvents.subList(eventsLocal.size, newEvents.size)
+            emit(Resource.Success(newEvents))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        var newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
-        newEvents = newEvents.subList(eventsLocal.size, newEvents.size)
-        emit(Resource.Success(newEvents))
     }
 
     override fun getEvents(): Flow<Resource<List<Event>>> = flow {
@@ -103,13 +103,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
+            emit(Resource.Success(newEvents))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
-        emit(Resource.Success(newEvents))
     }
 
     override fun getMarks(): Flow<Resource<List<Mark>>> = flow {
@@ -126,13 +126,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
+            emit(Resource.Success(newMarks))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
-        emit(Resource.Success(newMarks))
     }
 
     override fun getMarksByCondition(payload: PostMarks): Flow<Resource<List<Mark>>> = flow {
@@ -155,13 +155,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
+            emit(Resource.Success(newMarks))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
-        emit(Resource.Success(newMarks))
     }
 
     override fun getMarksEventItem(infoUrl: String): Flow<Resource<MarksEventItem>> = flow {
@@ -173,7 +173,6 @@ class RepositoryImpl(
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         }
-        emit(Resource.Error(message = UNKNOWN_ERROR))
     }
 
     override fun getAttendance(): Flow<Resource<List<Attendance>>> = flow {
@@ -190,13 +189,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newAttendance = dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }
+            emit(Resource.Success(newAttendance))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newAttendance = dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }
-        emit(Resource.Success(newAttendance))
     }
 
     override fun getClassWork(): Flow<Resource<List<ClassWork>>> = flow {
@@ -213,13 +212,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
+            emit(Resource.Success(newClassWork))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
-        emit(Resource.Success(newClassWork))
     }
 
     override fun getClassWorkByCondition(
@@ -239,13 +238,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
+            emit(Resource.Success(newClassWork))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
-        emit(Resource.Success(newClassWork))
     }
 
     override fun getHomeWork(): Flow<Resource<List<HomeWork>>> = flow {
@@ -262,14 +261,14 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
+            emit(Resource.Success(newHomeWork))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
-        emit(Resource.Success(newHomeWork))
     }
 
     override fun getHomeWorkByCondition(
@@ -289,13 +288,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
+            emit(Resource.Success(newHomeWork))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
-        emit(Resource.Success(newHomeWork))
     }
 
     override fun getControlWork(): Flow<Resource<List<ControlWork>>> = flow {
@@ -312,13 +311,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newControlWork = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
+            emit(Resource.Success(newControlWork))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newControlWork = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
-        emit(Resource.Success(newControlWork))
     }
 
     override fun getControlWorkByCondition(
@@ -338,13 +337,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newControlWorks = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
+            emit(Resource.Success(newControlWorks))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newControlWorks = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
-        emit(Resource.Success(newControlWorks))
     }
 
     override fun getTerm(): Flow<Resource<List<Term>>> = flow {
@@ -361,13 +360,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newTerms = dataSource.getAllTerms().map { converter.toTermFromEntity(it) }
+            emit(Resource.Success(newTerms))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newTerms = dataSource.getAllTerms().map { converter.toTermFromEntity(it) }
-        emit(Resource.Success(newTerms))
     }
 
     override fun getTermMarkDialog(url: String): Flow<Resource<TermMarkDialogItem>> = flow {
@@ -379,13 +378,13 @@ class RepositoryImpl(
             val termMarkDialogItem = converter.toTermMarkDialogItem(response, url)
             dataSource.deleteTermMarkDialogByUrl(url)
             dataSource.insertTermMarkDialog(termMarkDialogItem)
+            val newTermMarkDialog = converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
+            emit(Resource.Success(newTermMarkDialog))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newTermMarkDialog = converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
-        emit(Resource.Success(newTermMarkDialog))
     }
 
     override fun getMessagesGotten(): Flow<Resource<List<Message>>> = flow {
@@ -402,13 +401,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+            emit(Resource.Success(newMessagesGotten))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
-        emit(Resource.Success(newMessagesGotten))
     }
 
     override fun getMessagesGottenByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
@@ -424,15 +423,14 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            var newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+            newMessagesGotten = newMessagesGotten.subList(messagesGottenLocal.size, newMessagesGotten.size)
+            emit(Resource.Success(newMessagesGotten))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
-            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        var newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
-        newMessagesGotten = newMessagesGotten.subList(messagesGottenLocal.size, newMessagesGotten.size)
-        emit(Resource.Success(newMessagesGotten))
     }
 
     override fun getMessagesSent(): Flow<Resource<List<Message>>> = flow {
@@ -449,13 +447,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+            emit(Resource.Success(newMessagesSent))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
-        emit(Resource.Success(newMessagesSent))
     }
 
     override fun getMessagesSentByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
@@ -472,14 +470,14 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            var newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+            newMessagesSent = newMessagesSent.subList(messagesSentLocal.size, newMessagesSent.size)
+            emit(Resource.Success(newMessagesSent))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        var newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
-        newMessagesSent = newMessagesSent.subList(messagesSentLocal.size, newMessagesSent.size)
-        emit(Resource.Success(newMessagesSent))
     }
 
     override fun getMessagesStarred(): Flow<Resource<List<Message>>> = flow {
@@ -496,13 +494,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+            emit(Resource.Success(newMessagesStarred))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
-        emit(Resource.Success(newMessagesStarred))
     }
 
     override fun getMessagesStarredByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
@@ -519,14 +517,14 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            var newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+            newMessagesStarred = newMessagesStarred.subList(messagesStarredLocal.size, newMessagesStarred.size)
+            emit(Resource.Success(newMessagesStarred))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        var newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
-        newMessagesStarred = newMessagesStarred.subList(messagesStarredLocal.size, newMessagesStarred.size)
-        emit(Resource.Success(newMessagesStarred))
     }
 
     override fun getMessagesDeleted(): Flow<Resource<List<Message>>> = flow {
@@ -543,13 +541,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+            emit(Resource.Success(newMessagesDeleted))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
-        emit(Resource.Success(newMessagesDeleted))
     }
 
     override fun getMessagesDeletedByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
@@ -566,14 +564,14 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            var newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+            newMessagesDeleted = newMessagesDeleted.subList(messagesDeletedLocal.size, newMessagesDeleted.size)
+            emit(Resource.Success(newMessagesDeleted))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        var newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
-        newMessagesDeleted = newMessagesDeleted.subList(messagesDeletedLocal.size, newMessagesDeleted.size)
-        emit(Resource.Success(newMessagesDeleted))
     }
 
     override fun getMessageIndividual(id: String, isSent: Boolean): Flow<Resource<MessageIndividual>> = flow {
@@ -595,13 +593,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newMessagesIndividual = converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
+            emit(Resource.Success(newMessagesIndividual))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newMessagesIndividual = converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
-        emit(Resource.Success(newMessagesIndividual))
     }
 
     override fun getHoliday(): Flow<Resource<List<Holiday>>> = flow {
@@ -618,13 +616,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newHoliday = dataSource.getAllHolidays().map { converter.toHolidayFromEntity(it) }
+            emit(Resource.Success(newHoliday))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newHoliday = dataSource.getAllHolidays().map { converter.toHolidayFromEntity(it) }
-        emit(Resource.Success(newHoliday))
     }
 
     override fun getParentMeetings(): Flow<Resource<List<ParentMeeting>>> = flow {
@@ -641,13 +639,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newParentMeetings = dataSource.getAllParentMeetings().map { converter.toParentMeetingFromEntity(it) }
+            emit(Resource.Success(newParentMeetings))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newParentMeetings = dataSource.getAllParentMeetings().map { converter.toParentMeetingFromEntity(it) }
-        emit(Resource.Success(newParentMeetings))
     }
 
     override fun getSchedule(): Flow<Resource<List<ScheduleDay>>> = flow {
@@ -667,16 +665,16 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newSchedule = mutableListOf<ScheduleDay>()
+            for (i in 1..7) {
+                newSchedule.add(ScheduleDay(dataSource.getAllScheduleByWeekDay(i.toLong()).map { converter.toScheduleFromEntity(it) }))
+            }
+            emit(Resource.Success(newSchedule))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newSchedule = mutableListOf<ScheduleDay>()
-        for (i in 1..7) {
-            newSchedule.add(ScheduleDay(dataSource.getAllScheduleByWeekDay(i.toLong()).map { converter.toScheduleFromEntity(it) }))
-        }
-        emit(Resource.Success(newSchedule))
     }
 
     override fun getCalendar(payload: GetCalendarDto): Flow<Resource<List<Calendar>>> = flow {
@@ -693,13 +691,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newCalendar = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
+            emit(Resource.Success(newCalendar))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newCalendar = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
-        emit(Resource.Success(newCalendar))
     }
 
     override fun getCalendarEvent(url: String): Flow<Resource<CalendarEvent>> = flow {
@@ -716,13 +714,13 @@ class RepositoryImpl(
             } else {
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
+            val newCalendarEvent = converter.toCalendarEventFromEntity(dataSource.getCalendarEventByUrl(url))
+            emit(Resource.Success(newCalendarEvent))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
-        val newCalendarEvent = converter.toCalendarEventFromEntity(dataSource.getCalendarEventByUrl(url))
-        emit(Resource.Success(newCalendarEvent))
     }
 
 

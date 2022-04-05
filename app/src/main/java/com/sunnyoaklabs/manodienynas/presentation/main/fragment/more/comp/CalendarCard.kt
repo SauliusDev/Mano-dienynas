@@ -48,7 +48,6 @@ import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
 //            Column {
 //                CalendarTopText()
 //                Spacer(modifier = Modifier.height(4.dp))
-//                // TODO custom calendar view
 //            }
 //        }
 //    }

@@ -54,7 +54,7 @@ class EventsFragmentViewModel @Inject constructor(
         getDataJob?.cancel()
         getDataJob = viewModelScope.launch {
             delay(500L)
-            if (!_eventState.value.isLoading){
+            if (!_eventState.value.isLoading) {
                 initEventsAndPerson()
             }
         }
@@ -73,7 +73,8 @@ class EventsFragmentViewModel @Inject constructor(
                     is Resource.Success -> {
                         _eventState.value = eventState.value.copy(
                             events = it.data ?: emptyList(),
-                            isLoading = false
+                            isLoading = false,
+                            isEveryEventLoaded = false
                         )
                     }
                     is Resource.Error -> {

@@ -41,10 +41,18 @@ fun ClassWorkCard(
     val state = rememberLazyListState()
     state.disableScrolling(scope)
     when {
-        classWorkState.isLoading -> {
+        marksFragmentViewModel.validator.validateIsLoading(
+            classWorkState.isLoading,
+            classWorkState.isLoadingLocale,
+            classWorkState.classWork
+        ) -> {
             LoadingList(10, state)
         }
-        classWorkState.classWork.isEmpty() -> {
+        marksFragmentViewModel.validator.validateIsEmpty(
+            classWorkState.isLoading,
+            classWorkState.isLoadingLocale,
+            classWorkState.classWork
+        ) -> {
             EmptyClassWorkItem(marksFragmentViewModel)
         }
         else -> {

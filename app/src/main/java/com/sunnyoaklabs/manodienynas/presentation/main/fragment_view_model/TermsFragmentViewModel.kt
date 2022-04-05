@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
 import com.sunnyoaklabs.manodienynas.domain.model.CalendarEvent
 import com.sunnyoaklabs.manodienynas.domain.model.TermMarkDialogItem
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class TermsFragmentViewModel @Inject constructor(
     private val getTerm: GetTerm,
     private val getTermMarkDialogItem: GetTermMarkDialogItem,
+    val validator: Validator
 ) : ViewModel() {
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
@@ -44,7 +46,9 @@ class TermsFragmentViewModel @Inject constructor(
         getDataJob?.cancel()
         getDataJob = viewModelScope.launch {
             delay(500L)
-
+            if (!_termState.value.isLoading) {
+                initTerm()
+            }
         }
     }
 

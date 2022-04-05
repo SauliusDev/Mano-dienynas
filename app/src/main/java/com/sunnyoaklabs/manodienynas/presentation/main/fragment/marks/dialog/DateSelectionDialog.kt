@@ -9,12 +9,18 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.sunnyoaklabs.manodienynas.core.util.isDarkThemeOn
+import com.sunnyoaklabs.manodienynas.presentation.core.getDatePickerColor
+import com.sunnyoaklabs.manodienynas.ui.theme.accentBlack
+import com.sunnyoaklabs.manodienynas.ui.theme.accentGrey
 import com.sunnyoaklabs.manodienynas.ui.theme.accentGreyLight
 
 private fun showDatePicker(
@@ -39,7 +45,7 @@ fun DatePickerView(
         onClick = { showDatePicker(fragmentManager, updatedDate) },
         modifier = modifier
             .wrapContentSize(Alignment.TopStart),
-        colors = ButtonDefaults.buttonColors(accentGreyLight),
+        colors = getDatePickerColor(),
         elevation = ButtonDefaults.elevation(2.dp)
     ) {
         ConstraintLayout(
@@ -51,7 +57,7 @@ fun DatePickerView(
             Text(
                 fontSize = 14.sp,
                 text = datePicked ?: "Date Picker",
-                color = MaterialTheme.colors.onSurface,
+                color = Color.Black,
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(lable) {
@@ -71,7 +77,7 @@ fun DatePickerView(
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                     },
-                tint = MaterialTheme.colors.onSurface
+                tint = Color.Black
             )
         }
     }

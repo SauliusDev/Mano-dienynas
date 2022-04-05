@@ -47,10 +47,18 @@ fun ParentMeetingsCard(
     val state = rememberLazyListState()
     state.disableScrolling(scope)
     when {
-        parentMeetingState.isLoading -> {
+        moreFragmentViewModel.validator.validateIsLoading(
+            parentMeetingState.isLoading,
+            parentMeetingState.isLoadingLocale,
+            parentMeetingState.parentMeetings
+        ) -> {
             LoadingList(10, state)
         }
-        parentMeetingState.parentMeetings.isEmpty() -> {
+        moreFragmentViewModel.validator.validateIsEmpty(
+            parentMeetingState.isLoading,
+            parentMeetingState.isLoadingLocale,
+            parentMeetingState.parentMeetings
+        ) -> {
             EmptyParentMeetingsItem(moreFragmentViewModel)
         }
         else -> {

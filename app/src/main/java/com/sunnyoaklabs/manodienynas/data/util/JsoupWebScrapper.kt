@@ -569,7 +569,6 @@ class JsoupWebScrapper() : WebScrapper {
     }
 
     override fun toCalendarEvent(html: String): CalendarEvent {
-        // TODO(currently not implemented)
         val document = Jsoup.parse(html)
         val calendarEvent = CalendarEvent(
             url = "",

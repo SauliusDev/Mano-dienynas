@@ -64,10 +64,18 @@ fun MessagesDeletedCard(
     val state = rememberLazyListState()
     state.disableScrolling(scope)
     when {
-        messagesDeletedState.isLoading -> {
+        messagesFragmentViewModel.validator.validateIsLoading(
+            messagesDeletedState.isLoading,
+            messagesDeletedState.isLoadingLocale,
+            messagesDeletedState.messagesDeleted
+        ) -> {
             LoadingList(items = 10, state = state)
         }
-        messagesDeletedState.messagesDeleted.isEmpty() -> {
+        messagesFragmentViewModel.validator.validateIsEmpty(
+            messagesDeletedState.isLoading,
+            messagesDeletedState.isLoadingLocale,
+            messagesDeletedState.messagesDeleted
+        ) -> {
             EmptyMessagesDeletedItem(messagesFragmentViewModel)
         }
         else -> {

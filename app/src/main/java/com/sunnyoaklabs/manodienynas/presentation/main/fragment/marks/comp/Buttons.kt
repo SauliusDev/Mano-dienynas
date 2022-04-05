@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -16,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentManager
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.isDarkThemeOn
+import com.sunnyoaklabs.manodienynas.presentation.core.getButtonColor
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.dialog.DatePickerView
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
@@ -85,11 +88,7 @@ fun MarksCardButton(
     val markFragmentTypeState = marksFragmentViewModel.markFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (markFragmentTypeState.markTypeIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(markFragmentTypeState.markTypeIsSelected),
         onClick = {
             marksFragmentViewModel.updateMarkMarkFragmentTypeState()
         },
@@ -118,11 +117,7 @@ fun ControlWorkCardButton(
     val markFragmentTypeState = marksFragmentViewModel.markFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (markFragmentTypeState.controlWorkTypeIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(markFragmentTypeState.controlWorkTypeIsSelected),
         onClick = {
             marksFragmentViewModel.updateControlWorkMarkFragmentTypeState()
         },
@@ -151,11 +146,7 @@ fun HomeWorkCardButton(
     val markFragmentTypeState = marksFragmentViewModel.markFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (markFragmentTypeState.homeWorkTypeIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(markFragmentTypeState.homeWorkTypeIsSelected),
         onClick = {
             marksFragmentViewModel.updateHomeWorkMarkFragmentTypeState()
         },
@@ -184,11 +175,7 @@ fun ClassWorkCardButton(
     val markFragmentTypeState = marksFragmentViewModel.markFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (markFragmentTypeState.classWorkTypeIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(markFragmentTypeState.classWorkTypeIsSelected),
         onClick = {
             marksFragmentViewModel.updateClassWorkMarkFragmentTypeState()
         },

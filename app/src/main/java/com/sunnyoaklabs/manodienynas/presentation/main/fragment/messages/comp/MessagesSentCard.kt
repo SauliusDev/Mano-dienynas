@@ -65,10 +65,18 @@ fun MessagesSentCard(
     val state = rememberLazyListState()
     state.disableScrolling(scope)
     when {
-        messagesSentState.isLoading -> {
+        messagesFragmentViewModel.validator.validateIsLoading(
+            messagesSentState.isLoading,
+            messagesSentState.isLoadingLocale,
+            messagesSentState.messagesSent
+        ) -> {
             LoadingList(items = 10, state = state)
         }
-        messagesSentState.messagesSent.isEmpty() -> {
+        messagesFragmentViewModel.validator.validateIsEmpty(
+            messagesSentState.isLoading,
+            messagesSentState.isLoadingLocale,
+            messagesSentState.messagesSent
+        ) -> {
             EmptyMessagesSentItem(messagesFragmentViewModel)
         }
         else -> {

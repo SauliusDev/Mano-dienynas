@@ -10,10 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.isDarkThemeOn
+import com.sunnyoaklabs.manodienynas.presentation.core.getButtonColor
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 
@@ -22,14 +25,10 @@ fun MessagesGottenCardButton(
     messagesFragmentViewModel: MessagesFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
-    val markFragmentTypeState = messagesFragmentViewModel.messagesFragmentTypeState.value
+    val messagesFragmentTypeState = messagesFragmentViewModel.messagesFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (markFragmentTypeState.gottenIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(messagesFragmentTypeState.gottenIsSelected),
         onClick = {
             messagesFragmentViewModel.updateMessagesGottenFragmentTypeState()
         },
@@ -55,14 +54,10 @@ fun MessagesSentCardButton(
     messagesFragmentViewModel: MessagesFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
-    val markFragmentTypeState = messagesFragmentViewModel.messagesFragmentTypeState.value
+    val messagesFragmentTypeState = messagesFragmentViewModel.messagesFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (markFragmentTypeState.sentIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(messagesFragmentTypeState.sentIsSelected),
         onClick = {
             messagesFragmentViewModel.updateMessagesSentFragmentTypeState()
         },
@@ -88,14 +83,10 @@ fun MessagesStarredCardButton(
     messagesFragmentViewModel: MessagesFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
-    val markFragmentTypeState = messagesFragmentViewModel.messagesFragmentTypeState.value
+    val messagesFragmentTypeState = messagesFragmentViewModel.messagesFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (markFragmentTypeState.starredIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(messagesFragmentTypeState.starredIsSelected),
         onClick = {
             messagesFragmentViewModel.updateMessagesStarredFragmentTypeState()
         },
@@ -121,14 +112,10 @@ fun MessagesDeletedCardButton(
     messagesFragmentViewModel: MessagesFragmentViewModel,
     modifier: Modifier = Modifier
 ) {
-    val markFragmentTypeState = messagesFragmentViewModel.messagesFragmentTypeState.value
+    val messagesFragmentTypeState = messagesFragmentViewModel.messagesFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (markFragmentTypeState.deletedIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(messagesFragmentTypeState.deletedIsSelected),
         onClick = {
             messagesFragmentViewModel.updateMessagesDeletedFragmentTypeState()
         },

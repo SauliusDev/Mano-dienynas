@@ -63,10 +63,18 @@ fun MessagesGottenCard(
     val state = rememberLazyListState()
     state.disableScrolling(scope)
     when {
-        messagesGottenState.isLoading -> {
+        messagesFragmentViewModel.validator.validateIsLoading(
+            messagesGottenState.isLoading,
+            messagesGottenState.isLoadingLocale,
+            messagesGottenState.messagesGotten
+        ) -> {
             LoadingList(items = 10, state = state)
         }
-        messagesGottenState.messagesGotten.isEmpty() -> {
+        messagesFragmentViewModel.validator.validateIsEmpty(
+            messagesGottenState.isLoading,
+            messagesGottenState.isLoadingLocale,
+            messagesGottenState.messagesGotten
+        ) -> {
             EmptyMessagesGottenItem(messagesFragmentViewModel)
         }
         else -> {

@@ -49,10 +49,18 @@ fun ScheduleCard(
     val state = rememberLazyListState()
     state.disableScrolling(scope)
     when {
-        scheduleState.isLoading -> {
+        moreFragmentViewModel.validator.validateIsLoading(
+            scheduleState.isLoading,
+            scheduleState.isLoadingLocale,
+            scheduleState.schedule
+        ) -> {
             LoadingList(10, state)
         }
-        scheduleState.schedule.isEmpty() -> {
+        moreFragmentViewModel.validator.validateIsEmpty(
+            scheduleState.isLoading,
+            scheduleState.isLoadingLocale,
+            scheduleState.schedule
+        ) -> {
             EmptyScheduleMeetingsItem(moreFragmentViewModel)
         }
         else -> {
@@ -107,7 +115,7 @@ private fun ScheduleItem(
                     ) {
                         Text(text = it.lessonOrder.toString(), modifier = Modifier.weight(0.05f))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = it.lesson, modifier = Modifier.weight(0.7f))
+                        Text(text = it.lesson, modifier = Modifier.weight(0.6f))
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(text = it.timeRange, modifier = Modifier.weight(0.25f))
                     }

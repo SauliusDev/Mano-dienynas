@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
@@ -25,6 +26,7 @@ class MoreFragmentViewModel @Inject constructor(
     private val getSchedule: GetSchedule,
     //private val getCalendar: GetCalendar,
     //private val getCalendarEvent: GetCalendarEvent,
+    val validator: Validator
 ) : ViewModel() {
 
     private val _moreFragmentTypeState = mutableStateOf(MoreFragmentTypeState())
@@ -45,8 +47,8 @@ class MoreFragmentViewModel @Inject constructor(
     //private val _calendarState = mutableStateOf(CalendarState())
     //val calendarState: State<CalendarState> = _calendarState
 
-    private val _calendarEventState = mutableStateOf(CalendarEventState())
-    val calendarEventState: State<CalendarEventState> = _calendarEventState
+    //private val _calendarEventState = mutableStateOf(CalendarEventState())
+    //val calendarEventState: State<CalendarEventState> = _calendarEventState
 
     private var getDataJob: Job? = null
 
@@ -54,7 +56,13 @@ class MoreFragmentViewModel @Inject constructor(
         getDataJob?.cancel()
         getDataJob = viewModelScope.launch {
             delay(500L)
-
+            if (!_scheduleState.value.isLoading ||
+                !_holidayState.value.isLoading ||
+                !_parentMeetingState.value.isLoading) {
+                initSchedule()
+                initHoliday()
+                initParentMeetings()
+            }
         }
     }
 
@@ -137,9 +145,6 @@ class MoreFragmentViewModel @Inject constructor(
                             schedule = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        it.data?.let { itemas ->
-                            Log.e("console log", ": "+itemas[0].dayLessons.size)
-                        }
                     }
                     is Resource.Error -> {
                         _scheduleState.value = scheduleState.value.copy(

@@ -30,6 +30,7 @@ import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.core.getMarksListItemColor
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.dialog.MarkEventDialog
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
@@ -93,10 +94,18 @@ fun MarksCard(
         onNegativeClick = {showDialog = false}
     )
     when {
-        marksState.isLoading || attendanceState.isLoading -> {
+        marksFragmentViewModel.validator.validateIsLoading(
+            marksState.isLoading || attendanceState.isLoading,
+            marksState.isLoadingLocale || attendanceState.isLoadingLocale,
+            marksState.marks
+        ) -> {
             LoadingList(10, state)
         }
-        marksState.marks.isEmpty() || attendanceState.attendance.isEmpty() -> {
+        marksFragmentViewModel.validator.validateIsEmpty(
+            marksState.isLoading || attendanceState.isLoading,
+            marksState.isLoadingLocale || attendanceState.isLoadingLocale,
+            marksState.marks
+        ) -> {
             EmptyMarksItem(marksFragmentViewModel)
         }
         else -> {
@@ -319,11 +328,7 @@ private fun AttendanceAllItem(
                 .fillMaxWidth()
                 .background(
                     colorResource(
-                        id = if (collapsedState.value) {
-                            android.R.color.transparent
-                        } else {
-                            R.color.accent_grey
-                        }
+                        getMarksListItemColor(collapsedState.value)
                     )
                 )
         ) {

@@ -43,10 +43,18 @@ fun HolidayCard(
     val state = rememberLazyListState()
     state.disableScrolling(scope)
     when {
-        holidayState.isLoading -> {
+        moreFragmentViewModel.validator.validateIsLoading(
+            holidayState.isLoading,
+            holidayState.isLoadingLocale,
+            holidayState.holiday
+        ) -> {
             LoadingList(10, state)
         }
-        holidayState.holiday.isEmpty() -> {
+        moreFragmentViewModel.validator.validateIsEmpty(
+            holidayState.isLoading,
+            holidayState.isLoadingLocale,
+            holidayState.holiday
+        ) -> {
             EmptyHolidayItem(moreFragmentViewModel)
         }
         else -> {

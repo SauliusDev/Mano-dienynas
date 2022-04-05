@@ -8,11 +8,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.isDarkThemeOn
+import com.sunnyoaklabs.manodienynas.presentation.core.getButtonColor
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 
@@ -24,11 +27,7 @@ fun ScheduleCardButton(
     val moreFragmentTypeState = moreFragmentViewModel.moreFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (moreFragmentTypeState.scheduleIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(moreFragmentTypeState.scheduleIsSelected),
         onClick = {
             moreFragmentViewModel.updateScheduleMoreFragmentTypeState()
         },
@@ -57,11 +56,7 @@ fun CalendarCardButton(
     val moreFragmentTypeState = moreFragmentViewModel.moreFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (moreFragmentTypeState.calendarIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(moreFragmentTypeState.calendarIsSelected),
         onClick = {
             moreFragmentViewModel.updateCalendarMoreFragmentTypeState()
         },
@@ -90,11 +85,7 @@ fun HolidayCardButton(
     val moreFragmentTypeState = moreFragmentViewModel.moreFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (moreFragmentTypeState.holidayIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(moreFragmentTypeState.holidayIsSelected),
         onClick = {
             moreFragmentViewModel.updateHolidayMoreFragmentTypeState()
         },
@@ -123,11 +114,7 @@ fun ParentMeetingsCardButton(
     val moreFragmentTypeState = moreFragmentViewModel.moreFragmentTypeState.value
     Button(
         modifier = modifier,
-        colors = if (moreFragmentTypeState.parentMeetingsIsSelected) {
-            ButtonDefaults.buttonColors(accentGreenLightest)
-        } else {
-            ButtonDefaults.buttonColors(accentGrey)
-        },
+        colors = getButtonColor(moreFragmentTypeState.parentMeetingsIsSelected),
         onClick = {
             moreFragmentViewModel.updateParentMeetingsMoreFragmentTypeState()
         },

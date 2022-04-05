@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +31,8 @@ class MessagesFragmentViewModel @Inject constructor(
     private val getMessagesStarredByCondition: GetMessagesStarredByCondition,
     private val getMessagesDeleted: GetMessagesDeleted,
     private val getMessagesDeletedByCondition: GetMessagesDeletedByCondition,
-    private val getMessageIndividual: GetMessageIndividual
+    private val getMessageIndividual: GetMessageIndividual,
+    val validator: Validator
 ) : ViewModel() {
 
     private val _messagesFragmentTypeState = mutableStateOf(MessagesFragmentTypeState())
@@ -60,7 +62,15 @@ class MessagesFragmentViewModel @Inject constructor(
         getDataJob?.cancel()
         getDataJob = viewModelScope.launch {
             delay(500L)
-
+            if (!_messagesGottenState.value.isLoading ||
+                !_messagesSentState.value.isLoading ||
+                !_messagesStarredState.value.isLoading ||
+                !_messagesDeletedState.value.isLoading) {
+                initMessagesGotten()
+                initMessagesSent()
+                initMessagesStarred()
+                initMessagesDeleted()
+            }
         }
     }
 

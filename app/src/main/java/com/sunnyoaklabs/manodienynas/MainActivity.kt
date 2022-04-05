@@ -15,10 +15,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +37,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.START_ACTIVITY_LOGIN_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.presentation.core.getBottomNavTextColor
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.Screen
 import com.sunnyoaklabs.manodienynas.presentation.main.SplashViewModel
@@ -50,6 +48,7 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.MarksFragm
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.MessagesFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.more.MoreFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.TermsFragment
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -98,7 +97,7 @@ class MainActivity : AppCompatActivity() {
 
                 Scaffold(
                     topBar = {
-                        ToolbarMain(mainViewModel.isDataBeingLoaded, this, navController)
+                        ToolbarMain(mainViewModel, this, navController)
                     },
                     bottomBar = {
                         BottomNavigationBar(navController, mainViewModel, bottomNavigationItems)
@@ -222,7 +221,7 @@ fun BottomNavigationBar(
                 label = {
                     Text(
                         text = LocalContext.current.resources.getString(screen.title),
-                        color = accentGreenDarkest,
+                        color = getBottomNavTextColor(),
                         fontSize = if (LocalContext.current.resources.getString(screen.title).length >= 9) {
                             11.sp
                         } else {
@@ -239,15 +238,19 @@ fun BottomNavigationBar(
                             navController.navigate(Screen.Events.route)
                         }
                         "marks" -> {
+                            mainViewModel.marksFragmentViewModel.onFragmentOpen()
                             navController.navigate(Screen.Marks.route)
                         }
                         "messages" -> {
+                            mainViewModel.messagesFragmentViewModel.onFragmentOpen()
                             navController.navigate(Screen.Messages.route)
                         }
                         "terms" -> {
+                            mainViewModel.termsFragmentViewModel.onFragmentOpen()
                             navController.navigate(Screen.Terms.route)
                         }
                         "more" -> {
+                            mainViewModel.moreFragmentViewModel.onFragmentOpen()
                             navController.navigate(Screen.More.route)
                         }
                         "settings" -> {
@@ -270,16 +273,20 @@ sealed class MenuAction(
 
 @Composable
 fun ToolbarMain(
-    isDataBeingLoaded: State<Boolean>,
+    mainViewModel: MainViewModel,
     context: Context,
     navController: NavHostController
 ) {
+    var isDataBeingLoaded by remember {
+        mutableStateOf(false)
+    }
+    isDataBeingLoaded = checkIfLoading(mainViewModel = mainViewModel)
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
         title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 val imageLoader = ImageLoader.Builder(context)
                     .components {
                         if (Build.VERSION.SDK_INT >= 28) {
@@ -289,17 +296,22 @@ fun ToolbarMain(
                         }
                     }
                     .build()
-                if (isDataBeingLoaded.value) {
+                if (isDataBeingLoaded) {
                     Image(
                         painter = rememberImagePainter(data = R.drawable.loading_animation, imageLoader = imageLoader),
                         contentDescription = "",
                         modifier = Modifier.size(25.dp)
                     )
                 } else {
-                    Image(painter = painterResource(id = R.drawable.ic_data_downloaded), contentDescription = "")
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_data_synched),
+                        contentDescription = "",
+                        tint = accentGreenDarkest,
+                        modifier = Modifier.size(25.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = stringResource(id = R.string.app_name), color = primaryGreenAccent)
+                Text(text = stringResource(id = R.string.app_name), color = accentGreenDarkest)
             }
         },
         backgroundColor = primaryGreenAccent,
@@ -332,4 +344,20 @@ fun AppBarIcon(
             tint = menuAction.color
         )
     }
+}
+
+private fun checkIfLoading(mainViewModel: MainViewModel): Boolean {
+    return mainViewModel.eventsFragmentViewModel.eventState.value.isLoading ||
+        mainViewModel.marksFragmentViewModel.markState.value.isLoading ||
+        mainViewModel.marksFragmentViewModel.controlWorkState.value.isLoading ||
+        mainViewModel.marksFragmentViewModel.homeWorkState.value.isLoading ||
+        mainViewModel.marksFragmentViewModel.classWorkState.value.isLoading ||
+        mainViewModel.messagesFragmentViewModel.messagesGottenState.value.isLoading ||
+        mainViewModel.messagesFragmentViewModel.messagesSentState.value.isLoading ||
+        mainViewModel.messagesFragmentViewModel.messagesStarredState.value.isLoading ||
+        mainViewModel.messagesFragmentViewModel.messagesDeletedState.value.isLoading ||
+        mainViewModel.termsFragmentViewModel.termState.value.isLoading ||
+        mainViewModel.moreFragmentViewModel.scheduleState.value.isLoading ||
+        mainViewModel.moreFragmentViewModel.holidayState.value.isLoading ||
+        mainViewModel.moreFragmentViewModel.parentMeetingState.value.isLoading
 }

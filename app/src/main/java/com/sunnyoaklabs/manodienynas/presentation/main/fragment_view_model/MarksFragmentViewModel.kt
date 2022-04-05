@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostClassWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostControlWork
@@ -43,7 +44,8 @@ class MarksFragmentViewModel @Inject constructor(
     private val getHomeWork: GetHomeWork,
     private val getHomeWorkByCondition: GetHomeWorkByCondition,
     private val getControlWork: GetControlWork,
-    private val getControlWorkByCondition: GetControlWorkByCondition
+    private val getControlWorkByCondition: GetControlWorkByCondition,
+    val validator: Validator
 ) : ViewModel() {
 
     private val _marksEventItemFlow = MutableSharedFlow<MarksEventItemState>()
@@ -86,11 +88,11 @@ class MarksFragmentViewModel @Inject constructor(
         getDataJob = viewModelScope.launch {
             delay(500L)
             if (!_markState.value.isLoading) {
-//                initMarksByCondition()
-//                initAttendance()
-//                initControlWorkByCondition()
-//                initClassWorkByCondition()
-//                initHomeWorkByCondition()
+                initMarksByCondition()
+                initAttendance()
+                initControlWorkByCondition()
+                initClassWorkByCondition()
+                initHomeWorkByCondition()
             }
         }
     }
@@ -235,7 +237,6 @@ class MarksFragmentViewModel @Inject constructor(
                             classWork = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "classWork: "+_classWorkState.value.classWork)
                     }
                     is Resource.Error -> {
                         _classWorkState.value = classWorkState.value.copy(
@@ -300,7 +301,6 @@ class MarksFragmentViewModel @Inject constructor(
                             homeWork = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "homeWork: "+_homeWorkState.value.homeWork)
                     }
                     is Resource.Error -> {
                         _homeWorkState.value = homeWorkState.value.copy(
@@ -365,7 +365,6 @@ class MarksFragmentViewModel @Inject constructor(
                             controlWork = it.data ?: emptyList(),
                             isLoading = false
                         )
-                        Log.e("console log", "controlWork: "+_controlWorkState.value.controlWork)
                     }
                     is Resource.Error -> {
                         _controlWorkState.value = controlWorkState.value.copy(
