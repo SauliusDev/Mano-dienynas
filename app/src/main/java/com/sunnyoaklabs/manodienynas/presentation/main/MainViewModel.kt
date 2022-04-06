@@ -1,36 +1,26 @@
 package com.sunnyoaklabs.manodienynas.presentation.main
 
 import android.app.Application
-import android.content.Context
-import android.content.LocusId
-import android.net.ConnectivityManager
-import android.net.ConnectivityManager.*
-import android.net.NetworkCapabilities.*
 import android.os.Build
-import android.util.Log
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.sunnyoaklabs.manodienynas.ManoDienynasApp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.core.util.Errors
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.EVENTS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MORE_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.SETTINGS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.TERMS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
-import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
-import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
-import com.sunnyoaklabs.manodienynas.domain.model.Event
-import com.sunnyoaklabs.manodienynas.domain.model.Person
-import com.sunnyoaklabs.manodienynas.domain.model.Settings
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
-import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSessionCookies
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetSettings
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.*
@@ -68,6 +58,42 @@ class MainViewModel @Inject constructor(
     private val _userState = mutableStateOf(UserStateState())
     val userState: State<UserStateState> = _userState
 
+    var getDataJob: Job? = null
+    fun onFragmentOpen(fragment: String) {
+        getDataJob?.cancel()
+        getDataJob = viewModelScope.launch {
+            when (fragment) {
+                EVENTS_FRAGMENT -> {
+                    eventsFragmentViewModel.initEventsAndPerson()
+                }
+                MARKS_FRAGMENT -> {
+                    marksFragmentViewModel.initMarksByCondition()
+                    marksFragmentViewModel.initAttendance()
+                    marksFragmentViewModel.initControlWorkByCondition()
+                    marksFragmentViewModel.initClassWorkByCondition()
+                    marksFragmentViewModel.initHomeWorkByCondition()
+                }
+                MESSAGES_FRAGMENT -> {
+                    messagesFragmentViewModel.initMessagesGotten()
+                    messagesFragmentViewModel.initMessagesSent()
+                    messagesFragmentViewModel.initMessagesStarred()
+                    messagesFragmentViewModel.initMessagesDeleted()
+                }
+                TERMS_FRAGMENT -> {
+                    termsFragmentViewModel.initTerm()
+                }
+                MORE_FRAGMENT -> {
+                    moreFragmentViewModel.initSchedule()
+                    moreFragmentViewModel.initHoliday()
+                    moreFragmentViewModel.initParentMeetings()
+                }
+                SETTINGS_FRAGMENT -> {
+                    // NOTE: no data to load ;(
+                }
+            }
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun initSessionCookies() {
         viewModelScope.launch {
@@ -85,7 +111,7 @@ class MainViewModel @Inject constructor(
                         )
                         changeRole().join()
                         setInitialValues().join()
-                        initData().join()
+                        initMainData().join()
                     }
                     is Resource.Error -> {
                         firebaseCrashlytics.log("(MainViewModel) Error: credentials, sessionCookies")
@@ -131,37 +157,21 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun initData(): Job {
+    private fun initMainData(): Job {
         return CoroutineScope(IO).launch {
             val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
             initPerson(eventsJob)
-            marksFragmentViewModel.initMarksByCondition()
-            marksFragmentViewModel.initAttendance()
-            marksFragmentViewModel.initControlWorkByCondition()
-            marksFragmentViewModel.initClassWorkByCondition()
-            marksFragmentViewModel.initHomeWorkByCondition()
-            messagesFragmentViewModel.initMessagesGotten()
-            messagesFragmentViewModel.initMessagesSent()
-            messagesFragmentViewModel.initMessagesStarred()
-            messagesFragmentViewModel.initMessagesDeleted()
-            termsFragmentViewModel.initTerm()
-            moreFragmentViewModel.initHoliday()
-            moreFragmentViewModel.initParentMeetings()
-            moreFragmentViewModel.initSchedule()
         }
     }
 
     private fun initPerson(eventsJob: Job) {
         viewModelScope.launch {
-            // setting loading states
             _personState.value = personState.value.copy(
                 person = null,
                 isLoading = true
             )
             settingsMainFragmentViewModel.setSettingsStateToLoading()
-            // joining coroutines
             eventsJob.join()
-            // updating variables
             viewModelScope.launch {
                 settingsMainFragmentViewModel.getSetting()
             }
@@ -185,5 +195,7 @@ class MainViewModel @Inject constructor(
         return app.resources.openRawResource(R.raw.app_license)
             .bufferedReader().use(BufferedReader::readText)
     }
+
+
 
 }

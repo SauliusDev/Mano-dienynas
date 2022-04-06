@@ -1,39 +1,21 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
-import android.app.Application
-import android.os.Build
 import android.util.Log
-import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
-import com.sunnyoaklabs.manodienynas.data.local.DataSource
-import com.sunnyoaklabs.manodienynas.domain.model.Settings
-import com.sunnyoaklabs.manodienynas.domain.model.Term
-import com.sunnyoaklabs.manodienynas.domain.repository.Repository
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEventsPage
-import com.sunnyoaklabs.manodienynas.domain.use_case.GetTerm
 import com.sunnyoaklabs.manodienynas.presentation.main.state.EventState
-import com.sunnyoaklabs.manodienynas.presentation.main.state.TermState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class EventsFragmentViewModel @Inject constructor(
@@ -47,18 +29,6 @@ class EventsFragmentViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-
-    private var getDataJob: Job? = null
-
-    fun onFragmentOpen() {
-        getDataJob?.cancel()
-        getDataJob = viewModelScope.launch {
-            delay(500L)
-            if (!_eventState.value.isLoading) {
-                initEventsAndPerson()
-            }
-        }
-    }
 
     fun initEventsAndPerson(): Job {
         val eventsJob = viewModelScope.launch {
@@ -78,10 +48,8 @@ class EventsFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _eventState.value = eventState.value.copy(
-                            events = it.data ?: emptyList(),
-                            isLoading = false
-                        )
+                        _eventState.value = eventState.value.copy(isLoading = false)
+                        Log.e("console log 1", ": "+it.message)
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -110,10 +78,8 @@ class EventsFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _eventState.value = eventState.value.copy(
-                            events = it.data ?: emptyList(),
-                            isLoading = false
-                        )
+                        _eventState.value = eventState.value.copy(isLoading = false)
+                        Log.e("console log 2", ": "+it.message)
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR

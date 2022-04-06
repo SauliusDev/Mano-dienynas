@@ -35,7 +35,17 @@ import coil.ImageLoader
 import coil.compose.rememberImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import com.sunnyoaklabs.manodienynas.core.util.EventTypes.START_ACTIVITY_LOGIN_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
+import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.EVENTS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MORE_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.SETTINGS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.TERMS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.START_ACTIVITY_LOGIN_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.presentation.core.getBottomNavTextColor
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
@@ -48,10 +58,8 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.MarksFragm
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.MessagesFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.more.MoreFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.TermsFragment
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -182,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         when (event) {
             is UIEvent.ShowSnackbar -> {
                 scaffoldState.snackbarHostState.showSnackbar(
-                    message = event.message
+                    message = processSnackbarMessage(event.message)
                 )
             }
             is UIEvent.StartActivity -> {
@@ -196,6 +204,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun processSnackbarMessage(message: String): String {
+        return when(message) {
+            IO_ERROR -> {
+                resources.getString(R.string.snackbar_no_network)
+            }
+            SESSION_COOKIE_EXPIRED -> {
+                resources.getString(R.string.snackbar_session_cookie_expired)
+            }
+            else -> {
+                resources.getString(R.string.snackbar_unknown_error)
+            }
+        }
+    }
+
 }
 
 @Composable
@@ -234,26 +257,27 @@ fun BottomNavigationBar(
                 onClick = {
                     when (screen.route) {
                         "events" -> {
-                            mainViewModel.eventsFragmentViewModel.onFragmentOpen()
+                            mainViewModel.onFragmentOpen(EVENTS_FRAGMENT)
                             navController.navigate(Screen.Events.route)
                         }
                         "marks" -> {
-                            mainViewModel.marksFragmentViewModel.onFragmentOpen()
+                            mainViewModel.onFragmentOpen(MARKS_FRAGMENT)
                             navController.navigate(Screen.Marks.route)
                         }
                         "messages" -> {
-                            mainViewModel.messagesFragmentViewModel.onFragmentOpen()
+                            mainViewModel.onFragmentOpen(MESSAGES_FRAGMENT)
                             navController.navigate(Screen.Messages.route)
                         }
                         "terms" -> {
-                            mainViewModel.termsFragmentViewModel.onFragmentOpen()
+                            mainViewModel.onFragmentOpen(TERMS_FRAGMENT)
                             navController.navigate(Screen.Terms.route)
                         }
                         "more" -> {
-                            mainViewModel.moreFragmentViewModel.onFragmentOpen()
+                            mainViewModel.onFragmentOpen(MORE_FRAGMENT)
                             navController.navigate(Screen.More.route)
                         }
                         "settings" -> {
+                            mainViewModel.onFragmentOpen(SETTINGS_FRAGMENT)
                             navController.navigate(Screen.Settings.route)
                         }
                     }
@@ -311,7 +335,7 @@ fun ToolbarMain(
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = stringResource(id = R.string.app_name), color = accentGreenDarkest)
+                Text(text = stringResource(id = R.string.app_name_long), color = accentGreenDarkest)
             }
         },
         backgroundColor = primaryGreenAccent,

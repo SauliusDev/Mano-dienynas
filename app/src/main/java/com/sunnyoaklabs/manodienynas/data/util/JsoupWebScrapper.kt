@@ -1,9 +1,9 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
-import com.sunnyoaklabs.manodienynas.core.util.EventTypes.ATTENDANCE_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CHANGED_MARK_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.ATTENDANCE_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.CHANGED_MARK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.HOMEWORK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import org.jsoup.Jsoup
 

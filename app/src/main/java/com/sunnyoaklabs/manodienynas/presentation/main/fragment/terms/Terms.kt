@@ -26,6 +26,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
@@ -38,10 +39,7 @@ import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.Abb
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.AbbreviationDescriptionDialogItem
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.terms.dialog.TermMarkDialog
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.TermsFragmentViewModel
-import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
-import com.sunnyoaklabs.manodienynas.ui.theme.accentGreenLight
-import com.sunnyoaklabs.manodienynas.ui.theme.accentRed
-import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
+import com.sunnyoaklabs.manodienynas.ui.theme.*
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -122,10 +120,10 @@ private fun TermListItem(
 ) {
     Card(
         modifier = modifier
-            .padding(4.dp)
-            .height(40.dp),
+            .padding(4.dp).defaultMinSize(minHeight = 50.dp),
         elevation = 2.dp,
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             horizontalArrangement = Arrangement.Absolute.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -136,19 +134,36 @@ private fun TermListItem(
                 .fillMaxWidth()
                 .background(
                     colorResource(
-                       id = getTermItemColor(collapsed)
+                        id = getTermItemColor(collapsed)
                     )
                 )
         ) {
-            Box {
+            Box(Modifier.weight(0.9f)) {
                 Row(
                     modifier = Modifier.padding(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clip(RoundedCornerShape(5.dp))
+                            .background(accentYellowDark)
+                    ) {
+                        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                            Text(
+                                text = "${i+1}",
+                                modifier = Modifier,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "${i+1}. ${term.subject}",
+                        text = term.subject,
                         modifier = Modifier,
-                        fontSize = 16.sp,
+                        fontSize = 16.sp
                     )
                 }
             }
@@ -161,9 +176,10 @@ private fun TermListItem(
                 },
                 contentDescription = "",
                 tint = Color.LightGray,
-                modifier = Modifier.padding(horizontal = 10.dp)
+                modifier = Modifier.padding(horizontal = 10.dp).weight(0.1f),
             )
         }
+        Spacer(modifier = Modifier.height(8.dp))
     }
     if (!collapsed) {
         LazyRow(modifier = Modifier.fillMaxWidth()) {
@@ -378,7 +394,9 @@ private fun TermsTopText() {
         ))
     }
     Row(
-        modifier = Modifier.fillMaxWidth().padding(4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

@@ -5,6 +5,6 @@ import com.sunnyoaklabs.manodienynas.domain.model.Mark
 
 data class MarkState(
     val marks: List<Mark> = emptyList(),
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val isLoadingLocale: Boolean = true
 )

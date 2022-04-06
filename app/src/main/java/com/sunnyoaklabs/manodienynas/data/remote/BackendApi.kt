@@ -73,9 +73,9 @@ interface BackendApi {
         fun create(): BackendApi {
             return BackendApiImpl(
                 client = HttpClient(Android) {
-//                    install(Logging) {
-//                        level = LogLevel.ALL
-//                    }
+                    install(Logging) {
+                        level = LogLevel.ALL
+                    }
                     install(JsonFeature) {
                         serializer = KotlinxSerializer()
                     }
@@ -83,9 +83,13 @@ interface BackendApi {
                         storage = AcceptAllCookiesStorage()
                     }
                     install(HttpTimeout) {
-                        requestTimeoutMillis = 150000L
-                        connectTimeoutMillis = 150000L
-                        socketTimeoutMillis = 150000L
+                        // todo only for testing
+//                        requestTimeoutMillis = 15000L
+//                        connectTimeoutMillis = 15000L
+//                        socketTimeoutMillis = 15000L
+                        requestTimeoutMillis = 3000L
+                        connectTimeoutMillis = 3000L
+                        socketTimeoutMillis = 3000L
                     }
                 }
             )

@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Mano dienynas lite</string>
+    <string name="app_name">Mano Dienynas</string>
+    <string name="app_name_long">Mano Dienynas lite</string>
     <string name="title_activity_login">LoginActivity</string>
 
     <!-- Login activity -->
@@ -85,5 +86,9 @@
 
     <string name="ic_location_description">Vieta</string>
     <string name="ic_date_description">Vieta</string>
+
+    <string name="snackbar_unknown_error">Nežinoma klaida!</string>
+    <string name="snackbar_no_network">Nėra tinklo ryšio!</string>
+    <string name="snackbar_session_cookie_expired">Sesija pasibaigė!</string>
 
 </resources>

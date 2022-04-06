@@ -1,10 +1,7 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
-import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.Errors
@@ -13,12 +10,10 @@ import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,24 +51,6 @@ class MessagesFragmentViewModel @Inject constructor(
     private val _messageIndividualFlow = MutableSharedFlow<MessageIndividualState>()
     val messageIndividualFlow = _messageIndividualFlow.asSharedFlow()
 
-    private var getDataJob: Job? = null
-
-    fun onFragmentOpen() {
-        getDataJob?.cancel()
-        getDataJob = viewModelScope.launch {
-            delay(500L)
-            if (!_messagesGottenState.value.isLoading ||
-                !_messagesSentState.value.isLoading ||
-                !_messagesStarredState.value.isLoading ||
-                !_messagesDeletedState.value.isLoading) {
-                initMessagesGotten()
-                initMessagesSent()
-                initMessagesStarred()
-                initMessagesDeleted()
-            }
-        }
-    }
-
     fun initMessagesGotten() {
         viewModelScope.launch {
             getMessagesGotten().collect {
@@ -87,14 +64,12 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Success -> {
                         _messagesGottenState.value = messagesGottenState.value.copy(
                             messagesGotten = it.data ?: emptyList(),
+                            page = 1,
+                            isEverythingLoaded = false,
                             isLoading = false
                         )
                     }
                     is Resource.Error -> {
-                        _messagesGottenState.value = messagesGottenState.value.copy(
-                            messagesGotten = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -119,14 +94,12 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Success -> {
                         _messagesSentState.value = messagesSentState.value.copy(
                             messagesSent = it.data ?: emptyList(),
+                            page = 1,
+                            isEverythingLoaded = false,
                             isLoading = false
                         )
                     }
                     is Resource.Error -> {
-                        _messagesSentState.value = messagesSentState.value.copy(
-                            messagesSent = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -151,14 +124,12 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Success -> {
                         _messagesStarredState.value = messagesStarredState.value.copy(
                             messagesStarred = it.data ?: emptyList(),
+                            page = 1,
+                            isEverythingLoaded = false,
                             isLoading = false
                         )
                     }
                     is Resource.Error -> {
-                        _messagesStarredState.value = messagesStarredState.value.copy(
-                            messagesStarred = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -183,14 +154,12 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Success -> {
                         _messagesDeletedState.value = messagesDeletedState.value.copy(
                             messagesDeleted = it.data ?: emptyList(),
+                            page = 1,
+                            isEverythingLoaded = false,
                             isLoading = false
                         )
                     }
                     is Resource.Error -> {
-                        _messagesDeletedState.value = messagesDeletedState.value.copy(
-                            messagesDeleted = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -213,7 +182,6 @@ class MessagesFragmentViewModel @Inject constructor(
                         _messageIndividualFlow.emit(MessageIndividualState(it.data, false))
                     }
                     is Resource.Error -> {
-                        _messageIndividualFlow.emit(MessageIndividualState(it.data, false))
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -242,10 +210,6 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _messagesGottenState.value = messagesGottenState.value.copy(
-                            messagesGotten = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -274,10 +238,6 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _messagesSentState.value = messagesSentState.value.copy(
-                            messagesSent = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -306,10 +266,6 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _messagesStarredState.value = messagesStarredState.value.copy(
-                            messagesStarred = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -338,10 +294,6 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _messagesDeletedState.value = messagesDeletedState.value.copy(
-                            messagesDeleted = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR

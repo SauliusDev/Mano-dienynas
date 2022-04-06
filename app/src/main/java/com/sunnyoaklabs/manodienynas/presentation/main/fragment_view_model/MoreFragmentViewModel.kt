@@ -1,6 +1,5 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,14 +8,12 @@ import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
-import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,22 +47,6 @@ class MoreFragmentViewModel @Inject constructor(
     //private val _calendarEventState = mutableStateOf(CalendarEventState())
     //val calendarEventState: State<CalendarEventState> = _calendarEventState
 
-    private var getDataJob: Job? = null
-
-    fun onFragmentOpen() {
-        getDataJob?.cancel()
-        getDataJob = viewModelScope.launch {
-            delay(500L)
-            if (!_scheduleState.value.isLoading ||
-                !_holidayState.value.isLoading ||
-                !_parentMeetingState.value.isLoading) {
-                initSchedule()
-                initHoliday()
-                initParentMeetings()
-            }
-        }
-    }
-
     fun initHoliday() {
         viewModelScope.launch {
             getHoliday().collect {
@@ -83,10 +64,6 @@ class MoreFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _holidayState.value = holidayState.value.copy(
-                            holiday = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -115,10 +92,6 @@ class MoreFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _parentMeetingState.value = parentMeetingState.value.copy(
-                            parentMeetings = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR
@@ -147,10 +120,6 @@ class MoreFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
-                        _scheduleState.value = scheduleState.value.copy(
-                            schedule = it.data ?: emptyList(),
-                            isLoading = false
-                        )
                         _eventFlow.emit(
                             UIEvent.ShowSnackbar(
                                 it.message ?: Errors.UNKNOWN_ERROR

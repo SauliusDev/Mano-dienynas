@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
+import android.util.Log
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
@@ -101,13 +102,16 @@ class RepositoryImpl(
                 dataSource.deleteAllEvents()
                 eventsApi.forEach { dataSource.insertEvent(it) }
             } else {
+                Log.e("console log", ": session")
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
             val newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
             emit(Resource.Success(newEvents))
         } catch (e: IOException) {
+            Log.e("console log", ": ioas")
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
+            Log.e("console log", ": unknown")
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
