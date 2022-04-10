@@ -42,7 +42,7 @@ class SettingsMainFragmentViewModel @Inject constructor(
         viewModelScope.launch {
             backendApi.getLogout()
             deleteEverythingInCache()
-            _eventFlow.emit(UIEvent.ShowSnackbar(START_ACTIVITY_LOGIN_EVENT_TYPE))
+            _eventFlow.emit(UIEvent.ShowToast(START_ACTIVITY_LOGIN_EVENT_TYPE))
         }
     }
 

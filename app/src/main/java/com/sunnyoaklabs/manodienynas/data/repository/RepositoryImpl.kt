@@ -13,6 +13,7 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.*
 import com.sunnyoaklabs.manodienynas.data.util.Converter
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
+import io.ktor.client.features.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
@@ -102,16 +103,15 @@ class RepositoryImpl(
                 dataSource.deleteAllEvents()
                 eventsApi.forEach { dataSource.insertEvent(it) }
             } else {
-                Log.e("console log", ": session")
                 emit(Resource.Error(SESSION_COOKIE_EXPIRED))
             }
             val newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
             emit(Resource.Success(newEvents))
         } catch (e: IOException) {
-            Log.e("console log", ": ioas")
+            emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: Exception) {
-            Log.e("console log", ": unknown")
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }

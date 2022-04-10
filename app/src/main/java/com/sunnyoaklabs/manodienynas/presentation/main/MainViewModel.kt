@@ -1,15 +1,21 @@
 package com.sunnyoaklabs.manodienynas.presentation.main
 
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.sunnyoaklabs.manodienynas.ManoDienynasApp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.core.util.Errors
+import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.EVENTS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT
@@ -55,15 +61,23 @@ class MainViewModel @Inject constructor(
     private val _personState = mutableStateOf(PersonState())
     val personState: State<PersonState> = _personState
 
-    private val _userState = mutableStateOf(UserStateState())
-    val userState: State<UserStateState> = _userState
+    private val _userStateState = mutableStateOf(UserStateState())
+    val userStateState: State<UserStateState> = _userStateState
+
+    private var latestDataLoadOrigin = ""
 
     var getDataJob: Job? = null
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onFragmentOpen(fragment: String) {
+        verifySessionCookies()
         getDataJob?.cancel()
         getDataJob = viewModelScope.launch {
+            resetLoadingState()
+            latestDataLoadOrigin = fragment
             when (fragment) {
                 EVENTS_FRAGMENT -> {
+                    Log.e("console log", ": initas eventu ")
                     eventsFragmentViewModel.initEventsAndPerson()
                 }
                 MARKS_FRAGMENT -> {
@@ -94,48 +108,87 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun resetLoadingState() {
+        when (latestDataLoadOrigin) {
+            EVENTS_FRAGMENT -> {
+                eventsFragmentViewModel.resetLoadingState()
+            }
+            MARKS_FRAGMENT -> {
+                marksFragmentViewModel.resetLoadingState()
+            }
+            MESSAGES_FRAGMENT -> {
+                messagesFragmentViewModel.resetLoadingState()
+            }
+            TERMS_FRAGMENT -> {
+                termsFragmentViewModel.resetLoadingState()
+            }
+            MORE_FRAGMENT -> {
+                moreFragmentViewModel.resetLoadingState()
+            }
+            SETTINGS_FRAGMENT -> {
+                // NOTE: no data state to reset ;(
+            }
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
-    fun initSessionCookies() {
+    private fun verifySessionCookies() {
         viewModelScope.launch {
+            if (!_userStateState.value.isLoading && !_userStateState.value.userState?.isSessionGotten!!) {
+                initSessionCookies().join()
+                if (_userStateState.value.userState?.isSessionGotten!!) {
+                    onFragmentOpen(latestDataLoadOrigin)
+                }
+            }
+        }
+    }
+
+    fun initSessionCookies(): Job {
+        return viewModelScope.launch {
             getSessionCookies().collect { wasSessionCreated ->
                 when (wasSessionCreated) {
+                    is Resource.Loading -> {
+                        firebaseCrashlytics.log("(MainViewModel) Loading: credentials, sessionCookies")
+                        _userStateState.value = userStateState.value.copy(
+                            isLoading = true
+                        )
+                    }
                     is Resource.Success -> {
                         firebaseCrashlytics.log("(MainViewModel) Success: credentials, sessionCookies")
-                        _userState.value = userState.value.copy(
+                        _userStateState.value = userStateState.value.copy(
                             userState = UserState(
-                                isLoading = false,
                                 isUserLoggedIn = true,
                                 isSessionGotten = true,
                                 triedGettingSession = true
-                            )
+                            ),
+                            isLoading = false
                         )
                         changeRole().join()
                         setInitialValues().join()
                         initMainData().join()
                     }
                     is Resource.Error -> {
+                        onFragmentOpen(EVENTS_FRAGMENT) // load first screen data from cache
                         firebaseCrashlytics.log("(MainViewModel) Error: credentials, sessionCookies")
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 wasSessionCreated.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
-                        _userState.value = userState.value.copy(
+                        _userStateState.value = userStateState.value.copy(
                             userState = UserState(
-                                isLoading = false,
                                 isUserLoggedIn = true,
                                 isSessionGotten = false,
                                 triedGettingSession = true
-                            )
+                            ),
+                            isLoading = false
                         )
                     }
-                    else -> {}
                 }
             }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setInitialValues(): Job {
         return viewModelScope.launch {
             marksFragmentViewModel.setInitialTimeRanges()
@@ -143,9 +196,9 @@ class MainViewModel @Inject constructor(
     }
 
     private fun changeRole(): Job {
-        return viewModelScope.launch{
+        return viewModelScope.launch {
             getSettings().collect {
-                when(it) {
+                when (it) {
                     is Resource.Success -> {
                         it.data?.selectedSchool?.let { selectedSchool ->
                             backendApi.getChangeRole(selectedSchool.schoolId)
@@ -158,7 +211,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun initMainData(): Job {
-        return CoroutineScope(IO).launch {
+        return viewModelScope.launch {
             val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
             initPerson(eventsJob)
         }
@@ -195,7 +248,4 @@ class MainViewModel @Inject constructor(
         return app.resources.openRawResource(R.raw.app_license)
             .bufferedReader().use(BufferedReader::readText)
     }
-
-
-
 }

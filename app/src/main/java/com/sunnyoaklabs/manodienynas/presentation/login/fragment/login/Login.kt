@@ -1,8 +1,7 @@
-package com.sunnyoaklabs.manodienynas.presentation.login.fragment
+package com.sunnyoaklabs.manodienynas.presentation.login.fragment.login
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,7 +35,6 @@ import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -133,13 +131,7 @@ fun LoginFragment(
             onClick = {
                 if (username.isNotEmpty() && password.isNotEmpty()) {
                     isLoading = true
-                    CoroutineScope(IO).launch {
-                        loginViewModel.updateCredentials(Credentials(username, password)).join()
-                        val intent = Intent(context, MainActivity::class.java)
-                            .putExtra("initial", "Login from login activity")
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        context.startActivity(intent)
-                    }
+                    startActivityMain(loginViewModel, context, username, password)
                 }
             },
             modifier = Modifier
@@ -155,6 +147,21 @@ fun LoginFragment(
         if(isLoading) {
             ProgressBar(Modifier.padding(vertical = 20.dp))
         }
+    }
+}
+
+private fun startActivityMain(
+    loginViewModel: LoginViewModel,
+    context: Context,
+    username: String,
+    password: String
+){
+    CoroutineScope(IO).launch {
+        loginViewModel.updateCredentials(Credentials(username, password)).join()
+        val intent = Intent(context, MainActivity::class.java)
+            .putExtra("initial", "Login from login activity")
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        context.startActivity(intent)
     }
 }
 

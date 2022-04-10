@@ -37,10 +37,13 @@ class TermsFragmentViewModel @Inject constructor(
             getTerm().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _termState.value = termState.value.copy(
-                            terms = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _termState.value = termState.value.copy(
+                                terms = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _termState.value = termState.value.copy(
@@ -49,8 +52,9 @@ class TermsFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _termState.value = termState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -72,7 +76,7 @@ class TermsFragmentViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -80,5 +84,9 @@ class TermsFragmentViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun resetLoadingState() {
+        _termState.value = termState.value.copy(isLoading = false,)
     }
 }

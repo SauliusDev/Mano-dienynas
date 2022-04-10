@@ -73,9 +73,9 @@ interface BackendApi {
         fun create(): BackendApi {
             return BackendApiImpl(
                 client = HttpClient(Android) {
-                    install(Logging) {
-                        level = LogLevel.ALL
-                    }
+//                    install(Logging) {
+//                        level = LogLevel.ALL
+//                    }
                     install(JsonFeature) {
                         serializer = KotlinxSerializer()
                     }

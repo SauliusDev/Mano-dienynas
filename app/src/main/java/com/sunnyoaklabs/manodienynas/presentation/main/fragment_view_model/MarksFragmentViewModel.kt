@@ -78,10 +78,13 @@ class MarksFragmentViewModel @Inject constructor(
             getMarks().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _markState.value = markState.value.copy(
-                            marks = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _markState.value = markState.value.copy(
+                                marks = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _markState.value = markState.value.copy(
@@ -90,8 +93,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _markState.value = markState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -117,7 +121,7 @@ class MarksFragmentViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -132,10 +136,13 @@ class MarksFragmentViewModel @Inject constructor(
             getMarksByCondition(getPostMarksPayload()).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _markState.value = markState.value.copy(
-                            marks = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _markState.value = markState.value.copy(
+                                marks = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _markState.value = markState.value.copy(
@@ -144,8 +151,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _markState.value = markState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -160,10 +168,13 @@ class MarksFragmentViewModel @Inject constructor(
             getAttendance().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _attendanceState.value = attendanceState.value.copy(
-                            attendance = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _attendanceState.value = attendanceState.value.copy(
+                                attendance = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _attendanceState.value = attendanceState.value.copy(
@@ -172,8 +183,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _attendanceState.value = attendanceState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -188,10 +200,13 @@ class MarksFragmentViewModel @Inject constructor(
             getClassWork().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _classWorkState.value = classWorkState.value.copy(
-                            classWork = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _classWorkState.value = classWorkState.value.copy(
+                                classWork = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _classWorkState.value = classWorkState.value.copy(
@@ -200,8 +215,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _classWorkState.value = classWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -216,10 +232,13 @@ class MarksFragmentViewModel @Inject constructor(
             getClassWorkByCondition(getPostClassWorkPayload(), 0).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _classWorkState.value = classWorkState.value.copy(
-                            classWork = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _classWorkState.value = classWorkState.value.copy(
+                                classWork = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _classWorkState.value = classWorkState.value.copy(
@@ -228,8 +247,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _classWorkState.value = classWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -244,10 +264,13 @@ class MarksFragmentViewModel @Inject constructor(
             getHomeWork().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _homeWorkState.value = homeWorkState.value.copy(
-                            homeWork = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _homeWorkState.value = homeWorkState.value.copy(
+                                homeWork = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _homeWorkState.value = homeWorkState.value.copy(
@@ -256,8 +279,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _homeWorkState.value = homeWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -272,10 +296,13 @@ class MarksFragmentViewModel @Inject constructor(
             getHomeWorkByCondition(getPostHomeWorkPayload(), 0).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _homeWorkState.value = homeWorkState.value.copy(
-                            homeWork = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _homeWorkState.value = homeWorkState.value.copy(
+                                homeWork = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _homeWorkState.value = homeWorkState.value.copy(
@@ -284,8 +311,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _homeWorkState.value = homeWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -300,10 +328,13 @@ class MarksFragmentViewModel @Inject constructor(
             getControlWork().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _controlWorkState.value = controlWorkState.value.copy(
-                            controlWork = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _controlWorkState.value = controlWorkState.value.copy(
+                                controlWork = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _controlWorkState.value = controlWorkState.value.copy(
@@ -312,8 +343,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _controlWorkState.value = controlWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -328,10 +360,13 @@ class MarksFragmentViewModel @Inject constructor(
             getControlWorkByCondition(getPostControlWorkPayload(), 0).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _controlWorkState.value = controlWorkState.value.copy(
-                            controlWork = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _controlWorkState.value = controlWorkState.value.copy(
+                                controlWork = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _controlWorkState.value = controlWorkState.value.copy(
@@ -340,8 +375,9 @@ class MarksFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _controlWorkState.value = controlWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -460,7 +496,6 @@ class MarksFragmentViewModel @Inject constructor(
         return null
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun setInitialTimeRanges() {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val current = LocalDateTime.now()
@@ -520,5 +555,13 @@ class MarksFragmentViewModel @Inject constructor(
             0,
             0
         )
+    }
+
+    fun resetLoadingState() {
+        _markState.value = markState.value.copy(isLoading = false,)
+        _attendanceState.value = attendanceState.value.copy(isLoading = false,)
+        _controlWorkState.value = controlWorkState.value.copy(isLoading = false,)
+        _classWorkState.value = classWorkState.value.copy(isLoading = false,)
+        _homeWorkState.value = homeWorkState.value.copy(isLoading = false,)
     }
 }

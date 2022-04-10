@@ -31,11 +31,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideEventsFragmentViewModel(
+        app: Application,
         getEvents: GetEvents,
         getEventsPage: GetEventsPage,
         validator: Validator
     ): EventsFragmentViewModel {
-        return EventsFragmentViewModel(getEvents, getEventsPage, validator)
+        return EventsFragmentViewModel(app, getEvents, getEventsPage, validator)
     }
 
     @Provides
@@ -71,6 +72,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMessagesFragmentViewModel(
+        app: Application,
         getMessagesGotten: GetMessagesGotten,
         getMessagesGottenByCondition: GetMessagesGottenByCondition,
         getMessagesSent: GetMessagesSent,
@@ -83,6 +85,7 @@ object AppModule {
         validator: Validator
     ): MessagesFragmentViewModel {
         return MessagesFragmentViewModel(
+            app,
             getMessagesGotten,
             getMessagesGottenByCondition,
             getMessagesSent,

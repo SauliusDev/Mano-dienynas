@@ -1,9 +1,12 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
+import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sunnyoaklabs.manodienynas.ManoDienynasApp
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
@@ -18,6 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MessagesFragmentViewModel @Inject constructor(
+    private val app: Application,
     private val getMessagesGotten: GetMessagesGotten,
     private val getMessagesGottenByCondition: GetMessagesGottenByCondition,
     private val getMessagesSent: GetMessagesSent,
@@ -28,7 +32,7 @@ class MessagesFragmentViewModel @Inject constructor(
     private val getMessagesDeletedByCondition: GetMessagesDeletedByCondition,
     private val getMessageIndividual: GetMessageIndividual,
     val validator: Validator
-) : ViewModel() {
+) : AndroidViewModel(app) {
 
     private val _messagesFragmentTypeState = mutableStateOf(MessagesFragmentTypeState())
     val messagesFragmentTypeState: State<MessagesFragmentTypeState> = _messagesFragmentTypeState
@@ -56,10 +60,13 @@ class MessagesFragmentViewModel @Inject constructor(
             getMessagesGotten().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _messagesGottenState.value = messagesGottenState.value.copy(
-                            messagesGotten = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _messagesGottenState.value = messagesGottenState.value.copy(
+                                messagesGotten = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _messagesGottenState.value = messagesGottenState.value.copy(
@@ -70,8 +77,9 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _messagesGottenState.value = messagesGottenState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -86,10 +94,13 @@ class MessagesFragmentViewModel @Inject constructor(
             getMessagesSent().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _messagesSentState.value = messagesSentState.value.copy(
-                            messagesSent = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _messagesSentState.value = messagesSentState.value.copy(
+                                messagesSent = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _messagesSentState.value = messagesSentState.value.copy(
@@ -100,8 +111,9 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _messagesSentState.value = messagesSentState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -116,10 +128,13 @@ class MessagesFragmentViewModel @Inject constructor(
             getMessagesStarred().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _messagesStarredState.value = messagesStarredState.value.copy(
-                            messagesStarred = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _messagesStarredState.value = messagesStarredState.value.copy(
+                                messagesStarred = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _messagesStarredState.value = messagesStarredState.value.copy(
@@ -130,8 +145,9 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _messagesStarredState.value = messagesStarredState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -146,10 +162,13 @@ class MessagesFragmentViewModel @Inject constructor(
             getMessagesDeleted().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _messagesDeletedState.value = messagesDeletedState.value.copy(
-                            messagesDeleted = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _messagesDeletedState.value = messagesDeletedState.value.copy(
+                                messagesDeleted = list,
+                                isLoading = true,
+                                isLoadingLocale = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _messagesDeletedState.value = messagesDeletedState.value.copy(
@@ -160,8 +179,9 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _messagesDeletedState.value = messagesDeletedState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -183,7 +203,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -194,11 +214,14 @@ class MessagesFragmentViewModel @Inject constructor(
     }
 
     fun initMessagesGottenByCondition() {
+        if (_messagesGottenState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
         viewModelScope.launch {
             getMessagesGottenByCondition(_messagesGottenState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        // NOTE: could show loading
+                        _messagesGottenState.value = messagesGottenState.value.copy(
+                            isLoading = true,
+                        )
                     }
                     is Resource.Success -> {
                         val newList = _messagesGottenState.value.messagesGotten+(it.data ?: emptyList())
@@ -210,8 +233,9 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _messagesGottenState.value = messagesGottenState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -222,11 +246,14 @@ class MessagesFragmentViewModel @Inject constructor(
     }
 
     fun initMessagesSentByCondition() {
+        if (_messagesSentState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
         viewModelScope.launch {
             getMessagesSentByCondition(_messagesSentState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        // NOTE: could show loading
+                        _messagesSentState.value = messagesSentState.value.copy(
+                            isLoading = true,
+                        )
                     }
                     is Resource.Success -> {
                         val newList = _messagesSentState.value.messagesSent+(it.data ?: emptyList())
@@ -238,8 +265,9 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _messagesSentState.value = messagesSentState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -250,11 +278,14 @@ class MessagesFragmentViewModel @Inject constructor(
     }
 
     fun initMessagesStarredByCondition() {
+        if (_messagesStarredState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
         viewModelScope.launch {
             getMessagesStarredByCondition(_messagesStarredState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        // NOTE: could show loading
+                        _messagesStarredState.value = messagesStarredState.value.copy(
+                            isLoading = true
+                        )
                     }
                     is Resource.Success -> {
                         val newList = _messagesStarredState.value.messagesStarred+(it.data ?: emptyList())
@@ -266,8 +297,9 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _messagesStarredState.value = messagesStarredState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -278,11 +310,14 @@ class MessagesFragmentViewModel @Inject constructor(
     }
 
     fun initMessagesDeletedByCondition() {
+        if (_messagesDeletedState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
         viewModelScope.launch {
             getMessagesDeletedByCondition(_messagesDeletedState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        // NOTE: could show loading
+                        _messagesDeletedState.value = messagesDeletedState.value.copy(
+                            isLoading = true
+                        )
                     }
                     is Resource.Success -> {
                         val newList = _messagesDeletedState.value.messagesDeleted+(it.data ?: emptyList())
@@ -294,8 +329,9 @@ class MessagesFragmentViewModel @Inject constructor(
                         )
                     }
                     is Resource.Error -> {
+                        _messagesDeletedState.value = messagesDeletedState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -347,6 +383,13 @@ class MessagesFragmentViewModel @Inject constructor(
                 deletedIsSelected = true,
             )
         }
+    }
+
+    fun resetLoadingState() {
+        _messagesGottenState.value = messagesGottenState.value.copy(isLoading = false,)
+        _messagesSentState.value = messagesSentState.value.copy(isLoading = false,)
+        _messagesStarredState.value = messagesStarredState.value.copy(isLoading = false,)
+        _messagesDeletedState.value = messagesDeletedState.value.copy(isLoading = false,)
     }
 
 }

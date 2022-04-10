@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "com.sunnyoaklabs.manodienynas"
-        minSdk 21
+        minSdk 26 // setInitialTimeRanges() fun requires min 26
         targetSdk 31
         versionCode 1 /** [on release] {...+1} **/
         versionName "1.0" /** [on release] {...+1} **/

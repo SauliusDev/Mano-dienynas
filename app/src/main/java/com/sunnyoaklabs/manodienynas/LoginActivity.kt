@@ -1,16 +1,22 @@
 package com.sunnyoaklabs.manodienynas
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
@@ -20,20 +26,17 @@ import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginActivity : ComponentActivity() {
+class LoginActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ManoDienynasTheme {
                 val intentExtra = intent.getStringExtra("error")
                 val scaffoldState = rememberScaffoldState()
-
                 LaunchedEffect(key1 = true) {
                     intentExtra?.let {
-                        showErrorSnackbar(
-                            scaffoldState,
-                            it
-                        )
+                        showErrorSnackbar(scaffoldState, it)
                     }
                 }
 
@@ -45,29 +48,30 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
-}
 
-private suspend fun showErrorSnackbar(
-    scaffoldState: ScaffoldState,
-    errorMessage: String
-) {
-    when (errorMessage) {
-        UNKNOWN_ERROR -> {
-            FirebaseCrashlytics.getInstance().log("(LoginActivity) UNKNOWN_ERROR")
-            scaffoldState.snackbarHostState.showSnackbar(
-                message = errorMessage,
-                duration = SnackbarDuration.Short
-            )
-        }
-        IO_ERROR -> {
-            FirebaseCrashlytics.getInstance().log("(LoginActivity) IO_ERROR")
-            scaffoldState.snackbarHostState.showSnackbar(
-                message = errorMessage,
-                duration = SnackbarDuration.Short
-            )
-        }
-        NULL_OBJECT_RECEIVED_ERROR -> {
-            FirebaseCrashlytics.getInstance().log("(LoginActivity) NULL_OBJECT_RECEIVED_ERROR")
+    private suspend fun showErrorSnackbar(
+        scaffoldState: ScaffoldState,
+        errorMessage: String
+    ) {
+        when (errorMessage) {
+            UNKNOWN_ERROR -> {
+                FirebaseCrashlytics.getInstance().log("(LoginActivity) UNKNOWN_ERROR")
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message = errorMessage,
+                    duration = SnackbarDuration.Short
+                )
+            }
+            IO_ERROR -> {
+                FirebaseCrashlytics.getInstance().log("(LoginActivity) IO_ERROR")
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message = errorMessage,
+                    duration = SnackbarDuration.Short
+                )
+            }
+            NULL_OBJECT_RECEIVED_ERROR -> {
+                FirebaseCrashlytics.getInstance().log("(LoginActivity) NULL_OBJECT_RECEIVED_ERROR")
+            }
         }
     }
+
 }

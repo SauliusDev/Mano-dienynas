@@ -1,5 +1,7 @@
 package com.sunnyoaklabs.manodienynas.core.util.validator
 
+import android.app.Application
+
 interface Validator {
 
     fun validateIsLoading(
@@ -13,5 +15,7 @@ interface Validator {
         isLoadingLocal: Boolean,
         dataList: List<Any>,
     ): Boolean
+
+    fun hasInternetConnection(application: Application): Boolean
 
 }

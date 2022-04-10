@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.presentation.login
 
 import android.app.Application
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -8,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sunnyoaklabs.manodienynas.MainActivity
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
@@ -18,6 +20,8 @@ import com.sunnyoaklabs.manodienynas.domain.use_case.GetSettings
 import com.sunnyoaklabs.manodienynas.presentation.main.state.CredentialsState
 import com.sunnyoaklabs.manodienynas.presentation.main.state.SettingsState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

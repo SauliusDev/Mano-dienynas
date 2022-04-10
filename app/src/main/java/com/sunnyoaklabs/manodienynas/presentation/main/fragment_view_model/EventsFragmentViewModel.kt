@@ -1,10 +1,17 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sunnyoaklabs.manodienynas.ManoDienynasApp
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
@@ -19,10 +26,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class EventsFragmentViewModel @Inject constructor(
+    private val app: Application,
     private val getEvents: GetEvents,
     private val getEventsPage: GetEventsPage,
     val validator: Validator
-) : ViewModel() {
+) : AndroidViewModel(app) {
 
     private val _eventState = mutableStateOf(EventState())
     val eventState: State<EventState> = _eventState
@@ -35,10 +43,14 @@ class EventsFragmentViewModel @Inject constructor(
             getEvents().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _eventState.value = eventState.value.copy(
-                            events = it.data ?: emptyList(),
-                            isLoading = true
-                        )
+                        it.data?.let { list ->
+                            _eventState.value = eventState.value.copy(
+                                events = list,
+                                isLoading = true,
+                                isLoadingLocale = false,
+                                isEveryEventLoaded = false
+                            )
+                        }
                     }
                     is Resource.Success -> {
                         _eventState.value = eventState.value.copy(
@@ -49,9 +61,8 @@ class EventsFragmentViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _eventState.value = eventState.value.copy(isLoading = false)
-                        Log.e("console log 1", ": "+it.message)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -63,25 +74,25 @@ class EventsFragmentViewModel @Inject constructor(
     }
 
     fun loadMoreEvents() {
+        if (_eventState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
         viewModelScope.launch {
             getEventsPage().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        // NOTE: could show loading animation
+                        _eventState.value = eventState.value.copy(isLoading = true)
                     }
                     is Resource.Success -> {
-                        val newList = _eventState.value.events+(it.data ?: emptyList())
+                        val newList = _eventState.value.events + (it.data ?: emptyList())
                         _eventState.value = eventState.value.copy(
                             events = newList,
                             isLoading = false,
-                            isEveryEventLoaded = newList.size%10 != 0
+                            isEveryEventLoaded = newList.size % 10 != 0
                         )
                     }
                     is Resource.Error -> {
                         _eventState.value = eventState.value.copy(isLoading = false)
-                        Log.e("console log 2", ": "+it.message)
                         _eventFlow.emit(
-                            UIEvent.ShowSnackbar(
+                            UIEvent.ShowToast(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -89,5 +100,9 @@ class EventsFragmentViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun resetLoadingState() {
+        _eventState.value = eventState.value.copy(isLoading = false)
     }
 }
