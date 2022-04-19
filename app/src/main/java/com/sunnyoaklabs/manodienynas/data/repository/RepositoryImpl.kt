@@ -4,6 +4,7 @@ import android.util.Log
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
+import com.sunnyoaklabs.manodienynas.core.util.Errors.TIMEOUT_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.SessionValidationJsonResponses
@@ -42,8 +43,12 @@ class RepositoryImpl(
                 ))
             if (message == SessionValidationJsonResponses.CREDENTIALS_CORRECT) emit(Resource.Success(message))
             else emit(Resource.Error(Errors.INCORRECT_CREDENTIALS))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -73,8 +78,12 @@ class RepositoryImpl(
             var newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
             newEvents = newEvents.subList(eventsLocal.size, newEvents.size)
             emit(Resource.Success(newEvents))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -86,31 +95,35 @@ class RepositoryImpl(
         emit(Resource.Loading(data = eventsLocal))
         try {
             val response = api.getEvents()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val settingsLocal = converter.toSettingsFromEntity(dataSource.getSettings())
-                if (settingsLocal.selectedSchool == null) {
-                    val settings = Settings(
-                        settingsLocal.keepSignedIn,
-                        person.schoolsNames[0]
-                    )
-                    dataSource.deleteSettings()
-                    dataSource.insertSettings(settings)
+            when (val person = converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val settingsLocal = converter.toSettingsFromEntity(dataSource.getSettings())
+                    if (settingsLocal.selectedSchool == null) {
+                        val settings = Settings(
+                            settingsLocal.keepSignedIn,
+                            (person.data ?: Person("", "", emptyList())).schoolsNames[0]
+                        )
+                        dataSource.deleteSettings()
+                        dataSource.insertSettings(settings)
+                    }
+                    dataSource.deletePerson()
+                    dataSource.insertPerson(person.data ?: Person("", "", emptyList()))
+                    val eventsApi = converter.toEvents(response)
+                    dataSource.deleteAllEvents()
+                    eventsApi.forEach { dataSource.insertEvent(it) }
+                    val newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
+                    emit(Resource.Success(newEvents))
                 }
-                dataSource.deletePerson()
-                dataSource.insertPerson(person)
-                val eventsApi = converter.toEvents(response)
-                dataSource.deleteAllEvents()
-                eventsApi.forEach { dataSource.insertEvent(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
-            emit(Resource.Success(newEvents))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
         } catch (e: HttpRequestTimeoutException){
-            emit(Resource.Error(message = IO_ERROR))
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -122,18 +135,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = marksLocal))
         try {
             val response = api.getMarks()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val marksApi = converter.toMarks(response)
-                dataSource.deleteAllMarks()
-                marksApi.forEach { dataSource.insertMark(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val marksApi = converter.toMarks(response)
+                    dataSource.deleteAllMarks()
+                    marksApi.forEach { dataSource.insertMark(it) }
+                    val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
+                    emit(Resource.Success(newMarks))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
-            emit(Resource.Success(newMarks))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -151,18 +170,24 @@ class RepositoryImpl(
                 emit(Resource.Error(message = UNKNOWN_ERROR))
             }
             val response = api.postMarks(payload, schoolId ?: "")
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val marksApi = converter.toMarks(response)
-                dataSource.deleteAllMarks()
-                marksApi.forEach { dataSource.insertMark(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val marksApi = converter.toMarks(response)
+                    dataSource.deleteAllMarks()
+                    marksApi.forEach { dataSource.insertMark(it) }
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
             val newMarks = dataSource.getAllMarks().map { converter.toMarkFromEntity(it) }
             emit(Resource.Success(newMarks))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -174,8 +199,14 @@ class RepositoryImpl(
             val response = api.getMarksEvent(infoUrl)
             val markEventItem = converter.toMarkEventItem(response)
             emit(Resource.Success(markEventItem))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
@@ -185,18 +216,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = attendanceLocal))
         try {
             val response = api.getAttendance()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val attendanceApi = converter.toAttendance(response)
-                dataSource.deleteAllAttendance()
-                attendanceApi.forEach { dataSource.insertAttendance(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val attendanceApi = converter.toAttendance(response)
+                    dataSource.deleteAllAttendance()
+                    attendanceApi.forEach { dataSource.insertAttendance(it) }
+                    val newAttendance = dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }
+                    emit(Resource.Success(newAttendance))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newAttendance = dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }
-            emit(Resource.Success(newAttendance))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -208,18 +245,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = classWorkLocal))
         try {
             val response = api.getClassWork()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val classWorkApi = converter.toClassWork(response)
-                dataSource.deleteAllClassWork()
-                classWorkApi.forEach { dataSource.insertClassWork(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val classWorkApi = converter.toClassWork(response)
+                    dataSource.deleteAllClassWork()
+                    classWorkApi.forEach { dataSource.insertClassWork(it) }
+                    val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
+                    emit(Resource.Success(newClassWork))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
-            emit(Resource.Success(newClassWork))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -234,18 +277,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = classWorkLocal))
         try {
             val response = api.postClassWork(payload, page)
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val classWorkApi = converter.toClassWork(response)
-                dataSource.deleteAllClassWork()
-                classWorkApi.forEach { dataSource.insertClassWork(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val classWorkApi = converter.toClassWork(response)
+                    dataSource.deleteAllClassWork()
+                    classWorkApi.forEach { dataSource.insertClassWork(it) }
+                    val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
+                    emit(Resource.Success(newClassWork))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
-            emit(Resource.Success(newClassWork))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -257,20 +306,25 @@ class RepositoryImpl(
         emit(Resource.Loading(data = homeWorkLocal))
         try {
             val response = api.getHomeWork()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val homeWorkApi = converter.toHomeWork(response)
-                dataSource.deleteAllHomeWork()
-                homeWorkApi.forEach { dataSource.insertHomeWork(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val homeWorkApi = converter.toHomeWork(response)
+                    dataSource.deleteAllHomeWork()
+                    homeWorkApi.forEach { dataSource.insertHomeWork(it) }
+                    val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
+                    emit(Resource.Success(newHomeWork))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
-            emit(Resource.Success(newHomeWork))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
-            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -284,18 +338,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = homeWorkLocal))
         try {
             val response = api.postHomeWork(payload, page)
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val homeWorkApi = converter.toHomeWork(response)
-                dataSource.deleteAllHomeWork()
-                homeWorkApi.forEach { dataSource.insertHomeWork(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val homeWorkApi = converter.toHomeWork(response)
+                    dataSource.deleteAllHomeWork()
+                    homeWorkApi.forEach { dataSource.insertHomeWork(it) }
+                    val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
+                    emit(Resource.Success(newHomeWork))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
-            emit(Resource.Success(newHomeWork))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -307,18 +367,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = controlWorkLocal))
         try {
             val response = api.getControlWork()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val controlWorkApi = converter.toControlWork(response)
-                dataSource.deleteAllControlWork()
-                controlWorkApi.forEach { dataSource.insertControlWork(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val controlWorkApi = converter.toControlWork(response)
+                    dataSource.deleteAllControlWork()
+                    controlWorkApi.forEach { dataSource.insertControlWork(it) }
+                    val newControlWork = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
+                    emit(Resource.Success(newControlWork))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newControlWork = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
-            emit(Resource.Success(newControlWork))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -333,18 +399,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = controlWorkLocal))
         try {
             val response = api.postControlWork(payload)
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val controlWorkApi = converter.toControlWork(response)
-                dataSource.deleteAllControlWork()
-                controlWorkApi.forEach { dataSource.insertControlWork(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val controlWorkApi = converter.toControlWork(response)
+                    dataSource.deleteAllControlWork()
+                    controlWorkApi.forEach { dataSource.insertControlWork(it) }
+                    val newControlWorks = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
+                    emit(Resource.Success(newControlWorks))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newControlWorks = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
-            emit(Resource.Success(newControlWorks))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -356,18 +428,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = termsLocal))
         try {
             val response = api.getTerm()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val termApi = converter.toTerm(response)
-                dataSource.deleteAllTerm()
-                termApi.forEach { dataSource.insertTerm(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val termApi = converter.toTerm(response)
+                    dataSource.deleteAllTerm()
+                    termApi.forEach { dataSource.insertTerm(it) }
+                    val newTerms = dataSource.getAllTerms().map { converter.toTermFromEntity(it) }
+                    emit(Resource.Success(newTerms))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newTerms = dataSource.getAllTerms().map { converter.toTermFromEntity(it) }
-            emit(Resource.Success(newTerms))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -379,13 +457,22 @@ class RepositoryImpl(
         emit(Resource.Loading(data = termMarkDialogItemLocal))
         try {
             val response = api.getTermMarkDialog(url)
-            val termMarkDialogItem = converter.toTermMarkDialogItem(response, url)
-            dataSource.deleteTermMarkDialogByUrl(url)
-            dataSource.insertTermMarkDialog(termMarkDialogItem)
-            val newTermMarkDialog = converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
-            emit(Resource.Success(newTermMarkDialog))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val termMarkDialogItem = converter.toTermMarkDialogItem(response, url)
+                    dataSource.deleteTermMarkDialogByUrl(url)
+                    dataSource.insertTermMarkDialog(termMarkDialogItem)
+                    val newTermMarkDialog = converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
+                    emit(Resource.Success(newTermMarkDialog))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
+            }
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -397,18 +484,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesGottenLocal))
         try {
             val response = api.getMessagesGotten()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesGottenApi = converter.toMessages(response)
-                dataSource.deleteAllMessageGotten()
-                messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesGottenApi = converter.toMessages(response)
+                    dataSource.deleteAllMessageGotten()
+                    messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
+                    val newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+                    emit(Resource.Success(newMessagesGotten))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
-            emit(Resource.Success(newMessagesGotten))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -420,18 +513,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesGottenLocal))
         try {
             val response = api.getMessagesGottenByCondition((page+1).toString())
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesGottenApi = converter.toMessages(response)
-                messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesGottenApi = converter.toMessages(response)
+                    messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
+                    var newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+                    newMessagesGotten = newMessagesGotten.subList(messagesGottenLocal.size, newMessagesGotten.size)
+                    emit(Resource.Success(newMessagesGotten))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            var newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
-            newMessagesGotten = newMessagesGotten.subList(messagesGottenLocal.size, newMessagesGotten.size)
-            emit(Resource.Success(newMessagesGotten))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -443,18 +542,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesSentLocal))
         try {
             val response = api.getMessagesSent()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesSentApi = converter.toMessages(response)
-                dataSource.deleteAllMessageSent()
-                messagesSentApi.forEach { dataSource.insertMessageSent(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesSentApi = converter.toMessages(response)
+                    dataSource.deleteAllMessageSent()
+                    messagesSentApi.forEach { dataSource.insertMessageSent(it) }
+                    val newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+                    emit(Resource.Success(newMessagesSent))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
-            emit(Resource.Success(newMessagesSent))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -462,24 +567,32 @@ class RepositoryImpl(
 
     override fun getMessagesSentByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesSentLocal = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+        val messagesSentLocal = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
         emit(Resource.Loading(data = messagesSentLocal))
         try {
             val response = api.getMessagesSentByCondition(page.toString())
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesSentApi = converter.toMessages(response)
-                dataSource.deleteAllMessageSent()
-                messagesSentApi.forEach { dataSource.insertMessageSent(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesSentApi = converter.toMessages(response)
+                    dataSource.deleteAllMessageSent()
+                    messagesSentApi.forEach { dataSource.insertMessageSent(it) }
+                    var newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+                    newMessagesSent = newMessagesSent.subList(messagesSentLocal.size, newMessagesSent.size)
+                    emit(Resource.Success(newMessagesSent))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            var newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
-            newMessagesSent = newMessagesSent.subList(messagesSentLocal.size, newMessagesSent.size)
-            emit(Resource.Success(newMessagesSent))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            Log.e("console log", ": load more messages sent")
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -490,18 +603,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesStarredLocal))
         try {
             val response = api.getMessagesStarred()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesStarredApi = converter.toMessages(response)
-                dataSource.deleteAllMessageStarred()
-                messagesStarredApi.forEach { dataSource.insertMessageStarred(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesStarredApi = converter.toMessages(response)
+                    dataSource.deleteAllMessageStarred()
+                    messagesStarredApi.forEach { dataSource.insertMessageStarred(it) }
+                    val newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+                    emit(Resource.Success(newMessagesStarred))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
-            emit(Resource.Success(newMessagesStarred))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -513,19 +632,25 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesStarredLocal))
         try {
             val response = api.getMessagesStarredByCondition(page.toString())
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesStarredApi = converter.toMessages(response)
-                dataSource.deleteAllMessageStarred()
-                messagesStarredApi.forEach { dataSource.insertMessageStarred(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesStarredApi = converter.toMessages(response)
+                    dataSource.deleteAllMessageStarred()
+                    messagesStarredApi.forEach { dataSource.insertMessageStarred(it) }
+                    var newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+                    newMessagesStarred = newMessagesStarred.subList(messagesStarredLocal.size, newMessagesStarred.size)
+                    emit(Resource.Success(newMessagesStarred))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            var newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
-            newMessagesStarred = newMessagesStarred.subList(messagesStarredLocal.size, newMessagesStarred.size)
-            emit(Resource.Success(newMessagesStarred))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -537,18 +662,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesDeletedLocal))
         try {
             val response = api.getMessagesDeleted()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesDeletedApi = converter.toMessages(response)
-                dataSource.deleteAllMessageDeleted()
-                messagesDeletedApi.forEach { dataSource.insertMessageDeleted(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesDeletedApi = converter.toMessages(response)
+                    dataSource.deleteAllMessageDeleted()
+                    messagesDeletedApi.forEach { dataSource.insertMessageDeleted(it) }
+                    val newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+                    emit(Resource.Success(newMessagesDeleted))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
-            emit(Resource.Success(newMessagesDeleted))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -560,19 +691,25 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messagesDeletedLocal))
         try {
             val response = api.getMessagesDeletedByCondition(page.toString())
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesDeletedApi = converter.toMessages(response)
-                dataSource.deleteAllMessageDeleted()
-                messagesDeletedApi.forEach { dataSource.insertMessageDeleted(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesDeletedApi = converter.toMessages(response)
+                    dataSource.deleteAllMessageDeleted()
+                    messagesDeletedApi.forEach { dataSource.insertMessageDeleted(it) }
+                    var newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+                    newMessagesDeleted = newMessagesDeleted.subList(messagesDeletedLocal.size, newMessagesDeleted.size)
+                    emit(Resource.Success(newMessagesDeleted))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            var newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
-            newMessagesDeleted = newMessagesDeleted.subList(messagesDeletedLocal.size, newMessagesDeleted.size)
-            emit(Resource.Success(newMessagesDeleted))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -585,22 +722,28 @@ class RepositoryImpl(
         emit(Resource.Loading(data = messageIndividualLocal))
         try {
             val response = api.getMessageIndividual(id)
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val messagesIndividualApi = if (!isSent) {
-                    converter.toMessagesIndividual(response)
-                } else {
-                    converter.toMessagesIndividualSent(response)
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val messagesIndividualApi = if (!isSent) {
+                        converter.toMessagesIndividual(response)
+                    } else {
+                        converter.toMessagesIndividualSent(response)
+                    }
+                    dataSource.deleteMessageIndividualById(id.toLong())
+                    dataSource.insertMessageIndividual(messagesIndividualApi)
+                    val newMessagesIndividual = converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
+                    emit(Resource.Success(newMessagesIndividual))
                 }
-                dataSource.deleteMessageIndividualById(id.toLong())
-                dataSource.insertMessageIndividual(messagesIndividualApi)
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newMessagesIndividual = converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
-            emit(Resource.Success(newMessagesIndividual))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -612,18 +755,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = holidayLocal))
         try {
             val response = api.getHoliday()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val holidayApi = converter.toHoliday(response)
-                dataSource.deleteAllHoliday()
-                holidayApi.forEach { dataSource.insertHoliday(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val holidayApi = converter.toHoliday(response)
+                    dataSource.deleteAllHoliday()
+                    holidayApi.forEach { dataSource.insertHoliday(it) }
+                    val newHoliday = dataSource.getAllHolidays().map { converter.toHolidayFromEntity(it) }
+                    emit(Resource.Success(newHoliday))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newHoliday = dataSource.getAllHolidays().map { converter.toHolidayFromEntity(it) }
-            emit(Resource.Success(newHoliday))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -635,18 +784,24 @@ class RepositoryImpl(
         emit(Resource.Loading(data = parentMeetingsLocal))
         try {
             val response = api.getParentMeetings()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val parentMeetingsApi = converter.toParentMeeting(response)
-                dataSource.deleteAllParentMeeting()
-                parentMeetingsApi.forEach { dataSource.insertParentMeeting(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val parentMeetingsApi = converter.toParentMeeting(response)
+                    dataSource.deleteAllParentMeeting()
+                    parentMeetingsApi.forEach { dataSource.insertParentMeeting(it) }
+                    val newParentMeetings = dataSource.getAllParentMeetings().map { converter.toParentMeetingFromEntity(it) }
+                    emit(Resource.Success(newParentMeetings))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newParentMeetings = dataSource.getAllParentMeetings().map { converter.toParentMeetingFromEntity(it) }
-            emit(Resource.Success(newParentMeetings))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -661,71 +816,29 @@ class RepositoryImpl(
         emit(Resource.Loading(data = scheduleLocal))
         try {
             val response = api.getSchedule()
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val scheduleApi = converter.toSchedule(response)
-                dataSource.deleteAllSchedule()
-                scheduleApi.forEach { dataSource.insertSchedule(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+            when (converter.toPerson(response)) {
+                is Resource.Success -> {
+                    val scheduleApi = converter.toSchedule(response)
+                    dataSource.deleteAllSchedule()
+                    scheduleApi.forEach { dataSource.insertSchedule(it) }
+                    val newSchedule = mutableListOf<ScheduleDay>()
+                    for (i in 1..7) {
+                        newSchedule.add(ScheduleDay(dataSource.getAllScheduleByWeekDay(i.toLong()).map { converter.toScheduleFromEntity(it) }))
+                    }
+                    emit(Resource.Success(newSchedule))
+                }
+                is Resource.Error -> {
+                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
+                }
             }
-            val newSchedule = mutableListOf<ScheduleDay>()
-            for (i in 1..7) {
-                newSchedule.add(ScheduleDay(dataSource.getAllScheduleByWeekDay(i.toLong()).map { converter.toScheduleFromEntity(it) }))
-            }
-            emit(Resource.Success(newSchedule))
+        } catch (e: RedirectResponseException) {
+            emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
+        } catch (e: HttpRequestTimeoutException){
+            emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
-
-    override fun getCalendar(payload: GetCalendarDto): Flow<Resource<List<Calendar>>> = flow {
-        emit(Resource.Loading())
-        val calendarDateLocal = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
-        emit(Resource.Loading(data = calendarDateLocal))
-        try {
-            val response = api.getCalendarDate(payload)
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val calendarDateApi = converter.toCalendar(response)
-                dataSource.deleteAllSchedule()
-                calendarDateApi.forEach { dataSource.insertCalendar(it) }
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
-            }
-            val newCalendar = dataSource.getAllCalendars().map { converter.toCalendarFromEntity(it) }
-            emit(Resource.Success(newCalendar))
-        } catch (e: IOException) {
-            emit(Resource.Error(message = IO_ERROR))
-        } catch (e: Exception) {
-            emit(Resource.Error(message = UNKNOWN_ERROR))
-        }
-    }
-
-    override fun getCalendarEvent(url: String): Flow<Resource<CalendarEvent>> = flow {
-        emit(Resource.Loading())
-        val calendarEventLocal = converter.toCalendarEventFromEntity(dataSource.getCalendarEventByUrl(url))
-        emit(Resource.Loading(data = calendarEventLocal))
-        try {
-            val response = api.getCalendarEvent(url)
-            val person = converter.toPerson(response)
-            if (person.name.isNotBlank()) {
-                val calendarEventApi = converter.toCalendarEvent(response)
-                dataSource.deleteCalendarEventByUrl(url)
-                dataSource.insertCalendarEvent(calendarEventApi)
-            } else {
-                emit(Resource.Error(SESSION_COOKIE_EXPIRED))
-            }
-            val newCalendarEvent = converter.toCalendarEventFromEntity(dataSource.getCalendarEventByUrl(url))
-            emit(Resource.Success(newCalendarEvent))
-        } catch (e: IOException) {
-            emit(Resource.Error(message = IO_ERROR))
-        } catch (e: Exception) {
-            emit(Resource.Error(message = UNKNOWN_ERROR))
-        }
-    }
-
-
 }

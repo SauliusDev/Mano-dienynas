@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -23,18 +24,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT_HOME_WORK
 import com.sunnyoaklabs.manodienynas.domain.model.HomeWork
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.SettingsMainFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.state.ClassWorkState
+import com.sunnyoaklabs.manodienynas.presentation.main.state.HomeWorkState
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 
 @Composable
 fun HomeWorkCard(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val marksFragmentViewModel = mainViewModel.marksFragmentViewModel
     val homeWorkState = marksFragmentViewModel.homeWorkState.value
 
     val scope = rememberCoroutineScope()
@@ -53,36 +62,65 @@ fun HomeWorkCard(
             homeWorkState.isLoadingLocale,
             homeWorkState.homeWork
         ) -> {
-            EmptyHomeWorkItem(marksFragmentViewModel)
+            EmptyHomeWorkItem(mainViewModel)
         }
         else -> {
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(id = R.drawable.ic_homework),
-                        contentDescription = stringResource(R.string.marks_fragment_homework),
-                        tint = accentBlue
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(id = R.string.marks_fragment_homework),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = accentBlue
-                    )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(homeWorkState.homeWork) {
-                        HomeWorkItem(it)
-                    }
-                }
+            HomeWorkMainLayout(mainViewModel, homeWorkState)
+        }
+    }
+}
+
+@Composable
+private fun HomeWorkMainLayout(
+    mainViewModel: MainViewModel,
+    homeWorkState: HomeWorkState,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 4.dp)
+    ) {
+        HomeWorkTopWidgets()
+        Spacer(modifier = Modifier.height(4.dp))
+        HomeWorkListLazyColumn(mainViewModel, homeWorkState)
+    }
+}
+
+@Composable
+fun HomeWorkTopWidgets() {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            modifier = Modifier.size(16.dp),
+            painter = painterResource(id = R.drawable.ic_homework),
+            contentDescription = stringResource(R.string.marks_fragment_homework),
+            tint = accentBlue
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = stringResource(id = R.string.marks_fragment_homework),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = accentBlue
+        )
+    }
+}
+
+@Composable
+fun HomeWorkListLazyColumn(
+    mainViewModel: MainViewModel,
+    homeWorkState: HomeWorkState
+) {
+    val lastIndex = homeWorkState.homeWork.lastIndex
+    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        itemsIndexed(homeWorkState.homeWork) { i, homework ->
+            if (lastIndex == i) {
+                mainViewModel.initPagingDataFromFragment(
+                    MARKS_FRAGMENT,
+                    MARKS_FRAGMENT_HOME_WORK
+                )
             }
+            HomeWorkItem(homework)
         }
     }
 }
@@ -114,7 +152,7 @@ private fun HomeWorkItem(
             ) {
                 Column {
                     Text(text = homeWork.lesson, color = accentBlue)
-                    Text(text = homeWork.lesson, fontSize = 12.sp)
+                    Text(text = homeWork.teacher, fontSize = 12.sp)
                 }
                 Text(text = homeWork.dateAddition, fontSize = 12.sp, color = Color.Gray)
             }
@@ -127,7 +165,7 @@ private fun HomeWorkItem(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = stringResource(id = R.string.due_to) +homeWork.dueDate,
+                text = "${stringResource(id = R.string.due_to)} ${homeWork.dueDate}",
                 fontSize = 14.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(horizontal = 4.dp)
@@ -144,7 +182,7 @@ private fun HomeWorkItem(
 
 @Composable
 private fun EmptyHomeWorkItem(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -168,7 +206,7 @@ private fun EmptyHomeWorkItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    marksFragmentViewModel.initHomeWork()
+                    mainViewModel.initDataOnEmptyFragment(MARKS_FRAGMENT, MARKS_FRAGMENT_HOME_WORK)
                 },
                 enabled = !isLoading.value
             ) {

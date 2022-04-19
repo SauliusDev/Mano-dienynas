@@ -26,17 +26,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
 import com.sunnyoaklabs.manodienynas.domain.model.Holiday
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 
 @Composable
 fun HolidayCard(
-    moreFragmentViewModel: MoreFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val moreFragmentViewModel = mainViewModel.moreFragmentViewModel
     val holidayState = moreFragmentViewModel.holidayState.value
 
     val scope = rememberCoroutineScope()
@@ -55,7 +58,7 @@ fun HolidayCard(
             holidayState.isLoadingLocale,
             holidayState.holiday
         ) -> {
-            EmptyHolidayItem(moreFragmentViewModel)
+            EmptyHolidayItem(mainViewModel)
         }
         else -> {
             Column {
@@ -130,7 +133,7 @@ private fun HolidayItem(
 
 @Composable
 private fun EmptyHolidayItem(
-    moreFragmentViewModel: MoreFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -154,7 +157,10 @@ private fun EmptyHolidayItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    moreFragmentViewModel.initHoliday()
+                    mainViewModel.initDataOnEmptyFragment(
+                        Fragments.MORE_FRAGMENT,
+                        Fragments.MORE_FRAGMENT_HOLIDAY
+                    )
                 },
                 enabled = !isLoading.value
             ) {

@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -23,18 +23,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT_CLASS_WORK
 import com.sunnyoaklabs.manodienynas.domain.model.ClassWork
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.state.ClassWorkState
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 
 @Composable
 fun ClassWorkCard(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val marksFragmentViewModel = mainViewModel.marksFragmentViewModel
     val classWorkState = marksFragmentViewModel.classWorkState.value
 
     val scope = rememberCoroutineScope()
@@ -53,36 +59,65 @@ fun ClassWorkCard(
             classWorkState.isLoadingLocale,
             classWorkState.classWork
         ) -> {
-            EmptyClassWorkItem(marksFragmentViewModel)
+            EmptyClassWorkItem(mainViewModel)
         }
         else -> {
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(id = R.drawable.ic_class_work),
-                        contentDescription = stringResource(R.string.marks_fragment_class_work),
-                        tint = accentBlue
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(id = R.string.marks_fragment_class_work),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = accentBlue
-                    )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(classWorkState.classWork) {
-                        ClassWorkItem(it)
-                    }
-                }
+            ClassWorkMainLayout(mainViewModel, classWorkState)
+        }
+    }
+}
+
+@Composable
+private fun ClassWorkMainLayout(
+    mainViewModel: MainViewModel,
+    classWorkState: ClassWorkState,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 4.dp)
+    ) {
+        ClassWorkTopWidgets()
+        Spacer(modifier = Modifier.height(4.dp))
+        ClassWorkListLazyColumn(mainViewModel, classWorkState)
+    }
+}
+
+@Composable
+private fun ClassWorkTopWidgets() {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            modifier = Modifier.size(16.dp),
+            painter = painterResource(id = R.drawable.ic_class_work),
+            contentDescription = stringResource(R.string.marks_fragment_class_work),
+            tint = accentBlue
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = stringResource(id = R.string.marks_fragment_class_work),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = accentBlue
+        )
+    }
+}
+
+@Composable
+private fun ClassWorkListLazyColumn(
+    mainViewModel: MainViewModel,
+    classWorkState: ClassWorkState
+) {
+    val lastIndex = classWorkState.classWork.lastIndex
+    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        itemsIndexed(classWorkState.classWork) { i, classwork ->
+            if (lastIndex == i) {
+                mainViewModel.initPagingDataFromFragment(
+                    MARKS_FRAGMENT,
+                    MARKS_FRAGMENT_CLASS_WORK
+                )
             }
+            ClassWorkItem(classwork)
         }
     }
 }
@@ -137,7 +172,7 @@ private fun ClassWorkItem(
 
 @Composable
 private fun EmptyClassWorkItem(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -161,7 +196,7 @@ private fun EmptyClassWorkItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    marksFragmentViewModel.initClassWork()
+                    mainViewModel.initDataOnEmptyFragment(MARKS_FRAGMENT, MARKS_FRAGMENT_CLASS_WORK)
                 },
                 enabled = !isLoading.value
             ) {

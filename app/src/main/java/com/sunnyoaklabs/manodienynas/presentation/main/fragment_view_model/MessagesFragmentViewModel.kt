@@ -13,6 +13,7 @@ import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,8 +56,8 @@ class MessagesFragmentViewModel @Inject constructor(
     private val _messageIndividualFlow = MutableSharedFlow<MessageIndividualState>()
     val messageIndividualFlow = _messageIndividualFlow.asSharedFlow()
 
-    fun initMessagesGotten() {
-        viewModelScope.launch {
+    fun initMessagesGotten(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getMessagesGotten().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -79,7 +80,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _messagesGottenState.value = messagesGottenState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -89,8 +90,8 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesSent() {
-        viewModelScope.launch {
+    fun initMessagesSent(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getMessagesSent().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -113,7 +114,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _messagesSentState.value = messagesSentState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -123,8 +124,8 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesStarred() {
-        viewModelScope.launch {
+    fun initMessagesStarred(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getMessagesStarred().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -147,7 +148,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _messagesStarredState.value = messagesStarredState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -157,8 +158,8 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesDeleted() {
-        viewModelScope.launch {
+    fun initMessagesDeleted(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getMessagesDeleted().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -181,7 +182,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _messagesDeletedState.value = messagesDeletedState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -191,8 +192,8 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesIndividual(id: String, isSent: Boolean = false) {
-        viewModelScope.launch {
+    fun initMessagesIndividual(id: String, coroutineScope: CoroutineScope, isSent: Boolean = false) {
+        coroutineScope.launch {
             getMessageIndividual(id, isSent).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -203,7 +204,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -213,9 +214,9 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesGottenByCondition() {
+    fun initMessagesGottenByCondition(coroutineScope: CoroutineScope) {
         if (_messagesGottenState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
-        viewModelScope.launch {
+        coroutineScope.launch {
             getMessagesGottenByCondition(_messagesGottenState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -235,7 +236,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _messagesGottenState.value = messagesGottenState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -245,9 +246,9 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesSentByCondition() {
+    fun initMessagesSentByCondition(coroutineScope: CoroutineScope) {
         if (_messagesSentState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
-        viewModelScope.launch {
+        coroutineScope.launch {
             getMessagesSentByCondition(_messagesSentState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -267,7 +268,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _messagesSentState.value = messagesSentState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -277,9 +278,9 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesStarredByCondition() {
+    fun initMessagesStarredByCondition(coroutineScope: CoroutineScope) {
         if (_messagesStarredState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
-        viewModelScope.launch {
+        coroutineScope.launch {
             getMessagesStarredByCondition(_messagesStarredState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -299,7 +300,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _messagesStarredState.value = messagesStarredState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -309,9 +310,9 @@ class MessagesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMessagesDeletedByCondition() {
+    fun initMessagesDeletedByCondition(coroutineScope: CoroutineScope) {
         if (_messagesDeletedState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
-        viewModelScope.launch {
+        coroutineScope.launch {
             getMessagesDeletedByCondition(_messagesDeletedState.value.page).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -331,7 +332,7 @@ class MessagesFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _messagesDeletedState.value = messagesDeletedState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )

@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
@@ -90,12 +92,12 @@ fun TermsFragment(
                 termsFragmentViewModel.termState.value.isLoadingLocale,
                 terms
             ) -> {
-                EmptyTermsItem(termsFragmentViewModel)
+                EmptyTermsItem(mainViewModel)
             }
             else -> {
                 TermsTopText()
                 CollapsableLazyColumnTerms(
-                    termsFragmentViewModel = termsFragmentViewModel,
+                    mainViewModel = mainViewModel,
                     sections = collapsableSectionTerms
                 )
             }
@@ -111,7 +113,7 @@ fun TermsFragment(
 
 @Composable
 private fun TermListItem(
-    termsFragmentViewModel: TermsFragmentViewModel,
+    mainViewModel: MainViewModel,
     i: Int,
     term: Term,
     collapsedState: SnapshotStateList<Boolean>,
@@ -188,7 +190,7 @@ private fun TermListItem(
                     TermListSingleTermItemYearly(term.yearMark)
                 } else if (term.termRange[it].title != "Metinis") {
                     TermListSingleTermItem(
-                        termsFragmentViewModel,
+                        mainViewModel,
                         SingleTermItem(
                             term.termRange[it],
                             term.abbreviationMarks[it],
@@ -226,7 +228,7 @@ fun TermListSingleTermItemYearly(
 
 @Composable
 private fun TermListSingleTermItem(
-    termsFragmentViewModel: TermsFragmentViewModel,
+    mainViewModel: MainViewModel,
     singleTermItem: SingleTermItem,
     modifier: Modifier = Modifier
 ) {
@@ -245,14 +247,14 @@ private fun TermListSingleTermItem(
             Text(text = singleTermItem.abbreviationMissedLessons)
             if (singleTermItem.derived.isNotBlank()) {
                 TermsAverageItem(
-                    termsFragmentViewModel,
+                    mainViewModel,
                     singleTermItem.derived,
                     singleTermItem.derivedInfoUrl
                 )
             }
             if (singleTermItem.credit.isNotBlank()) {
                 TermsCreditItem(
-                    termsFragmentViewModel,
+                    mainViewModel,
                     singleTermItem.credit,
                     singleTermItem.creditInfoUrl
                 )
@@ -263,7 +265,7 @@ private fun TermListSingleTermItem(
 
 @Composable
 fun TermsAverageItem(
-    termsFragmentViewModel: TermsFragmentViewModel,
+    mainViewModel: MainViewModel,
     average: String,
     url: String
 ) {
@@ -278,7 +280,7 @@ fun TermsAverageItem(
                 .clip(RoundedCornerShape(5.dp))
                 .background(accentGreenLight)
                 .clickable {
-                    termsFragmentViewModel.initTermMarkDialogItem(url)
+                    mainViewModel.initExtraItemDataFromFragment(MESSAGES_FRAGMENT, MESSAGES_FRAGMENT, Pair("AVERAGE", url))
                 }
         ) {
             Column(
@@ -299,7 +301,7 @@ fun TermsAverageItem(
 
 @Composable
 private fun TermsCreditItem(
-    termsFragmentViewModel: TermsFragmentViewModel,
+    mainViewModel: MainViewModel,
     average: String,
     url: String
 ) {
@@ -314,7 +316,7 @@ private fun TermsCreditItem(
                 .clip(RoundedCornerShape(5.dp))
                 .background(accentGreenLight)
                 .clickable {
-                    termsFragmentViewModel.initTermMarkDialogItem(url)
+                    mainViewModel.initExtraItemDataFromFragment(MESSAGES_FRAGMENT, MESSAGES_FRAGMENT, url)
                 }
         ) {
             Column(
@@ -335,7 +337,7 @@ private fun TermsCreditItem(
 
 @Composable
 private fun CollapsableLazyColumnTerms(
-    termsFragmentViewModel: TermsFragmentViewModel,
+    mainViewModel: MainViewModel,
     sections: List<CollapsableSectionTerms>,
     modifier: Modifier = Modifier
 ) {
@@ -345,7 +347,7 @@ private fun CollapsableLazyColumnTerms(
             val collapsed = collapsedState[i]
             item {
                 TermListItem(
-                    termsFragmentViewModel,
+                    mainViewModel,
                     i,
                     dataItem.term,
                     collapsedState,
@@ -439,7 +441,7 @@ private fun TermsTopText() {
 
 @Composable
 private fun EmptyTermsItem(
-    termsFragmentViewModel: TermsFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -463,7 +465,10 @@ private fun EmptyTermsItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    termsFragmentViewModel.initTerm()
+                    mainViewModel.initDataOnEmptyFragment(
+                        Fragments.TERMS_FRAGMENT,
+                        Fragments.TERMS_FRAGMENT
+                    )
                 },
                 enabled = !isLoading.value
             ) {

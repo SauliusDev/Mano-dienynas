@@ -24,11 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.EVENTS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.ATTENDANCE_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.CHANGED_MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.CONTROL_WORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.HOMEWORK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.MARK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.MESSAGE_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.Event
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
@@ -67,12 +70,12 @@ fun EventsFragment(
                 eventState.isLoadingLocale,
                 events
             ) -> {
-                EmptyEventsItem(eventsFragmentViewModel)
+                EmptyEventsItem(mainViewModel)
             }
             else -> {
                 EventsListLazyColumn(
                     events,
-                    eventsFragmentViewModel
+                    mainViewModel
                 )
             }
         }
@@ -82,7 +85,7 @@ fun EventsFragment(
 @Composable
 private fun EventsListLazyColumn(
     events: List<Event>,
-    eventsFragmentViewModel: EventsFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val lastIndex = events.lastIndex
@@ -92,9 +95,7 @@ private fun EventsListLazyColumn(
     ) {
         itemsIndexed(events) { i, event ->
             if (lastIndex == i) {
-                if (!eventsFragmentViewModel.eventState.value.isEveryEventLoaded) {
-                    eventsFragmentViewModel.loadMoreEvents()
-                }
+                mainViewModel.initPagingDataFromFragment(EVENTS_FRAGMENT, EVENTS_FRAGMENT)
             }
             EventCard(event = event)
         }
@@ -103,7 +104,7 @@ private fun EventsListLazyColumn(
 
 @Composable
 private fun EmptyEventsItem(
-    eventsFragmentViewModel: EventsFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -127,7 +128,10 @@ private fun EmptyEventsItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    eventsFragmentViewModel.initEventsAndPerson()
+                    mainViewModel.initDataOnEmptyFragment(
+                        EVENTS_FRAGMENT,
+                        EVENTS_FRAGMENT
+                    )
                 },
                 enabled = !isLoading.value
             ) {
@@ -280,6 +284,9 @@ private fun getEventColor(event: Event): Color {
         CHANGED_MARK_EVENT_TYPE -> {
             accentPurpleLight
         }
+        MESSAGE_EVENT_TYPE -> {
+            accentGreenDark
+        }
         else -> {
             Color.Gray
         }
@@ -326,6 +333,14 @@ private fun SetIcon(event: Event) {
                 painter = painterResource(id = R.drawable.ic_mark_changed),
                 contentDescription = stringResource(id = R.string.event_mark_changed),
                 tint = accentPurpleLight,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+        MESSAGE_EVENT_TYPE -> {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_message),
+                contentDescription = stringResource(id = R.string.event_messages),
+                tint = accentGreenDark,
                 modifier = Modifier.size(30.dp)
             )
         }

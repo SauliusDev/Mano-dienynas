@@ -1,10 +1,11 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
+import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.domain.model.*
 
 interface WebScrapper {
 
-    fun toPerson(html: String): Person
+    fun toPerson(html: String): Resource<Person>
 
     fun toEvents(html: String): List<Event>
 

@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
 import com.google.gson.reflect.TypeToken
+import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import manodienynas.db.*
 
@@ -74,7 +75,7 @@ class Converter(
         ) ?: "[]"
     }
 
-    fun toPerson(html: String): Person {
+    fun toPerson(html: String): Resource<Person> {
         return webScrapper.toPerson(html = html)
     }
 

@@ -25,11 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
 import com.sunnyoaklabs.manodienynas.domain.model.Holiday
 import com.sunnyoaklabs.manodienynas.domain.model.ParentMeeting
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentGreenLightest
@@ -38,9 +40,10 @@ import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
 
 @Composable
 fun ParentMeetingsCard(
-    moreFragmentViewModel: MoreFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val moreFragmentViewModel = mainViewModel.moreFragmentViewModel
     val parentMeetingState = moreFragmentViewModel.parentMeetingState.value
 
     val scope = rememberCoroutineScope()
@@ -59,7 +62,7 @@ fun ParentMeetingsCard(
             parentMeetingState.isLoadingLocale,
             parentMeetingState.parentMeetings
         ) -> {
-            EmptyParentMeetingsItem(moreFragmentViewModel)
+            EmptyParentMeetingsItem(mainViewModel)
         }
         else -> {
             Column {
@@ -165,7 +168,7 @@ private fun ParentMeetingsItem(
 
 @Composable
 private fun EmptyParentMeetingsItem(
-    moreFragmentViewModel: MoreFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -189,7 +192,10 @@ private fun EmptyParentMeetingsItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    moreFragmentViewModel.initParentMeetings()
+                    mainViewModel.initDataOnEmptyFragment(
+                        Fragments.MORE_FRAGMENT,
+                        Fragments.MORE_FRAGMENT_MEETINGS
+                    )
                 },
                 enabled = !isLoading.value
             ) {

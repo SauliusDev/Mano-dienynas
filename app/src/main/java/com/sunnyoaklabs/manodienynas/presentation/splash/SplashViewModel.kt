@@ -73,7 +73,7 @@ class SplashViewModel @Inject constructor(
                      *  (also verifies if credentials are correct)
                     **/
                     firebaseCrashlytics.log("(SplashViewModel) credentials are not null, verifying credentials")
-                    if (!!validator.hasInternetConnection(getApplication<ManoDienynasApp>())) {
+                    if (!validator.hasInternetConnection(getApplication<ManoDienynasApp>())) {
                         errorMessage = IO_ERROR
                         _userStateSplash.emit(
                             UserStateSplash(

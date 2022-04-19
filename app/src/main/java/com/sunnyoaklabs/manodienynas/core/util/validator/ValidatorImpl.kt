@@ -13,11 +13,7 @@ class ValidatorImpl : Validator {
         isLoadingLocal: Boolean,
         dataList: List<Any>,
     ): Boolean {
-        return isLoadingNetwork
-            &&
-            (
-                (isLoadingLocal && dataList.isEmpty()) || (isLoadingLocal && dataList.isEmpty())
-            )
+        return (isLoadingNetwork || isLoadingLocal) && dataList.isEmpty()
     }
 
     override fun validateIsEmpty(

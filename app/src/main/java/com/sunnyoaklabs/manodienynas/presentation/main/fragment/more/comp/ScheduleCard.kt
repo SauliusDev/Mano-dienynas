@@ -29,10 +29,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
 import com.sunnyoaklabs.manodienynas.domain.model.ScheduleDay
 import com.sunnyoaklabs.manodienynas.domain.model.ScheduleOneLesson
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
@@ -40,9 +42,10 @@ import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
 
 @Composable
 fun ScheduleCard(
-    moreFragmentViewModel: MoreFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val moreFragmentViewModel = mainViewModel.moreFragmentViewModel
     val scheduleState = moreFragmentViewModel.scheduleState.value
 
     val scope = rememberCoroutineScope()
@@ -61,7 +64,7 @@ fun ScheduleCard(
             scheduleState.isLoadingLocale,
             scheduleState.schedule
         ) -> {
-            EmptyScheduleMeetingsItem(moreFragmentViewModel)
+            EmptyScheduleMeetingsItem(mainViewModel)
         }
         else -> {
             Column {
@@ -163,7 +166,7 @@ private fun ScheduleTopText(
 
 @Composable
 private fun EmptyScheduleMeetingsItem(
-    moreFragmentViewModel: MoreFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -187,7 +190,10 @@ private fun EmptyScheduleMeetingsItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    moreFragmentViewModel.initSchedule()
+                    mainViewModel.initDataOnEmptyFragment(
+                        Fragments.MORE_FRAGMENT,
+                        Fragments.MORE_FRAGMENT_SCHEDULE
+                    )
                 },
                 enabled = !isLoading.value
             ) {

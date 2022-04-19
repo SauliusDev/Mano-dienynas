@@ -23,10 +23,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT_SENT
 import com.sunnyoaklabs.manodienynas.domain.model.Message
 import com.sunnyoaklabs.manodienynas.domain.model.MessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.dialog.DialogMessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
@@ -37,9 +41,10 @@ import kotlinx.coroutines.flow.collect
 
 @Composable
 fun MessagesSentCard(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val messagesFragmentViewModel = mainViewModel.messagesFragmentViewModel
     val messagesSentState = messagesFragmentViewModel.messagesSentState.value
 
     val messageIndividual = remember {
@@ -77,41 +82,54 @@ fun MessagesSentCard(
             messagesSentState.isLoadingLocale,
             messagesSentState.messagesSent
         ) -> {
-            EmptyMessagesSentItem(messagesFragmentViewModel)
+            EmptyMessagesSentItem(mainViewModel)
         }
         else -> {
-            val lastIndex = messagesSentState.messagesSent.lastIndex
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp)
-            ) {
-                MessagesSentTypeText()
-                Spacer(modifier = Modifier.height(4.dp))
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    itemsIndexed(messagesSentState.messagesSent) { i, message ->
-                        if (lastIndex == i) {
-                            if (!messagesSentState.isEverythingLoaded) {
-                                messagesFragmentViewModel.initMessagesSentByCondition()
-                            }
-                        }
-                        MessagesSentItem(messagesFragmentViewModel, message)
-                    }
-                }
-            }
+            MessagesSentLayout(mainViewModel)
         }
     }
     DialogMessageIndividual(
         showDialog,
         messageIndividual.value,
-        onNegativeClick = {showDialog = false},
-        onDismiss = {showDialog = false}
+        onNegativeClick = { showDialog = false },
+        onDismiss = { showDialog = false }
     )
 }
 
 @Composable
+private fun MessagesSentLayout(
+    mainViewModel: MainViewModel,
+    modifier: Modifier = Modifier
+) {
+    val messagesFragmentViewModel = mainViewModel.messagesFragmentViewModel
+    val messagesSentState = messagesFragmentViewModel.messagesSentState.value
+    val lastIndex = messagesSentState.messagesSent.lastIndex
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 4.dp)
+    ) {
+        MessagesSentTypeText()
+        Spacer(modifier = Modifier.height(4.dp))
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            itemsIndexed(messagesSentState.messagesSent) { i, message ->
+                if (lastIndex == i) {
+                    if (!messagesSentState.isEverythingLoaded) {
+                        mainViewModel.initPagingDataFromFragment(
+                            Fragments.MESSAGES_FRAGMENT,
+                            Fragments.MESSAGES_FRAGMENT_SENT
+                        )
+                    }
+                }
+                MessagesSentItem(mainViewModel, message)
+            }
+        }
+    }
+}
+
+@Composable
 private fun MessagesSentItem(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     message: Message,
     modifier: Modifier = Modifier
 ) {
@@ -123,7 +141,11 @@ private fun MessagesSentItem(
             )
             .fillMaxWidth()
             .clickable {
-                messagesFragmentViewModel.initMessagesIndividual(message.messageId, true)
+                mainViewModel.initExtraItemDataFromFragment(
+                    MESSAGES_FRAGMENT,
+                    MESSAGES_FRAGMENT_SENT,
+                    message.messageId
+                )
             },
         elevation = 2.dp,
     ) {
@@ -164,7 +186,7 @@ private fun MessagesSentItem(
 
 @Composable
 private fun EmptyMessagesSentItem(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -188,7 +210,10 @@ private fun EmptyMessagesSentItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    messagesFragmentViewModel.initMessagesSent()
+                    mainViewModel.initDataOnEmptyFragment(
+                        Fragments.MESSAGES_FRAGMENT,
+                        Fragments.MESSAGES_FRAGMENT_SENT
+                    )
                 },
                 enabled = !isLoading.value
             ) {

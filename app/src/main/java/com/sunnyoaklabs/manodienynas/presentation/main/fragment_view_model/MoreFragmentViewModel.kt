@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,8 +41,8 @@ class MoreFragmentViewModel @Inject constructor(
     private val _scheduleState = mutableStateOf(ScheduleState())
     val scheduleState: State<ScheduleState> = _scheduleState
 
-    fun initHoliday() {
-        viewModelScope.launch {
+    fun initHoliday(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getHoliday().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -61,7 +63,7 @@ class MoreFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _holidayState.value = holidayState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -71,8 +73,8 @@ class MoreFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initParentMeetings() {
-        viewModelScope.launch {
+    fun initParentMeetings(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getParentMeetings().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -93,7 +95,7 @@ class MoreFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _parentMeetingState.value = parentMeetingState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -103,8 +105,8 @@ class MoreFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initSchedule() {
-        viewModelScope.launch {
+    fun initSchedule(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getSchedule().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -125,7 +127,7 @@ class MoreFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _scheduleState.value = scheduleState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )

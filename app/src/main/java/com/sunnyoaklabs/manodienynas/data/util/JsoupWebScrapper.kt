@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
 import android.util.Log
+import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.ATTENDANCE_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.CHANGED_MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.HOMEWORK_EVENT_TYPE
@@ -10,27 +11,31 @@ import org.jsoup.Jsoup
 
 class JsoupWebScrapper() : WebScrapper {
 
-    override fun toPerson(html: String): Person {
-        val document = Jsoup.parse(html)
-        val element = document.getElementById("act-user-info-text")
-        val name = element.getElementsByTag("a").attr("title")
-        val role = element.getElementsByTag("span").attr("title")
-        val elementSchoolWrapper = document.getElementsByClass("school-wrapper")
-        val schoolsInfo: MutableList<SchoolInfo> = mutableListOf()
-        val elementSchoolsDetails = document.getElementsByClass("additional-school-user-details")
-        for (i in elementSchoolWrapper.indices) {
-            val roleName = elementSchoolsDetails[i].getElementsByClass("role-name").text()
-            val schoolName =
-                elementSchoolsDetails[i].getElementsByClass("additional-school-name overflowed-text ")
-                    .text()
-            val schoolId = elementSchoolWrapper[i].attr("data-school_id")
-            schoolsInfo.add(SchoolInfo(roleName, schoolName, schoolId))
+    override fun toPerson(html: String): Resource<Person> {
+        try {
+            val document = Jsoup.parse(html)
+            val element = document.getElementById("act-user-info-text")
+            val name = element.getElementsByTag("a").attr("title")
+            val role = element.getElementsByTag("span").attr("title")
+            val elementSchoolWrapper = document.getElementsByClass("school-wrapper")
+            val schoolsInfo: MutableList<SchoolInfo> = mutableListOf()
+            val elementSchoolsDetails = document.getElementsByClass("additional-school-user-details")
+            for (i in elementSchoolWrapper.indices) {
+                val roleName = elementSchoolsDetails[i].getElementsByClass("role-name").text()
+                val schoolName =
+                    elementSchoolsDetails[i].getElementsByClass("additional-school-name overflowed-text ")
+                        .text()
+                val schoolId = elementSchoolWrapper[i].attr("data-school_id")
+                schoolsInfo.add(SchoolInfo(roleName, schoolName, schoolId))
+            }
+            return Resource.Success(Person(
+                name = name,
+                role = role,
+                schoolsNames = schoolsInfo
+            ))
+        } catch (e: Exception) {
+            return Resource.Error("Token expired")
         }
-        return Person(
-            name = name,
-            role = role,
-            schoolsNames = schoolsInfo
-        )
     }
 
     override fun toEvents(html: String): List<Event> {

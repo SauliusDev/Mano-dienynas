@@ -23,18 +23,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT_CONTROL_WORK
 import com.sunnyoaklabs.manodienynas.domain.model.ControlWork
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
 
 @Composable
 fun ControlWorkCard(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val marksFragmentViewModel = mainViewModel.marksFragmentViewModel
     val controlWorkState = marksFragmentViewModel.controlWorkState.value
 
     val scope = rememberCoroutineScope()
@@ -53,7 +57,7 @@ fun ControlWorkCard(
             controlWorkState.isLoadingLocale,
             controlWorkState.controlWork
         ) -> {
-            EmptyControlWorkItem(marksFragmentViewModel)
+            EmptyControlWorkItem(mainViewModel)
         }
         else -> {
             Column(
@@ -147,7 +151,7 @@ private fun ControlWorkItem(
 
 @Composable
 private fun EmptyControlWorkItem(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -171,7 +175,7 @@ private fun EmptyControlWorkItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    marksFragmentViewModel.initControlWork()
+                    mainViewModel.initDataOnEmptyFragment(Fragments.MARKS_FRAGMENT, MARKS_FRAGMENT_CONTROL_WORK)
                 },
                 enabled = !isLoading.value
             ) {

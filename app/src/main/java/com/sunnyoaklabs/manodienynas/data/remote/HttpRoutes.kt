@@ -24,7 +24,7 @@ object HttpRoutes {
     const val ATTENDANCE_GET = "$BASE_URL/1/lt/page/marks_pupil/pupil_attendance"
 
     const val CLASS_WORK_GET = "$BASE_URL/1/lt/page/classhomework/class_work"
-    const val CLASS_WORK_POST = "$BASE_URL/1/lt/page/classhomework/class_work/{page}"
+    const val CLASS_WORK_POST = "$BASE_URL/1/lt/page/classhomework/class_work/0/{page}"
 
     const val HOME_WORK_GET = "$BASE_URL/1/lt/page/classhomework/home_work"
     const val HOME_WORK_POST = "$BASE_URL/1/lt/page/classhomework/home_work/0/{page}"

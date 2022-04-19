@@ -27,10 +27,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT_MARKS
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.core.getMarksListItemColor
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.dialog.MarkEventDialog
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
@@ -38,9 +42,10 @@ import kotlinx.coroutines.flow.collect
 
 @Composable
 fun MarksCard(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val marksFragmentViewModel = mainViewModel.marksFragmentViewModel
     var showDialog by remember { mutableStateOf(false) }
     val marksEventItem = remember {
         mutableStateOf(
@@ -106,7 +111,7 @@ fun MarksCard(
             marksState.isLoadingLocale || attendanceState.isLoadingLocale,
             marksState.marks
         ) -> {
-            EmptyMarksItem(marksFragmentViewModel)
+            EmptyMarksItem(mainViewModel)
         }
         else -> {
             Column(
@@ -131,7 +136,7 @@ fun MarksCard(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 CollapsableLazyColumnMarks(
-                    marksFragmentViewModel = marksFragmentViewModel,
+                    mainViewModel = mainViewModel,
                     sections = collapsableSectionMarks
                 )
             }
@@ -141,7 +146,7 @@ fun MarksCard(
 
 @Composable
 private fun CollapsableLazyColumnMarks(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     sections: List<CollapsableSectionMarks>,
     modifier: Modifier = Modifier
 ) {
@@ -155,7 +160,7 @@ private fun CollapsableLazyColumnMarks(
                 }
             } else {
                 item {
-                    MarksItem(marksFragmentViewModel, i, dataItem, collapsedState, collapsed)
+                    MarksItem(mainViewModel, i, dataItem, collapsedState, collapsed)
                 }
             }
         }
@@ -164,7 +169,7 @@ private fun CollapsableLazyColumnMarks(
 
 @Composable
 private fun MarksItem(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     i: Int,
     dataItem: CollapsableSectionMarks,
     collapsedState: SnapshotStateList<Boolean>,
@@ -260,7 +265,7 @@ private fun MarksItem(
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(dataItem.mark.markEvent) {
                 MarkEventItem(
-                    marksFragmentViewModel,
+                    mainViewModel,
                     it
                 )
             }
@@ -404,7 +409,7 @@ private fun AttendanceAllItem(
 
 @Composable
 private fun MarkEventItem(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     markEvent: MarkEvent,
     modifier: Modifier = Modifier
 ) {
@@ -415,7 +420,7 @@ private fun MarkEventItem(
             .clip(RoundedCornerShape(5.dp))
             .background(accentRed)
             .clickable {
-                marksFragmentViewModel.initMarksEventItem(markEvent.infoUrl)
+                mainViewModel.initExtraItemDataFromFragment(MARKS_FRAGMENT, MARKS_FRAGMENT_MARKS, markEvent.infoUrl)
             },
     ) {
         Column(
@@ -490,7 +495,7 @@ private data class CollapsableSectionMarks(val mark: Mark, val attendance: Atten
 
 @Composable
 private fun EmptyMarksItem(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -514,7 +519,7 @@ private fun EmptyMarksItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    marksFragmentViewModel.initMarks()
+                    mainViewModel.initDataOnEmptyFragment(Fragments.MARKS_FRAGMENT, MARKS_FRAGMENT_MARKS)
                 },
                 enabled = !isLoading.value
             ) {

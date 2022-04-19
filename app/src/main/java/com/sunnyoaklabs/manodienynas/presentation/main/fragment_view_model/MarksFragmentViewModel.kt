@@ -1,11 +1,15 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
+import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sunnyoaklabs.manodienynas.ManoDienynasApp
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
@@ -16,7 +20,10 @@ import com.sunnyoaklabs.manodienynas.data.remote.dto.PostHomeWork
 import com.sunnyoaklabs.manodienynas.data.remote.dto.PostMarks
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
+import dagger.hilt.android.internal.Contexts.getApplication
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -27,6 +34,7 @@ import java.util.*
 import javax.inject.Inject
 
 class MarksFragmentViewModel @Inject constructor(
+    private val app: Application,
     private val getMarks: GetMarks,
     private val getMarksByCondition: GetMarksByCondition,
     private val getMarksEventItem: GetMarksEventItem,
@@ -38,7 +46,7 @@ class MarksFragmentViewModel @Inject constructor(
     private val getControlWork: GetControlWork,
     private val getControlWorkByCondition: GetControlWorkByCondition,
     val validator: Validator
-) : ViewModel() {
+) : AndroidViewModel(app) {
 
     private val _marksEventItemFlow = MutableSharedFlow<MarksEventItemState>()
     val marksEventItemFlow = _marksEventItemFlow.asSharedFlow()
@@ -73,40 +81,8 @@ class MarksFragmentViewModel @Inject constructor(
     private val _controlWorkState = mutableStateOf(ControlWorkState())
     val controlWorkState: State<ControlWorkState> = _controlWorkState
 
-    fun initMarks() {
-        viewModelScope.launch {
-            getMarks().collect {
-                when (it) {
-                    is Resource.Loading -> {
-                        it.data?.let { list ->
-                            _markState.value = markState.value.copy(
-                                marks = list,
-                                isLoading = true,
-                                isLoadingLocale = false
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        _markState.value = markState.value.copy(
-                            marks = it.data ?: emptyList(),
-                            isLoading = false
-                        )
-                    }
-                    is Resource.Error -> {
-                        _markState.value = markState.value.copy(isLoading = false,)
-                        _eventFlow.emit(
-                            UIEvent.ShowToast(
-                                it.message ?: Errors.UNKNOWN_ERROR
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    fun initMarksEventItem(infoUrl: String) {
-        viewModelScope.launch {
+    fun initMarksEventItem(infoUrl: String, coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getMarksEventItem(infoUrl).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -121,7 +97,7 @@ class MarksFragmentViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -131,8 +107,8 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initMarksByCondition() {
-        viewModelScope.launch {
+    fun initMarksByCondition(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getMarksByCondition(getPostMarksPayload()).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -153,7 +129,7 @@ class MarksFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _markState.value = markState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -163,8 +139,8 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initAttendance() {
-        viewModelScope.launch {
+    fun initAttendance(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getAttendance().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -185,7 +161,7 @@ class MarksFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _attendanceState.value = attendanceState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -195,11 +171,12 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initClassWork() {
-        viewModelScope.launch {
-            getClassWork().collect {
+    fun initClassWork(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
+            getClassWorkByCondition(getPostClassWorkPayload(), 1).collect {
                 when (it) {
                     is Resource.Loading -> {
+                        _classWorkState.value = classWorkState.value.copy(isLoading = true, isEveryClassWorkLoaded = false)
                         it.data?.let { list ->
                             _classWorkState.value = classWorkState.value.copy(
                                 classWork = list,
@@ -209,15 +186,23 @@ class MarksFragmentViewModel @Inject constructor(
                         }
                     }
                     is Resource.Success -> {
+                        // forcing list to reset user scroll position
+                        _classWorkState.value = classWorkState.value.copy(
+                            classWork = emptyList(),
+                        )
+                        delay(10)
+
                         _classWorkState.value = classWorkState.value.copy(
                             classWork = it.data ?: emptyList(),
-                            isLoading = false
+                            isLoading = false,
+                            page = 1,
+                            isEveryClassWorkLoaded = (it.data ?: emptyList()).size % 10 != 0,
                         )
                     }
                     is Resource.Error -> {
                         _classWorkState.value = classWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -227,29 +212,31 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initClassWorkByCondition() {
-        viewModelScope.launch {
-            getClassWorkByCondition(getPostClassWorkPayload(), 0).collect {
+    fun initClassWorkByCondition(page: Int, coroutineScope: CoroutineScope) {
+        if (classWorkState.value.isEveryClassWorkLoaded) return
+        if (_classWorkState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
+        coroutineScope.launch {
+            getClassWorkByCondition(getPostClassWorkPayload(), page).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        it.data?.let { list ->
-                            _classWorkState.value = classWorkState.value.copy(
-                                classWork = list,
-                                isLoading = true,
-                                isLoadingLocale = false
-                            )
-                        }
+                        _classWorkState.value = classWorkState.value.copy(
+                            isLoading = true,
+                            isLoadingLocale = false
+                        )
                     }
                     is Resource.Success -> {
+                        val newList = _classWorkState.value.classWork + (it.data ?: emptyList())
                         _classWorkState.value = classWorkState.value.copy(
-                            classWork = it.data ?: emptyList(),
-                            isLoading = false
+                            classWork = newList,
+                            isLoading = false,
+                            page = page,
+                            isEveryClassWorkLoaded = newList.size % 10 != 0
                         )
                     }
                     is Resource.Error -> {
-                        _classWorkState.value = classWorkState.value.copy(isLoading = false,)
+                        _classWorkState.value = classWorkState.value.copy(isLoading = false, page = page, isEveryClassWorkLoaded = true)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -259,11 +246,12 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initHomeWork() {
-        viewModelScope.launch {
-            getHomeWork().collect {
+    fun initHomeWork(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
+            getHomeWorkByCondition(getPostHomeWorkPayload(), 1).collect {
                 when (it) {
                     is Resource.Loading -> {
+                        _homeWorkState.value = homeWorkState.value.copy(isLoading = true, isEveryHomeWorkLoaded = false)
                         it.data?.let { list ->
                             _homeWorkState.value = homeWorkState.value.copy(
                                 homeWork = list,
@@ -273,15 +261,23 @@ class MarksFragmentViewModel @Inject constructor(
                         }
                     }
                     is Resource.Success -> {
+                        // forcing list to reset user scroll position
+                        _homeWorkState.value = homeWorkState.value.copy(
+                            homeWork = emptyList(),
+                        )
+                        delay(10)
+
                         _homeWorkState.value = homeWorkState.value.copy(
                             homeWork = it.data ?: emptyList(),
-                            isLoading = false
+                            isLoading = false,
+                            page = 1,
+                            isEveryHomeWorkLoaded = (it.data ?: emptyList()).size % 10 != 0,
                         )
                     }
                     is Resource.Error -> {
                         _homeWorkState.value = homeWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -291,29 +287,31 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initHomeWorkByCondition() {
-        viewModelScope.launch {
-            getHomeWorkByCondition(getPostHomeWorkPayload(), 0).collect {
+    fun initHomeWorkByCondition(page: Int, coroutineScope: CoroutineScope) {
+        if (homeWorkState.value.isEveryHomeWorkLoaded) return
+        if (_homeWorkState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
+        coroutineScope.launch {
+            getHomeWorkByCondition(getPostHomeWorkPayload(), page).collect {
                 when (it) {
                     is Resource.Loading -> {
-                        it.data?.let { list ->
-                            _homeWorkState.value = homeWorkState.value.copy(
-                                homeWork = list,
-                                isLoading = true,
-                                isLoadingLocale = false
-                            )
-                        }
+                        _homeWorkState.value = homeWorkState.value.copy(
+                            isLoading = true,
+                            isLoadingLocale = false
+                        )
                     }
                     is Resource.Success -> {
+                        val newList = _homeWorkState.value.homeWork + (it.data ?: emptyList())
                         _homeWorkState.value = homeWorkState.value.copy(
-                            homeWork = it.data ?: emptyList(),
-                            isLoading = false
+                            homeWork = newList,
+                            isLoading = false,
+                            page = page,
+                            isEveryHomeWorkLoaded = newList.size % 10 != 0
                         )
                     }
                     is Resource.Error -> {
                         _homeWorkState.value = homeWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -323,40 +321,8 @@ class MarksFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initControlWork() {
-        viewModelScope.launch {
-            getControlWork().collect {
-                when (it) {
-                    is Resource.Loading -> {
-                        it.data?.let { list ->
-                            _controlWorkState.value = controlWorkState.value.copy(
-                                controlWork = list,
-                                isLoading = true,
-                                isLoadingLocale = false
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        _controlWorkState.value = controlWorkState.value.copy(
-                            controlWork = it.data ?: emptyList(),
-                            isLoading = false
-                        )
-                    }
-                    is Resource.Error -> {
-                        _controlWorkState.value = controlWorkState.value.copy(isLoading = false,)
-                        _eventFlow.emit(
-                            UIEvent.ShowToast(
-                                it.message ?: Errors.UNKNOWN_ERROR
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    fun initControlWorkByCondition() {
-        viewModelScope.launch {
+    fun initControlWorkByCondition(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getControlWorkByCondition(getPostControlWorkPayload(), 0).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -377,7 +343,7 @@ class MarksFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _controlWorkState.value = controlWorkState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -456,25 +422,6 @@ class MarksFragmentViewModel @Inject constructor(
                     timeRange.first,
                     timeRange.second
                 )
-            }
-        }
-    }
-
-    fun initDataByCondition() {
-        viewModelScope.launch {
-            when {
-                _markFragmentTypeState.value.markTypeIsSelected -> {
-                    initMarksByCondition()
-                }
-                _markFragmentTypeState.value.controlWorkTypeIsSelected -> {
-                    initControlWorkByCondition()
-                }
-                _markFragmentTypeState.value.homeWorkTypeIsSelected -> {
-                    initHomeWorkByCondition()
-                }
-                _markFragmentTypeState.value.classWorkTypeIsSelected -> {
-                    initClassWorkByCondition()
-                }
             }
         }
     }

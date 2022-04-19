@@ -22,10 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
 import com.sunnyoaklabs.manodienynas.domain.model.Message
 import com.sunnyoaklabs.manodienynas.domain.model.MessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.dialog.DialogMessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
@@ -36,9 +38,10 @@ import kotlinx.coroutines.flow.collect
 
 @Composable
 fun MessagesDeletedCard(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val messagesFragmentViewModel = mainViewModel.messagesFragmentViewModel
     val messagesDeletedState = messagesFragmentViewModel.messagesDeletedState.value
 
     val messageIndividual = remember {
@@ -76,28 +79,10 @@ fun MessagesDeletedCard(
             messagesDeletedState.isLoadingLocale,
             messagesDeletedState.messagesDeleted
         ) -> {
-            EmptyMessagesDeletedItem(messagesFragmentViewModel)
+            EmptyMessagesDeletedItem(mainViewModel)
         }
         else -> {
-            val lastIndex = messagesDeletedState.messagesDeleted.lastIndex
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp)
-            ) {
-                MessagesDeletedTypeText()
-                Spacer(modifier = Modifier.height(4.dp))
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    itemsIndexed(messagesDeletedState.messagesDeleted) { i, message ->
-                        if (lastIndex == i) {
-                            if (!messagesDeletedState.isEverythingLoaded) {
-                                messagesFragmentViewModel.initMessagesDeletedByCondition()
-                            }
-                        }
-                        MessagesDeletedItem(messagesFragmentViewModel, message)
-                    }
-                }
-            }
+            MessagesDeletedLayout(mainViewModel)
         }
     }
     DialogMessageIndividual(
@@ -109,8 +94,39 @@ fun MessagesDeletedCard(
 }
 
 @Composable
+private fun MessagesDeletedLayout(
+    mainViewModel: MainViewModel,
+    modifier: Modifier = Modifier
+) {
+    val messagesFragmentViewModel = mainViewModel.messagesFragmentViewModel
+    val messagesDeletedState = messagesFragmentViewModel.messagesDeletedState.value
+    val lastIndex = messagesDeletedState.messagesDeleted.lastIndex
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 4.dp)
+    ) {
+        MessagesDeletedTypeText()
+        Spacer(modifier = Modifier.height(4.dp))
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            itemsIndexed(messagesDeletedState.messagesDeleted) { i, message ->
+                if (lastIndex == i) {
+                    if (!messagesDeletedState.isEverythingLoaded) {
+                        mainViewModel.initPagingDataFromFragment(
+                            Fragments.MESSAGES_FRAGMENT,
+                            Fragments.MESSAGES_FRAGMENT_DELETED
+                        )
+                    }
+                }
+                MessagesDeletedItem(mainViewModel, message)
+            }
+        }
+    }
+}
+
+@Composable
 private fun MessagesDeletedItem(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     message: Message,
     modifier: Modifier = Modifier
 ) {
@@ -122,7 +138,11 @@ private fun MessagesDeletedItem(
             )
             .fillMaxWidth()
             .clickable {
-                messagesFragmentViewModel.initMessagesIndividual(message.messageId)
+                mainViewModel.initExtraItemDataFromFragment(
+                    Fragments.MESSAGES_FRAGMENT,
+                    Fragments.MESSAGES_FRAGMENT_DELETED,
+                    message.messageId
+                )
             },
         elevation = 2.dp,
     ) {
@@ -149,7 +169,7 @@ private fun MessagesDeletedItem(
 
 @Composable
 private fun EmptyMessagesDeletedItem(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -173,7 +193,10 @@ private fun EmptyMessagesDeletedItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    messagesFragmentViewModel.initMessagesDeleted()
+                    mainViewModel.initDataOnEmptyFragment(
+                        Fragments.MESSAGES_FRAGMENT,
+                        Fragments.MESSAGES_FRAGMENT_DELETED
+                    )
                 },
                 enabled = !isLoading.value
             ) {

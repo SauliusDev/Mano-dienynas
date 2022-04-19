@@ -28,7 +28,7 @@ fun MarksFragment(
             Column(modifier = Modifier.constrainAs(cards) {
                 top.linkTo(parent.top)
             }) {
-                ChangeDateButton(marksFragmentViewModel, fragmentManager)
+                ChangeDateButton(mainViewModel, fragmentManager)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -48,16 +48,16 @@ fun MarksFragment(
         }
         Column(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(visible = markFragmentTypeState.markTypeIsSelected) {
-                MarksCard(marksFragmentViewModel = marksFragmentViewModel)
+                MarksCard(mainViewModel = mainViewModel)
             }
             AnimatedVisibility(visible = markFragmentTypeState.controlWorkTypeIsSelected) {
-                ControlWorkCard(marksFragmentViewModel = marksFragmentViewModel)
+                ControlWorkCard(mainViewModel = mainViewModel)
             }
             AnimatedVisibility(visible = markFragmentTypeState.homeWorkTypeIsSelected) {
-                HomeWorkCard(marksFragmentViewModel = marksFragmentViewModel)
+                HomeWorkCard(mainViewModel = mainViewModel)
             }
             AnimatedVisibility(visible = markFragmentTypeState.classWorkTypeIsSelected) {
-                ClassWorkCard(marksFragmentViewModel = marksFragmentViewModel)
+                ClassWorkCard(mainViewModel = mainViewModel)
             }
         }
     }

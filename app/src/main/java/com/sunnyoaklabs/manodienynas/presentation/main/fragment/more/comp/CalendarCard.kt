@@ -23,6 +23,7 @@ import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.data.remote.dto.GetCalendarDto
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight
@@ -81,7 +82,7 @@ private fun CalendarTopText(
 
 @Composable
 private fun EmptyCalendarItem(
-    moreFragmentViewModel: MoreFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {

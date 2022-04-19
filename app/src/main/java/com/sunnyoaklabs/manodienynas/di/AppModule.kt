@@ -42,6 +42,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMarksFragmentViewModel(
+        app: Application,
         getMarks: GetMarks,
         getMarksByCondition: GetMarksByCondition,
         getMarksEventItem: GetMarksEventItem,
@@ -55,6 +56,7 @@ object AppModule {
         validator: Validator
     ): MarksFragmentViewModel {
         return MarksFragmentViewModel(
+            app,
             getMarks,
             getMarksByCondition,
             getMarksEventItem,
@@ -232,18 +234,6 @@ object AppModule {
     @Singleton
     fun provideGetAttendanceUseCase(repository: Repository): GetAttendance {
         return GetAttendance(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetCalendarUseCase(repository: Repository): GetCalendar {
-        return GetCalendar(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetCalendarEventUseCase(repository: Repository): GetCalendarEvent {
-        return GetCalendarEvent(repository)
     }
 
     @Provides

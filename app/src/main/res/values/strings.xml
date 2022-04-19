@@ -21,6 +21,7 @@
     <string name="event_home_work">Namų darbai</string>
     <string name="event_attendance">Lankomumas</string>
     <string name="event_mark_changed">Pažimys pakeistas</string>
+    <string name="event_messages">Gauti pranešimai</string>
     <string name="event_mark">Pažimys</string>
     <string name="event_unknown">Nežinomas</string>
 
@@ -89,6 +90,7 @@
 
     <string name="snackbar_unknown_error">Nežinoma klaida!</string>
     <string name="snackbar_no_network">Nėra tinklo ryšio!</string>
+    <string name="snackbar_timeout">Lėtas susisiekimas su serveriu!</string>
     <string name="snackbar_session_cookie_expired">Sesija pasibaigė!</string>
 
 </resources>

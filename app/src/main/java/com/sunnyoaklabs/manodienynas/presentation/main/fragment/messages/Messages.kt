@@ -53,16 +53,16 @@ fun MessagesFragment(
         }
         Column(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(visible = messagesFragmentTypeState.gottenIsSelected) {
-                MessagesGottenCard(messagesFragmentViewModel = messagesFragmentViewModel)
+                MessagesGottenCard(mainViewModel = mainViewModel)
             }
             AnimatedVisibility(visible = messagesFragmentTypeState.sentIsSelected) {
-                MessagesSentCard(messagesFragmentViewModel = messagesFragmentViewModel)
+                MessagesSentCard(mainViewModel = mainViewModel)
             }
             AnimatedVisibility(visible = messagesFragmentTypeState.starredIsSelected) {
-                MessagesStarredCard(messagesFragmentViewModel = messagesFragmentViewModel)
+                MessagesStarredCard(mainViewModel = mainViewModel)
             }
             AnimatedVisibility(visible = messagesFragmentTypeState.deletedIsSelected) {
-                MessagesDeletedCard(messagesFragmentViewModel = messagesFragmentViewModel)
+                MessagesDeletedCard(mainViewModel = mainViewModel)
             }
         }
     }

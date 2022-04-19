@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,11 +11,9 @@ import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.domain.use_case.*
 import com.sunnyoaklabs.manodienynas.presentation.main.state.*
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TermsFragmentViewModel @Inject constructor(
@@ -32,8 +31,8 @@ class TermsFragmentViewModel @Inject constructor(
     private val _termMarkDialogItemFlow = MutableSharedFlow<TermMarkDialogItemState>()
     val termMarkDialogItemFlow = _termMarkDialogItemFlow.asSharedFlow()
 
-    fun initTerm() {
-        viewModelScope.launch {
+    fun initTerm(coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getTerm().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -54,7 +53,7 @@ class TermsFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _termState.value = termState.value.copy(isLoading = false,)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -64,8 +63,8 @@ class TermsFragmentViewModel @Inject constructor(
         }
     }
 
-    fun initTermMarkDialogItem(url: String) {
-        viewModelScope.launch {
+    fun initTermMarkDialogItem(url: String, coroutineScope: CoroutineScope) {
+        coroutineScope.launch {
             getTermMarkDialogItem(url).collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -76,7 +75,7 @@ class TermsFragmentViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )

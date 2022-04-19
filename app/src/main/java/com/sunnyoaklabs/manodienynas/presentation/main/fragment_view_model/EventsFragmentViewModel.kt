@@ -19,6 +19,7 @@ import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEventsPage
 import com.sunnyoaklabs.manodienynas.presentation.main.state.EventState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -38,8 +39,8 @@ class EventsFragmentViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun initEventsAndPerson(): Job {
-        val eventsJob = viewModelScope.launch {
+    fun initEventsAndPerson(coroutineScope: CoroutineScope): Job {
+        val eventsJob = coroutineScope.launch {
             getEvents().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -56,13 +57,13 @@ class EventsFragmentViewModel @Inject constructor(
                         _eventState.value = eventState.value.copy(
                             events = it.data ?: emptyList(),
                             isLoading = false,
-                            isEveryEventLoaded = false
+                            isEveryEventLoaded = (it.data ?: emptyList()).size % 10 != 0
                         )
                     }
                     is Resource.Error -> {
                         _eventState.value = eventState.value.copy(isLoading = false)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -73,9 +74,10 @@ class EventsFragmentViewModel @Inject constructor(
         return eventsJob
     }
 
-    fun loadMoreEvents() {
+    fun loadMoreEvents(coroutineScope: CoroutineScope) {
+        if (eventState.value.isEveryEventLoaded) return
         if (_eventState.value.isLoading || !validator.hasInternetConnection(getApplication<ManoDienynasApp>())) return
-        viewModelScope.launch {
+        coroutineScope.launch {
             getEventsPage().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -92,7 +94,7 @@ class EventsFragmentViewModel @Inject constructor(
                     is Resource.Error -> {
                         _eventState.value = eventState.value.copy(isLoading = false)
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )

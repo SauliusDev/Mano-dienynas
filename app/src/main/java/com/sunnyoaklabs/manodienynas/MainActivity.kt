@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -38,6 +39,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
+import com.sunnyoaklabs.manodienynas.core.util.Errors.TIMEOUT_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.EVENTS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT
@@ -104,7 +106,9 @@ class MainActivity : AppCompatActivity() {
                 val navController = rememberNavController()
 
                 LaunchedEffect(key1 = true) {
-                    collectEvents(scaffoldState)
+                    mainViewModel.eventFlow.collectLatest {
+                        processEvent(it, scaffoldState)
+                    }
                 }
 
                 Scaffold(
@@ -164,29 +168,6 @@ class MainActivity : AppCompatActivity() {
         context.startActivity(intent)
     }
 
-    private suspend fun collectEvents(
-        scaffoldState: ScaffoldState
-    ) {
-        mainViewModel.eventFlow.collectLatest {
-            processEvent(it, scaffoldState)
-        }
-        mainViewModel.eventsFragmentViewModel.eventFlow.collectLatest {
-            processEvent(it, scaffoldState)
-        }
-        mainViewModel.marksFragmentViewModel.eventFlow.collectLatest {
-            processEvent(it, scaffoldState)
-        }
-        mainViewModel.messagesFragmentViewModel.eventFlow.collectLatest {
-            processEvent(it, scaffoldState)
-        }
-        mainViewModel.moreFragmentViewModel.eventFlow.collectLatest {
-            processEvent(it, scaffoldState)
-        }
-        mainViewModel.settingsMainFragmentViewModel.eventFlow.collectLatest {
-            processEvent(it, scaffoldState)
-        }
-    }
-
     private suspend fun processEvent(
         event: UIEvent,
         scaffoldState: ScaffoldState
@@ -215,8 +196,8 @@ class MainActivity : AppCompatActivity() {
             IO_ERROR -> {
                 resources.getString(R.string.snackbar_no_network)
             }
-            SESSION_COOKIE_EXPIRED -> {
-                resources.getString(R.string.snackbar_session_cookie_expired)
+            TIMEOUT_ERROR -> {
+                resources.getString(R.string.snackbar_timeout)
             }
             else -> {
                 resources.getString(R.string.snackbar_unknown_error)

@@ -7,19 +7,33 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sunnyoaklabs.manodienynas.ManoDienynasApp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
+import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.EVENTS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT_CLASS_WORK
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT_CONTROL_WORK
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT_HOME_WORK
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT_MARKS
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT_DELETED
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT_GOTTEN
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT_SENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT_STARRED
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MORE_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MORE_FRAGMENT_HOLIDAY
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MORE_FRAGMENT_MEETINGS
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.MORE_FRAGMENT_SCHEDULE
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.SETTINGS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.TERMS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Resource
@@ -37,6 +51,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.*
 import java.io.BufferedReader
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -64,45 +79,100 @@ class MainViewModel @Inject constructor(
     private val _userStateState = mutableStateOf(UserStateState())
     val userStateState: State<UserStateState> = _userStateState
 
-    private var latestDataLoadOrigin = ""
+    private var latestDataLoadOrigin = EVENTS_FRAGMENT
 
-    var getDataJob: Job? = null
+    private var dataLoadScope: CoroutineScope = CoroutineScope(Job())
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onFragmentOpen(fragment: String) {
         verifySessionCookies()
-        getDataJob?.cancel()
-        getDataJob = viewModelScope.launch {
-            resetLoadingState()
-            latestDataLoadOrigin = fragment
-            when (fragment) {
-                EVENTS_FRAGMENT -> {
-                    Log.e("console log", ": initas eventu ")
-                    eventsFragmentViewModel.initEventsAndPerson()
+        dataLoadScope.cancel()
+        dataLoadScope = CoroutineScope(Job())
+        resetLoadingState()
+        latestDataLoadOrigin = fragment
+        when (fragment) {
+            EVENTS_FRAGMENT -> {
+                eventsFragmentViewModel.initEventsAndPerson(dataLoadScope)
+            }
+            MARKS_FRAGMENT -> {
+                marksFragmentViewModel.initMarksByCondition(dataLoadScope)
+                marksFragmentViewModel.initAttendance(dataLoadScope)
+                marksFragmentViewModel.initControlWorkByCondition(dataLoadScope)
+                marksFragmentViewModel.initClassWork(dataLoadScope)
+                marksFragmentViewModel.initHomeWork(dataLoadScope)
+            }
+            MESSAGES_FRAGMENT -> {
+                messagesFragmentViewModel.initMessagesGotten(dataLoadScope)
+                messagesFragmentViewModel.initMessagesSent(dataLoadScope)
+                messagesFragmentViewModel.initMessagesStarred(dataLoadScope)
+                messagesFragmentViewModel.initMessagesDeleted(dataLoadScope)
+            }
+            TERMS_FRAGMENT -> {
+                termsFragmentViewModel.initTerm(dataLoadScope)
+            }
+            MORE_FRAGMENT -> {
+                moreFragmentViewModel.initSchedule(dataLoadScope)
+                moreFragmentViewModel.initHoliday(dataLoadScope)
+                moreFragmentViewModel.initParentMeetings(dataLoadScope)
+            }
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            async {
+                eventsFragmentViewModel.eventFlow.collectLatest {
+                    processEvent(it)
                 }
-                MARKS_FRAGMENT -> {
-                    marksFragmentViewModel.initMarksByCondition()
-                    marksFragmentViewModel.initAttendance()
-                    marksFragmentViewModel.initControlWorkByCondition()
-                    marksFragmentViewModel.initClassWorkByCondition()
-                    marksFragmentViewModel.initHomeWorkByCondition()
+            }
+            async {
+                marksFragmentViewModel.eventFlow.collectLatest {
+                    processEvent(it)
                 }
-                MESSAGES_FRAGMENT -> {
-                    messagesFragmentViewModel.initMessagesGotten()
-                    messagesFragmentViewModel.initMessagesSent()
-                    messagesFragmentViewModel.initMessagesStarred()
-                    messagesFragmentViewModel.initMessagesDeleted()
+            }
+            async {
+                messagesFragmentViewModel.eventFlow.collectLatest {
+                    processEvent(it)
                 }
-                TERMS_FRAGMENT -> {
-                    termsFragmentViewModel.initTerm()
+            }
+            async {
+                termsFragmentViewModel.eventFlow.collectLatest {
+                    processEvent(it)
                 }
-                MORE_FRAGMENT -> {
-                    moreFragmentViewModel.initSchedule()
-                    moreFragmentViewModel.initHoliday()
-                    moreFragmentViewModel.initParentMeetings()
+            }
+            async {
+                moreFragmentViewModel.eventFlow.collectLatest {
+                    processEvent(it)
                 }
-                SETTINGS_FRAGMENT -> {
-                    // NOTE: no data to load ;(
+            }
+            async {
+                settingsMainFragmentViewModel.eventFlow.collectLatest {
+                    processEvent(it)
+                }
+            }
+        }
+    }
+
+    private suspend fun processEvent(
+        uiEvent: UIEvent,
+    ) {
+        when (uiEvent) {
+            is UIEvent.ShowToast, is UIEvent.StartActivity -> {
+                _eventFlow.emit(uiEvent)
+            }
+            is UIEvent.Error -> {
+                when (uiEvent.message) {
+                    SESSION_COOKIE_EXPIRED -> {
+                        if (!_userStateState.value.isLoading) {
+                            initSessionCookies()
+                        }
+                    }
+                    IO_ERROR -> {
+                        // Showing snackbar on every onFragmentOpen() would be too annoying for the user
+                    }
+                    else -> {
+                        _eventFlow.emit(UIEvent.ShowToast(uiEvent.message))
+                    }
                 }
             }
         }
@@ -125,25 +195,22 @@ class MainViewModel @Inject constructor(
             MORE_FRAGMENT -> {
                 moreFragmentViewModel.resetLoadingState()
             }
-            SETTINGS_FRAGMENT -> {
-                // NOTE: no data state to reset ;(
-            }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun verifySessionCookies() {
-        viewModelScope.launch {
+        _userStateState.value.userState?.let {
             if (!_userStateState.value.isLoading && !_userStateState.value.userState?.isSessionGotten!!) {
-                initSessionCookies().join()
-                if (_userStateState.value.userState?.isSessionGotten!!) {
-                    onFragmentOpen(latestDataLoadOrigin)
-                }
+                initSessionCookies()
             }
         }
     }
 
     fun initSessionCookies(): Job {
+        _userStateState.value.userState ?: run {
+            onFragmentOpen(latestDataLoadOrigin) // load  first screen data from cache
+        }
         return viewModelScope.launch {
             getSessionCookies().collect { wasSessionCreated ->
                 when (wasSessionCreated) {
@@ -159,7 +226,6 @@ class MainViewModel @Inject constructor(
                             userState = UserState(
                                 isUserLoggedIn = true,
                                 isSessionGotten = true,
-                                triedGettingSession = true
                             ),
                             isLoading = false
                         )
@@ -168,10 +234,9 @@ class MainViewModel @Inject constructor(
                         initMainData().join()
                     }
                     is Resource.Error -> {
-                        onFragmentOpen(EVENTS_FRAGMENT) // load first screen data from cache
                         firebaseCrashlytics.log("(MainViewModel) Error: credentials, sessionCookies")
                         _eventFlow.emit(
-                            UIEvent.ShowToast(
+                            UIEvent.Error(
                                 wasSessionCreated.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
@@ -179,7 +244,6 @@ class MainViewModel @Inject constructor(
                             userState = UserState(
                                 isUserLoggedIn = true,
                                 isSessionGotten = false,
-                                triedGettingSession = true
                             ),
                             isLoading = false
                         )
@@ -212,8 +276,10 @@ class MainViewModel @Inject constructor(
 
     private fun initMainData(): Job {
         return viewModelScope.launch {
-            val eventsJob = eventsFragmentViewModel.initEventsAndPerson()
+            val eventsJob = eventsFragmentViewModel.initEventsAndPerson(this)
             initPerson(eventsJob)
+            // events are already loaded from backend previously
+            if (latestDataLoadOrigin != EVENTS_FRAGMENT) onFragmentOpen(latestDataLoadOrigin)
         }
     }
 
@@ -229,6 +295,150 @@ class MainViewModel @Inject constructor(
                 settingsMainFragmentViewModel.getSetting()
             }
             getPerson()
+        }
+    }
+
+    // data loading function called from UI
+    fun initDataOnCalendarSelect() {
+        when {
+            marksFragmentViewModel.markFragmentTypeState.value.markTypeIsSelected -> {
+                marksFragmentViewModel.initMarksByCondition(dataLoadScope)
+            }
+            marksFragmentViewModel.markFragmentTypeState.value.controlWorkTypeIsSelected -> {
+                marksFragmentViewModel.initControlWorkByCondition(dataLoadScope)
+            }
+            marksFragmentViewModel.markFragmentTypeState.value.homeWorkTypeIsSelected -> {
+                marksFragmentViewModel.initHomeWork(dataLoadScope)
+            }
+            marksFragmentViewModel.markFragmentTypeState.value.classWorkTypeIsSelected -> {
+                marksFragmentViewModel.initClassWork(dataLoadScope)
+            }
+        }
+    }
+    fun initDataOnEmptyFragment(fragment: String, specificFragmentDataOriginType: String) {
+        when (fragment) {
+            EVENTS_FRAGMENT -> {
+                eventsFragmentViewModel.initEventsAndPerson(dataLoadScope)
+            }
+            MARKS_FRAGMENT -> {
+                when (specificFragmentDataOriginType) {
+                    MARKS_FRAGMENT_MARKS -> {
+                        marksFragmentViewModel.initControlWorkByCondition(dataLoadScope)
+                    }
+                    MARKS_FRAGMENT_CONTROL_WORK -> {
+                        marksFragmentViewModel.initMarksByCondition(dataLoadScope)
+                        marksFragmentViewModel.initAttendance(dataLoadScope)
+                    }
+                    MARKS_FRAGMENT_HOME_WORK -> {
+                        marksFragmentViewModel.initHomeWork(dataLoadScope)
+                    }
+                    MARKS_FRAGMENT_CLASS_WORK -> {
+                        marksFragmentViewModel.initClassWork(dataLoadScope)
+                    }
+                }
+            }
+            MESSAGES_FRAGMENT -> {
+                when (specificFragmentDataOriginType) {
+                    MESSAGES_FRAGMENT_GOTTEN -> {
+                        messagesFragmentViewModel.initMessagesGotten(dataLoadScope)
+                    }
+                    MESSAGES_FRAGMENT_SENT -> {
+                        messagesFragmentViewModel.initMessagesSent(dataLoadScope)
+                    }
+                    MESSAGES_FRAGMENT_STARRED -> {
+                        messagesFragmentViewModel.initMessagesStarred(dataLoadScope)
+                    }
+                    MESSAGES_FRAGMENT_DELETED -> {
+                        messagesFragmentViewModel.initMessagesDeleted(dataLoadScope)
+                    }
+                }
+            }
+            TERMS_FRAGMENT -> {
+                termsFragmentViewModel.initTerm(dataLoadScope)
+            }
+            MORE_FRAGMENT -> {
+                when (specificFragmentDataOriginType) {
+                    MORE_FRAGMENT_SCHEDULE -> {
+                        moreFragmentViewModel.initSchedule(dataLoadScope)
+                    }
+                    MORE_FRAGMENT_HOLIDAY -> {
+                        moreFragmentViewModel.initHoliday(dataLoadScope)
+                    }
+                    MORE_FRAGMENT_MEETINGS -> {
+                        moreFragmentViewModel.initParentMeetings(dataLoadScope)
+                    }
+                }
+            }
+        }
+    }
+    fun initPagingDataFromFragment(fragment: String, specificFragmentDataOriginType: String) {
+        when (fragment) {
+            EVENTS_FRAGMENT -> {
+                eventsFragmentViewModel.loadMoreEvents(dataLoadScope)
+            }
+            MARKS_FRAGMENT -> {
+                when (specificFragmentDataOriginType) {
+                    MARKS_FRAGMENT_HOME_WORK -> {
+                        marksFragmentViewModel.initHomeWorkByCondition(
+                            marksFragmentViewModel.homeWorkState.value.page + 1,
+                            dataLoadScope
+                        )
+                    }
+                    MARKS_FRAGMENT_CLASS_WORK -> {
+                        marksFragmentViewModel.initClassWorkByCondition(
+                            marksFragmentViewModel.classWorkState.value.page + 1,
+                            dataLoadScope
+                        )
+                    }
+                }
+            }
+            MESSAGES_FRAGMENT -> {
+                when (specificFragmentDataOriginType) {
+                    MESSAGES_FRAGMENT_GOTTEN -> {
+                        messagesFragmentViewModel.initMessagesGottenByCondition(dataLoadScope)
+                    }
+                    MESSAGES_FRAGMENT_SENT -> {
+                        messagesFragmentViewModel.initMessagesSentByCondition(dataLoadScope)
+                    }
+                    MESSAGES_FRAGMENT_STARRED -> {
+                        messagesFragmentViewModel.initMessagesStarredByCondition(dataLoadScope)
+
+                    }
+                    MESSAGES_FRAGMENT_DELETED -> {
+                        messagesFragmentViewModel.initMessagesDeletedByCondition(dataLoadScope)
+                    }
+                }
+            }
+        }
+    }
+    fun initExtraItemDataFromFragment(fragment: String, specificFragmentDataOriginType: String, data: Any? = null) {
+        when (fragment) {
+            MARKS_FRAGMENT -> {
+                when (specificFragmentDataOriginType) {
+                    MARKS_FRAGMENT_MARKS -> {
+                        marksFragmentViewModel.initMarksEventItem((data as String), dataLoadScope)
+                    }
+                }
+            }
+            MESSAGES_FRAGMENT -> {
+                when (specificFragmentDataOriginType) {
+                    MESSAGES_FRAGMENT_GOTTEN -> {
+                        messagesFragmentViewModel.initMessagesIndividual((data as String), dataLoadScope)
+                    }
+                    MESSAGES_FRAGMENT_SENT -> {
+                        messagesFragmentViewModel.initMessagesIndividual((data as String), dataLoadScope, true)
+                    }
+                    MESSAGES_FRAGMENT_STARRED -> {
+                        messagesFragmentViewModel.initMessagesIndividual((data as String), dataLoadScope)
+                    }
+                    MESSAGES_FRAGMENT_DELETED -> {
+                        messagesFragmentViewModel.initMessagesIndividual((data as String), dataLoadScope)
+                    }
+                }
+            }
+            TERMS_FRAGMENT -> {
+                termsFragmentViewModel.initTermMarkDialogItem((data as String), dataLoadScope)
+            }
         }
     }
 

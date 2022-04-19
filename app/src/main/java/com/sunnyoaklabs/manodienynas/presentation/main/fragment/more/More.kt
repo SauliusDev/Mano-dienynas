@@ -46,16 +46,13 @@ fun MoreFragment(
         }
         Column(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(visible = moreFragmentTypeState.scheduleIsSelected) {
-                ScheduleCard(moreFragmentViewModel = moreFragmentViewModel)
+                ScheduleCard(mainViewModel = mainViewModel)
             }
-            //AnimatedVisibility(visible = moreFragmentTypeState.calendarIsSelected) {
-            //    CalendarCard(moreFragmentViewModel = moreFragmentViewModel)
-            //}
             AnimatedVisibility(visible = moreFragmentTypeState.holidayIsSelected) {
-                HolidayCard(moreFragmentViewModel = moreFragmentViewModel)
+                HolidayCard(mainViewModel = mainViewModel)
             }
             AnimatedVisibility(visible = moreFragmentTypeState.parentMeetingsIsSelected) {
-                ParentMeetingsCard(moreFragmentViewModel = moreFragmentViewModel)
+                ParentMeetingsCard(mainViewModel = mainViewModel)
             }
         }
     }

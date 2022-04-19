@@ -19,16 +19,18 @@ import androidx.fragment.app.FragmentManager
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.core.util.isDarkThemeOn
 import com.sunnyoaklabs.manodienynas.presentation.core.getButtonColor
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.dialog.DatePickerView
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 
 @Composable
 fun ChangeDateButton(
-    marksFragmentViewModel: MarksFragmentViewModel,
+    mainViewModel: MainViewModel,
     fragmentManager: FragmentManager,
     modifier: Modifier = Modifier
 ) {
+    val marksFragmentViewModel = mainViewModel.marksFragmentViewModel
     val markFragmentTypeState = marksFragmentViewModel.markFragmentTypeState.value
     val markDateRange = marksFragmentViewModel.markTimeRange.value
     val controlWorkDateRange = marksFragmentViewModel.controlWorkTimeRange.value
@@ -68,7 +70,7 @@ fun ChangeDateButton(
             Pair(dateFirst ?: "".toLong(), dateSecond ?: "".toLong())
         )
         marksFragmentViewModel.updateTimeRange(timeRangeFormatted)
-        marksFragmentViewModel.initDataByCondition()
+        mainViewModel.initDataOnCalendarSelect()
         dateRangePicked.value = timeRangeFormatted
     }
     DatePickerView(

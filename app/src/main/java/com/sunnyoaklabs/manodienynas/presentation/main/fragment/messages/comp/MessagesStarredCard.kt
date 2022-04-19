@@ -22,10 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.core.util.Fragments
 import com.sunnyoaklabs.manodienynas.domain.model.Message
 import com.sunnyoaklabs.manodienynas.domain.model.MessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
+import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.dialog.DialogMessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
@@ -35,9 +37,10 @@ import kotlinx.coroutines.flow.collect
 
 @Composable
 fun MessagesStarredCard(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val messagesFragmentViewModel = mainViewModel.messagesFragmentViewModel
     val messagesStarredState = messagesFragmentViewModel.messagesStarredState.value
 
     val messageIndividual = remember {
@@ -75,28 +78,10 @@ fun MessagesStarredCard(
             messagesStarredState.isLoadingLocale,
             messagesStarredState.messagesStarred
         ) -> {
-            EmptyMessagesStarredItem(messagesFragmentViewModel)
+            EmptyMessagesStarredItem(mainViewModel)
         }
         else -> {
-            val lastIndex = messagesStarredState.messagesStarred.lastIndex
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp)
-            ) {
-                MessagesStarredTypeText()
-                Spacer(modifier = Modifier.height(4.dp))
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    itemsIndexed(messagesStarredState.messagesStarred) { i, message ->
-                        if (lastIndex == i) {
-                            if (!messagesStarredState.isEverythingLoaded) {
-                                messagesFragmentViewModel.initMessagesStarredByCondition()
-                            }
-                        }
-                        MessagesStarredItem(messagesFragmentViewModel, message)
-                    }
-                }
-            }
+            MessagesStarredLayout(mainViewModel)
         }
     }
     DialogMessageIndividual(
@@ -108,8 +93,39 @@ fun MessagesStarredCard(
 }
 
 @Composable
+private fun MessagesStarredLayout(
+    mainViewModel: MainViewModel,
+    modifier: Modifier = Modifier
+) {
+    val messagesFragmentViewModel = mainViewModel.messagesFragmentViewModel
+    val messagesStarredState = messagesFragmentViewModel.messagesStarredState.value
+    val lastIndex = messagesStarredState.messagesStarred.lastIndex
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 4.dp)
+    ) {
+        MessagesStarredTypeText()
+        Spacer(modifier = Modifier.height(4.dp))
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            itemsIndexed(messagesStarredState.messagesStarred) { i, message ->
+                if (lastIndex == i) {
+                    if (!messagesStarredState.isEverythingLoaded) {
+                        mainViewModel.initPagingDataFromFragment(
+                            Fragments.MESSAGES_FRAGMENT,
+                            Fragments.MESSAGES_FRAGMENT_STARRED
+                        )
+                    }
+                }
+                MessagesStarredItem(mainViewModel, message)
+            }
+        }
+    }
+}
+
+@Composable
 private fun MessagesStarredItem(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     message: Message,
     modifier: Modifier = Modifier
 ) {
@@ -121,12 +137,18 @@ private fun MessagesStarredItem(
             )
             .fillMaxWidth()
             .clickable {
-                messagesFragmentViewModel.initMessagesIndividual(message.messageId)
+                mainViewModel.initExtraItemDataFromFragment(
+                    Fragments.MESSAGES_FRAGMENT,
+                    Fragments.MESSAGES_FRAGMENT_STARRED,
+                    message.messageId
+                )
             },
         elevation = 2.dp,
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(4.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -146,7 +168,7 @@ private fun MessagesStarredItem(
 
 @Composable
 private fun EmptyMessagesStarredItem(
-    messagesFragmentViewModel: MessagesFragmentViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     val isLoading = remember {
@@ -170,7 +192,10 @@ private fun EmptyMessagesStarredItem(
                 modifier = modifier.background(Color.Transparent),
                 onClick = {
                     isLoading.value = !isLoading.value
-                    messagesFragmentViewModel.initMessagesGotten()
+                    mainViewModel.initDataOnEmptyFragment(
+                        Fragments.MESSAGES_FRAGMENT,
+                        Fragments.MESSAGES_FRAGMENT_STARRED
+                    )
                 },
                 enabled = !isLoading.value
             ) {
