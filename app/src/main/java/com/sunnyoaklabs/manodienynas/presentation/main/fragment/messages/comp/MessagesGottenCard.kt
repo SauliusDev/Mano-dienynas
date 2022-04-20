@@ -31,6 +31,7 @@ import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.dialog.DialogMessageIndividual
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MessagesFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.state.MessagesGottenState
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentGreenDark
 import kotlinx.coroutines.flow.collect
@@ -99,11 +100,12 @@ private fun MessagesGottenLayout(
 ) {
     val messagesFragmentViewModel = mainViewModel.messagesFragmentViewModel
     val messagesGottenState = messagesFragmentViewModel.messagesGottenState.value
+
     val lastIndex = messagesGottenState.messagesGotten.lastIndex
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 4.dp)
+            .padding(start = 4.dp, end = 4.dp, top = 4.dp)
     ) {
         MessagesGottenTypeText()
         Spacer(modifier = Modifier.height(4.dp))

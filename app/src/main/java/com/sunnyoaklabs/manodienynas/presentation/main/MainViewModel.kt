@@ -50,6 +50,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.*
 import java.io.BufferedReader
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -212,8 +213,8 @@ class MainViewModel @Inject constructor(
             onFragmentOpen(latestDataLoadOrigin) // load  first screen data from cache
         }
         return viewModelScope.launch {
-            getSessionCookies().collect { wasSessionCreated ->
-                when (wasSessionCreated) {
+            getSessionCookies().collect {
+                when (it) {
                     is Resource.Loading -> {
                         firebaseCrashlytics.log("(MainViewModel) Loading: credentials, sessionCookies")
                         _userStateState.value = userStateState.value.copy(
@@ -222,6 +223,9 @@ class MainViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         firebaseCrashlytics.log("(MainViewModel) Success: credentials, sessionCookies")
+                        changeRole().join()
+                        setInitialValues().join()
+                        initMainData().join()
                         _userStateState.value = userStateState.value.copy(
                             userState = UserState(
                                 isUserLoggedIn = true,
@@ -229,15 +233,12 @@ class MainViewModel @Inject constructor(
                             ),
                             isLoading = false
                         )
-                        changeRole().join()
-                        setInitialValues().join()
-                        initMainData().join()
                     }
                     is Resource.Error -> {
                         firebaseCrashlytics.log("(MainViewModel) Error: credentials, sessionCookies")
                         _eventFlow.emit(
                             UIEvent.Error(
-                                wasSessionCreated.message ?: Errors.UNKNOWN_ERROR
+                                it.message ?: Errors.UNKNOWN_ERROR
                             )
                         )
                         _userStateState.value = userStateState.value.copy(
@@ -276,24 +277,21 @@ class MainViewModel @Inject constructor(
 
     private fun initMainData(): Job {
         return viewModelScope.launch {
-            val eventsJob = eventsFragmentViewModel.initEventsAndPerson(this)
-            initPerson(eventsJob)
-            // events are already loaded from backend previously
+            eventsFragmentViewModel.initEventsAndPerson(this).join()
+            initPerson()
+            // after cookies have loaded, currently selected fragment data needs to be synced
             if (latestDataLoadOrigin != EVENTS_FRAGMENT) onFragmentOpen(latestDataLoadOrigin)
         }
     }
 
-    private fun initPerson(eventsJob: Job) {
+    private fun initPerson() {
         viewModelScope.launch {
             _personState.value = personState.value.copy(
                 person = null,
                 isLoading = true
             )
             settingsMainFragmentViewModel.setSettingsStateToLoading()
-            eventsJob.join()
-            viewModelScope.launch {
-                settingsMainFragmentViewModel.getSetting()
-            }
+            launch { settingsMainFragmentViewModel.getSetting() }
             getPerson()
         }
     }
@@ -323,11 +321,11 @@ class MainViewModel @Inject constructor(
             MARKS_FRAGMENT -> {
                 when (specificFragmentDataOriginType) {
                     MARKS_FRAGMENT_MARKS -> {
-                        marksFragmentViewModel.initControlWorkByCondition(dataLoadScope)
-                    }
-                    MARKS_FRAGMENT_CONTROL_WORK -> {
                         marksFragmentViewModel.initMarksByCondition(dataLoadScope)
                         marksFragmentViewModel.initAttendance(dataLoadScope)
+                    }
+                    MARKS_FRAGMENT_CONTROL_WORK -> {
+                        marksFragmentViewModel.initControlWorkByCondition(dataLoadScope)
                     }
                     MARKS_FRAGMENT_HOME_WORK -> {
                         marksFragmentViewModel.initHomeWork(dataLoadScope)

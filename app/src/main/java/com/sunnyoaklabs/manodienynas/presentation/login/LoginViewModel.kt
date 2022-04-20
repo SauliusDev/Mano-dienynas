@@ -40,7 +40,7 @@ class LoginViewModel @Inject constructor(
     private val getSettings: GetSettings
 ) : ViewModel() {
 
-    var credentials by mutableStateOf(CredentialsState())
+    var credentialsState by mutableStateOf(CredentialsState())
         private set
 
     var keepSignedIn by mutableStateOf(SettingsState())
@@ -48,13 +48,12 @@ class LoginViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getCredentials()
             getKeepSignedIn()
         }
     }
 
     private suspend fun getCredentials() {
-        credentials = CredentialsState(
+        credentialsState = CredentialsState(
             repository.getCredentials(),
             false
         )

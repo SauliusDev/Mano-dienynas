@@ -77,8 +77,7 @@ fun ChangeDateButton(
         fragmentManager,
         dateRangePicked.value.first + " - " + dateRangePicked.value.second,
         updatedDate,
-        modifier
-            .padding(horizontal = 4.dp, vertical = 4.dp)
+        modifier.padding(horizontal = 4.dp, vertical = 4.dp)
     )
 }
 

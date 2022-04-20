@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,7 +10,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -36,9 +40,11 @@ import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.core.getMarksListItemColor
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.dialog.MarkEventDialog
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
-import com.sunnyoaklabs.manodienynas.ui.theme.*
-import kotlinx.coroutines.flow.collect
+import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
+import com.sunnyoaklabs.manodienynas.ui.theme.accentPurple
+import com.sunnyoaklabs.manodienynas.ui.theme.accentRed
+import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
+import java.lang.Exception
 
 @Composable
 fun MarksCard(
@@ -46,58 +52,12 @@ fun MarksCard(
     modifier: Modifier = Modifier
 ) {
     val marksFragmentViewModel = mainViewModel.marksFragmentViewModel
-    var showDialog by remember { mutableStateOf(false) }
-    val marksEventItem = remember {
-        mutableStateOf(
-            MarksEventItem(
-                "",
-                "",
-                "",
-                "",
-                ""
-            )
-        )
-    }
     val marksState = marksFragmentViewModel.markState.value
     val attendanceState = marksFragmentViewModel.attendanceState.value
-    val collapsableSectionMarks = mutableListOf<CollapsableSectionMarks>()
-    LaunchedEffect(key1 = true) {
-        marksFragmentViewModel.marksEventItemFlow.collect {
-            it.marksEventItem?.let { marksEventItemIt ->
-                marksEventItem.value = marksEventItemIt
-            }
-            showDialog = true
-        }
-    }
-    for (i in marksState.marks.indices) {
-        val attendance = attendanceState.attendance.find { attendance ->
-            attendance.teacher == marksState.marks[i].teacher
-        }
-        if (i == marksState.marks.size - 1) {
-            collapsableSectionMarks.add(
-                CollapsableSectionMarks(
-                    Mark("", "", "", listOf(), 0),
-                    attendanceState.attendance[attendanceState.attendance.lastIndex]
-                )
-            )
-        } else {
-            collapsableSectionMarks.add(
-                CollapsableSectionMarks(
-                    marksState.marks[i],
-                    attendance ?: Attendance("", "", listOf(), listOf(), null)
-                )
-            )
-        }
-    }
+
     val scope = rememberCoroutineScope()
     val state = rememberLazyListState()
     state.disableScrolling(scope)
-    MarkEventDialog(
-        showDialog,
-        marksEventItem.value,
-        onDismiss = {showDialog = false},
-        onNegativeClick = {showDialog = false}
-    )
     when {
         marksFragmentViewModel.validator.validateIsLoading(
             marksState.isLoading || attendanceState.isLoading,
@@ -114,33 +74,95 @@ fun MarksCard(
             EmptyMarksItem(mainViewModel)
         }
         else -> {
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(id = R.drawable.ic_mark),
-                        contentDescription = stringResource(R.string.ic_mark_description),
-                        tint = accentRed
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(id = R.string.marks_fragment_marks),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = accentRed
-                    )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                CollapsableLazyColumnMarks(
-                    mainViewModel = mainViewModel,
-                    sections = collapsableSectionMarks
-                )
-            }
+            MarksLayout(mainViewModel, modifier)
         }
+    }
+}
+
+@Composable
+private fun MarksLayout(
+    mainViewModel: MainViewModel,
+    modifier: Modifier = Modifier
+) {
+    var showDialog by remember { mutableStateOf(false) }
+    val marksEventItem = remember {
+        mutableStateOf(
+            MarksEventItem(
+                "",
+                "",
+                "",
+                "",
+                ""
+            )
+        )
+    }
+    val marksState = mainViewModel.marksFragmentViewModel.markState.value
+    val attendanceState = mainViewModel.marksFragmentViewModel.attendanceState.value
+    val collapsableSectionMarks = mutableListOf<CollapsableSectionMarks>()
+    LaunchedEffect(key1 = true) {
+        mainViewModel.marksFragmentViewModel.marksEventItemFlow.collect {
+            it.marksEventItem?.let { marksEventItemIt ->
+                marksEventItem.value = marksEventItemIt
+            }
+            showDialog = true
+        }
+    }
+    for (i in marksState.marks.indices) {
+        val attendance = attendanceState.attendance.find { attendance ->
+            attendance.teacher == marksState.marks[i].teacher
+        }
+        if (i == marksState.marks.size - 1) {
+            collapsableSectionMarks.add(
+                CollapsableSectionMarks(
+                    Mark("", "", "", listOf(), 0),
+                    try {
+                        attendanceState.attendance[attendanceState.attendance.lastIndex]
+                    } catch (e: Exception) {
+                        Attendance("", "", emptyList(), emptyList())
+                    }
+                )
+            )
+        } else {
+            collapsableSectionMarks.add(
+                CollapsableSectionMarks(
+                    marksState.marks[i],
+                    attendance ?: Attendance("", "", listOf(), listOf(), null)
+                )
+            )
+        }
+    }
+
+    MarkEventDialog(
+        showDialog,
+        marksEventItem.value,
+        onDismiss = {showDialog = false},
+        onNegativeClick = {showDialog = false}
+    )
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 4.dp, end = 4.dp, top = 4.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                modifier = Modifier.size(16.dp),
+                painter = painterResource(id = R.drawable.ic_mark),
+                contentDescription = stringResource(R.string.ic_mark_description),
+                tint = accentRed
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = stringResource(id = R.string.marks_fragment_marks),
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = accentRed
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        CollapsableLazyColumnMarks(
+            mainViewModel = mainViewModel,
+            sections = collapsableSectionMarks
+        )
     }
 }
 
@@ -420,7 +442,11 @@ private fun MarkEventItem(
             .clip(RoundedCornerShape(5.dp))
             .background(accentRed)
             .clickable {
-                mainViewModel.initExtraItemDataFromFragment(MARKS_FRAGMENT, MARKS_FRAGMENT_MARKS, markEvent.infoUrl)
+                mainViewModel.initExtraItemDataFromFragment(
+                    MARKS_FRAGMENT,
+                    MARKS_FRAGMENT_MARKS,
+                    markEvent.infoUrl
+                )
             },
     ) {
         Column(

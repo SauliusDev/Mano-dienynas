@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment.more.comp
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -36,6 +37,7 @@ import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MoreFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.state.ScheduleState
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryVariantGreenLight

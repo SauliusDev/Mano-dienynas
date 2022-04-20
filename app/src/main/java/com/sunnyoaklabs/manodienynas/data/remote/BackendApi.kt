@@ -83,13 +83,9 @@ interface BackendApi {
                         storage = AcceptAllCookiesStorage()
                     }
                     install(HttpTimeout) {
-                        // todo only for testing
-//                        requestTimeoutMillis = 15000L
-//                        connectTimeoutMillis = 15000L
-//                        socketTimeoutMillis = 15000L
-                        requestTimeoutMillis = 3000L
-                        connectTimeoutMillis = 3000L
-                        socketTimeoutMillis = 3000L
+                        requestTimeoutMillis = 15000L
+                        connectTimeoutMillis = 15000L
+                        socketTimeoutMillis = 15000L
                     }
                 }
             )

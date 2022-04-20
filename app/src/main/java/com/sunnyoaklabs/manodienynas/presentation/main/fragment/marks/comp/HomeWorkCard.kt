@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.comp
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -79,7 +80,7 @@ private fun HomeWorkMainLayout(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 4.dp)
+            .padding(start = 4.dp, end = 4.dp, top = 4.dp)
     ) {
         HomeWorkTopWidgets()
         Spacer(modifier = Modifier.height(4.dp))

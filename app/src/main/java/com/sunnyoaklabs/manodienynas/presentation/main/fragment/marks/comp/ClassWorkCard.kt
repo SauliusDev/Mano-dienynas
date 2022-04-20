@@ -76,7 +76,7 @@ private fun ClassWorkMainLayout(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 4.dp)
+            .padding(start = 4.dp, end = 4.dp, top = 4.dp)
     ) {
         ClassWorkTopWidgets()
         Spacer(modifier = Modifier.height(4.dp))

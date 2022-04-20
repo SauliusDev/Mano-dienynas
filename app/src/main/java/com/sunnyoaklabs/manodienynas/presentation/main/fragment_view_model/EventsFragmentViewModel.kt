@@ -40,7 +40,7 @@ class EventsFragmentViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun initEventsAndPerson(coroutineScope: CoroutineScope): Job {
-        val eventsJob = coroutineScope.launch {
+        return coroutineScope.launch {
             getEvents().collect {
                 when (it) {
                     is Resource.Loading -> {
@@ -71,7 +71,6 @@ class EventsFragmentViewModel @Inject constructor(
                 }
             }
         }
-        return eventsJob
     }
 
     fun loadMoreEvents(coroutineScope: CoroutineScope) {

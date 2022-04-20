@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.core.util.Fragments
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MESSAGES_FRAGMENT
+import com.sunnyoaklabs.manodienynas.core.util.Fragments.TERMS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
@@ -280,7 +281,7 @@ fun TermsAverageItem(
                 .clip(RoundedCornerShape(5.dp))
                 .background(accentGreenLight)
                 .clickable {
-                    mainViewModel.initExtraItemDataFromFragment(MESSAGES_FRAGMENT, MESSAGES_FRAGMENT, Pair("AVERAGE", url))
+                    mainViewModel.initExtraItemDataFromFragment(TERMS_FRAGMENT, TERMS_FRAGMENT, url)
                 }
         ) {
             Column(
@@ -316,7 +317,7 @@ private fun TermsCreditItem(
                 .clip(RoundedCornerShape(5.dp))
                 .background(accentGreenLight)
                 .clickable {
-                    mainViewModel.initExtraItemDataFromFragment(MESSAGES_FRAGMENT, MESSAGES_FRAGMENT, url)
+                    mainViewModel.initExtraItemDataFromFragment(TERMS_FRAGMENT, TERMS_FRAGMENT, url)
                 }
         ) {
             Column(

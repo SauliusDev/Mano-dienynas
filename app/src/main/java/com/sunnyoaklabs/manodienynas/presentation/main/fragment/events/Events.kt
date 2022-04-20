@@ -24,19 +24,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sunnyoaklabs.manodienynas.R
-import com.sunnyoaklabs.manodienynas.core.util.Fragments
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.EVENTS_FRAGMENT
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.ATTENDANCE_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.CHANGED_MARK_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.CONTROL_WORK_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.HOMEWORK_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.MARK_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.MESSAGE_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.ATTENDANCE_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CHANGED_MARK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CONTROL_WORK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MESSAGE_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.Event
 import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.EventsFragmentViewModel
 import com.sunnyoaklabs.manodienynas.ui.theme.*
 
 @Composable

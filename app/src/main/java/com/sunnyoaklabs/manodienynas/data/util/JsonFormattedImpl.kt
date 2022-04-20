@@ -3,7 +3,9 @@ package com.sunnyoaklabs.manodienynas.data.util
 import android.util.Log
 import com.sunnyoaklabs.manodienynas.domain.model.Calendar
 import org.json.JSONArray
+import org.json.JSONObject
 import org.jsoup.Jsoup
+import java.lang.Exception
 
 class JsonFormattedImpl : JsonFormatter {
 
@@ -28,6 +30,14 @@ class JsonFormattedImpl : JsonFormatter {
             )
         }
         return calendarList
+    }
+
+    override fun toIsSessionEstablished(json: String): Boolean {
+        return try {
+            !JSONObject(json).getBoolean("message")
+        } catch (e: Exception) {
+            false
+        }
     }
 
 }

@@ -30,6 +30,7 @@ import com.sunnyoaklabs.manodienynas.presentation.core.LoadingList
 import com.sunnyoaklabs.manodienynas.presentation.core.disableScrolling
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model.MarksFragmentViewModel
+import com.sunnyoaklabs.manodienynas.presentation.main.state.ControlWorkState
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlueLight
 import com.sunnyoaklabs.manodienynas.ui.theme.accentYellowDark
 
@@ -60,32 +61,40 @@ fun ControlWorkCard(
             EmptyControlWorkItem(mainViewModel)
         }
         else -> {
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(id = R.drawable.ic_controlwork),
-                        contentDescription = stringResource(R.string.marks_fragment_control_work),
-                        tint = accentYellowDark
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(id = R.string.marks_fragment_control_work),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = accentYellowDark
-                    )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(controlWorkState.controlWork) {
-                        ControlWorkItem(it)
-                    }
-                }
+            ControlWorkLayout(controlWorkState)
+        }
+    }
+}
+
+@Composable
+private fun ControlWorkLayout(
+    controlWorkState: ControlWorkState,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 4.dp, end = 4.dp, top = 4.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                modifier = Modifier.size(16.dp),
+                painter = painterResource(id = R.drawable.ic_controlwork),
+                contentDescription = stringResource(R.string.marks_fragment_control_work),
+                tint = accentYellowDark
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = stringResource(id = R.string.marks_fragment_control_work),
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = accentYellowDark
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            items(controlWorkState.controlWork) {
+                ControlWorkItem(it)
             }
         }
     }

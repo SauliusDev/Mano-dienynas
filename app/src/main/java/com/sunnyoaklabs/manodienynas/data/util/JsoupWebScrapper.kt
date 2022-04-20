@@ -1,11 +1,10 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
-import android.util.Log
 import com.sunnyoaklabs.manodienynas.core.util.Resource
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.ATTENDANCE_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.CHANGED_MARK_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.HOMEWORK_EVENT_TYPE
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.MARK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.ATTENDANCE_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CHANGED_MARK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.HOMEWORK_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventTypes.MARK_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.domain.model.*
 import org.jsoup.Jsoup
 
@@ -295,20 +294,24 @@ class JsoupWebScrapper() : WebScrapper {
         val document = Jsoup.parse(html)
         val controlWorkList: MutableList<ControlWork> = mutableListOf()
         val elementControlWorkTable = document.getElementById("cWorksListTable")
-        val elementControlWorks = elementControlWorkTable.getElementsByTag("tr")
-        elementControlWorks.removeFirst()
-        for (i in elementControlWorks.indices) {
-            val elementControlWork = elementControlWorks[i]
-            val elements = elementControlWork.getElementsByTag("td")
-            val index = elements[0].text()
-            val date = elements[1].text()
-            val group = elements[3].text()
-            val theme = elements[2].text()
-            val description = elements[4].getElementsByClass("cw-desc").text()
-            val dateAddition = elements[5].text()
-            controlWorkList.add(ControlWork(index, date, group, theme, description, dateAddition))
+        try {
+            val elementControlWorks = elementControlWorkTable.getElementsByTag("tr")
+            elementControlWorks.removeFirst()
+            for (i in elementControlWorks.indices) {
+                val elementControlWork = elementControlWorks[i]
+                val elements = elementControlWork.getElementsByTag("td")
+                val index = elements[0].text()
+                val date = elements[1].text()
+                val group = elements[3].text()
+                val theme = elements[2].text()
+                val description = elements[4].getElementsByClass("cw-desc").text()
+                val dateAddition = elements[5].text()
+                controlWorkList.add(ControlWork(index, date, group, theme, description, dateAddition))
+            }
+            return controlWorkList
+        }catch (e: Exception) {
+            return emptyList()
         }
-        return controlWorkList
     }
 
     override fun toTerm(html: String): List<Term> {

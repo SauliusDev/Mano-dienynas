@@ -12,6 +12,10 @@ class Converter(
     private val dataSourceObjectParser: DataSourceObjectParser
 ) {
 
+    fun toIsSessionEstablished(json: String): Boolean {
+        return jsonFormatter.toIsSessionEstablished(json)
+    }
+
     fun toSchoolInfoJson(schoolInfo: SchoolInfo?): String {
         return jsonParser.toJson(
             schoolInfo,

@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.ColorInt
@@ -38,7 +36,6 @@ import coil.compose.rememberImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
-import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
 import com.sunnyoaklabs.manodienynas.core.util.Errors.TIMEOUT_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.EVENTS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.MARKS_FRAGMENT
@@ -47,7 +44,7 @@ import com.sunnyoaklabs.manodienynas.core.util.Fragments.MORE_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.SETTINGS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.TERMS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.START_ACTIVITY_LOGIN_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventUITypes.START_ACTIVITY_LOGIN_EVENT_UI_TYPE
 import com.sunnyoaklabs.manodienynas.presentation.core.getBottomNavTextColor
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.Screen
@@ -63,8 +60,6 @@ import com.sunnyoaklabs.manodienynas.ui.theme.ManoDienynasTheme
 import com.sunnyoaklabs.manodienynas.ui.theme.accentGreenDarkest
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -181,7 +176,7 @@ class MainActivity : AppCompatActivity() {
             }
             is UIEvent.StartActivity -> {
                 when(event.message) {
-                    START_ACTIVITY_LOGIN_EVENT_TYPE -> {
+                    START_ACTIVITY_LOGIN_EVENT_UI_TYPE -> {
                         val intent = Intent(this, LoginActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         this.startActivity(intent)

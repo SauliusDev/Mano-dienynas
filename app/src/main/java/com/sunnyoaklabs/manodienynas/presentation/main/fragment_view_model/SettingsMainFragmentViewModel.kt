@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sunnyoaklabs.manodienynas.core.util.UIEventTypes.START_ACTIVITY_LOGIN_EVENT_TYPE
+import com.sunnyoaklabs.manodienynas.core.util.EventUITypes.START_ACTIVITY_LOGIN_EVENT_UI_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
@@ -42,7 +42,7 @@ class SettingsMainFragmentViewModel @Inject constructor(
         viewModelScope.launch {
             backendApi.getLogout()
             deleteEverythingInCache()
-            _eventFlow.emit(UIEvent.ShowToast(START_ACTIVITY_LOGIN_EVENT_TYPE))
+            _eventFlow.emit(UIEvent.ShowToast(START_ACTIVITY_LOGIN_EVENT_UI_TYPE))
         }
     }
 

@@ -41,15 +41,16 @@ class RepositoryImpl(
                     credentials.password,
                     1
                 ))
-            if (message == SessionValidationJsonResponses.CREDENTIALS_CORRECT) emit(Resource.Success(message))
+            if (converter.toIsSessionEstablished(message)) emit(Resource.Success(message))
             else emit(Resource.Error(Errors.INCORRECT_CREDENTIALS))
         } catch (e: RedirectResponseException) {
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -82,9 +83,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -111,7 +113,8 @@ class RepositoryImpl(
                     val eventsApi = converter.toEvents(response)
                     dataSource.deleteAllEvents()
                     eventsApi.forEach { dataSource.insertEvent(it) }
-                    val newEvents = dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
+                    val newEvents =
+                        dataSource.getAllEvents().map { converter.toEventFromEntity(it) }
                     emit(Resource.Success(newEvents))
                 }
                 is Resource.Error -> {
@@ -122,9 +125,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -151,9 +155,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -186,9 +191,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -203,16 +209,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getAttendance(): Flow<Resource<List<Attendance>>> = flow {
         emit(Resource.Loading())
-        val attendanceLocal = dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }
+        val attendanceLocal =
+            dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }
         emit(Resource.Loading(data = attendanceLocal))
         try {
             val response = api.getAttendance()
@@ -221,7 +229,8 @@ class RepositoryImpl(
                     val attendanceApi = converter.toAttendance(response)
                     dataSource.deleteAllAttendance()
                     attendanceApi.forEach { dataSource.insertAttendance(it) }
-                    val newAttendance = dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }
+                    val newAttendance =
+                        dataSource.getAllAttendances().map { converter.toAttendanceFromEntity(it) }
                     emit(Resource.Success(newAttendance))
                 }
                 is Resource.Error -> {
@@ -232,16 +241,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getClassWork(): Flow<Resource<List<ClassWork>>> = flow {
         emit(Resource.Loading())
-        val classWorkLocal = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
+        val classWorkLocal =
+            dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
         emit(Resource.Loading(data = classWorkLocal))
         try {
             val response = api.getClassWork()
@@ -250,7 +261,8 @@ class RepositoryImpl(
                     val classWorkApi = converter.toClassWork(response)
                     dataSource.deleteAllClassWork()
                     classWorkApi.forEach { dataSource.insertClassWork(it) }
-                    val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
+                    val newClassWork =
+                        dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
                     emit(Resource.Success(newClassWork))
                 }
                 is Resource.Error -> {
@@ -261,9 +273,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -273,7 +286,8 @@ class RepositoryImpl(
         page: Int
     ): Flow<Resource<List<ClassWork>>> = flow {
         emit(Resource.Loading())
-        val classWorkLocal = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
+        val classWorkLocal =
+            dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
         emit(Resource.Loading(data = classWorkLocal))
         try {
             val response = api.postClassWork(payload, page)
@@ -282,7 +296,8 @@ class RepositoryImpl(
                     val classWorkApi = converter.toClassWork(response)
                     dataSource.deleteAllClassWork()
                     classWorkApi.forEach { dataSource.insertClassWork(it) }
-                    val newClassWork = dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
+                    val newClassWork =
+                        dataSource.getAllClassWorks().map { converter.toClassWorkFromEntity(it) }
                     emit(Resource.Success(newClassWork))
                 }
                 is Resource.Error -> {
@@ -293,9 +308,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -311,7 +327,8 @@ class RepositoryImpl(
                     val homeWorkApi = converter.toHomeWork(response)
                     dataSource.deleteAllHomeWork()
                     homeWorkApi.forEach { dataSource.insertHomeWork(it) }
-                    val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
+                    val newHomeWork =
+                        dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
                     emit(Resource.Success(newHomeWork))
                 }
                 is Resource.Error -> {
@@ -322,9 +339,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -343,7 +361,8 @@ class RepositoryImpl(
                     val homeWorkApi = converter.toHomeWork(response)
                     dataSource.deleteAllHomeWork()
                     homeWorkApi.forEach { dataSource.insertHomeWork(it) }
-                    val newHomeWork = dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
+                    val newHomeWork =
+                        dataSource.getAllHomeWorks().map { converter.toHomeWorkFromEntity(it) }
                     emit(Resource.Success(newHomeWork))
                 }
                 is Resource.Error -> {
@@ -354,16 +373,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getControlWork(): Flow<Resource<List<ControlWork>>> = flow {
         emit(Resource.Loading())
-        val controlWorkLocal = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
+        val controlWorkLocal =
+            dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
         emit(Resource.Loading(data = controlWorkLocal))
         try {
             val response = api.getControlWork()
@@ -372,7 +393,8 @@ class RepositoryImpl(
                     val controlWorkApi = converter.toControlWork(response)
                     dataSource.deleteAllControlWork()
                     controlWorkApi.forEach { dataSource.insertControlWork(it) }
-                    val newControlWork = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
+                    val newControlWork = dataSource.getAllControlWorks()
+                        .map { converter.toControlWorkFromEntity(it) }
                     emit(Resource.Success(newControlWork))
                 }
                 is Resource.Error -> {
@@ -383,9 +405,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -395,7 +418,8 @@ class RepositoryImpl(
         page: Int
     ): Flow<Resource<List<ControlWork>>> = flow {
         emit(Resource.Loading())
-        val controlWorkLocal = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
+        val controlWorkLocal =
+            dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
         emit(Resource.Loading(data = controlWorkLocal))
         try {
             val response = api.postControlWork(payload)
@@ -404,7 +428,8 @@ class RepositoryImpl(
                     val controlWorkApi = converter.toControlWork(response)
                     dataSource.deleteAllControlWork()
                     controlWorkApi.forEach { dataSource.insertControlWork(it) }
-                    val newControlWorks = dataSource.getAllControlWorks().map { converter.toControlWorkFromEntity(it) }
+                    val newControlWorks = dataSource.getAllControlWorks()
+                        .map { converter.toControlWorkFromEntity(it) }
                     emit(Resource.Success(newControlWorks))
                 }
                 is Resource.Error -> {
@@ -415,9 +440,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -444,43 +470,41 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getTermMarkDialog(url: String): Flow<Resource<TermMarkDialogItem>> = flow {
         emit(Resource.Loading())
-        val termMarkDialogItemLocal = converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
+        val termMarkDialogItemLocal =
+            converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
         emit(Resource.Loading(data = termMarkDialogItemLocal))
         try {
             val response = api.getTermMarkDialog(url)
-            when (converter.toPerson(response)) {
-                is Resource.Success -> {
-                    val termMarkDialogItem = converter.toTermMarkDialogItem(response, url)
-                    dataSource.deleteTermMarkDialogByUrl(url)
-                    dataSource.insertTermMarkDialog(termMarkDialogItem)
-                    val newTermMarkDialog = converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
-                    emit(Resource.Success(newTermMarkDialog))
-                }
-                is Resource.Error -> {
-                    emit(Resource.Error(SESSION_COOKIE_EXPIRED))
-                }
-            }
+            val termMarkDialogItem = converter.toTermMarkDialogItem(response, url)
+            dataSource.deleteTermMarkDialogByUrl(url)
+            dataSource.insertTermMarkDialog(termMarkDialogItem)
+            val newTermMarkDialog =
+                converter.toTermMarkDialogItemFromEntity(dataSource.getTermMarkDialogByUrl(url))
+            emit(Resource.Success(newTermMarkDialog))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getMessagesGotten(): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesGottenLocal = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+        val messagesGottenLocal =
+            dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
         emit(Resource.Loading(data = messagesGottenLocal))
         try {
             val response = api.getMessagesGotten()
@@ -489,7 +513,8 @@ class RepositoryImpl(
                     val messagesGottenApi = converter.toMessages(response)
                     dataSource.deleteAllMessageGotten()
                     messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
-                    val newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+                    val newMessagesGotten = dataSource.getAllMessagesGotten()
+                        .map { converter.toMessageGottenFromEntity(it) }
                     emit(Resource.Success(newMessagesGotten))
                 }
                 is Resource.Error -> {
@@ -500,26 +525,34 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getMessagesGottenByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesGottenLocal = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
+        val messagesGottenLocal =
+            dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
         emit(Resource.Loading(data = messagesGottenLocal))
         try {
-            val response = api.getMessagesGottenByCondition((page+1).toString())
+            val response = api.getMessagesGottenByCondition((page + 1).toString())
             when (converter.toPerson(response)) {
                 is Resource.Success -> {
                     val messagesGottenApi = converter.toMessages(response)
                     messagesGottenApi.forEach { dataSource.insertMessageGotten(it) }
-                    var newMessagesGotten = dataSource.getAllMessagesGotten().map { converter.toMessageGottenFromEntity(it) }
-                    newMessagesGotten = newMessagesGotten.subList(messagesGottenLocal.size, newMessagesGotten.size)
-                    emit(Resource.Success(newMessagesGotten))
+                    var newMessagesGotten = dataSource.getAllMessagesGotten()
+                        .map { converter.toMessageGottenFromEntity(it) }
+                    if (newMessagesGotten.isNotEmpty()) {
+                        newMessagesGotten =
+                            newMessagesGotten.subList(messagesGottenLocal.size, newMessagesGotten.size)
+                        emit(Resource.Success(newMessagesGotten))
+                    } else {
+                        emit(Resource.Success(emptyList()))
+                    }
                 }
                 is Resource.Error -> {
                     emit(Resource.Error(SESSION_COOKIE_EXPIRED))
@@ -529,16 +562,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getMessagesSent(): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesSentLocal = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+        val messagesSentLocal =
+            dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
         emit(Resource.Loading(data = messagesSentLocal))
         try {
             val response = api.getMessagesSent()
@@ -547,7 +582,8 @@ class RepositoryImpl(
                     val messagesSentApi = converter.toMessages(response)
                     dataSource.deleteAllMessageSent()
                     messagesSentApi.forEach { dataSource.insertMessageSent(it) }
-                    val newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+                    val newMessagesSent = dataSource.getAllMessagesSent()
+                        .map { converter.toMessageSentFromEntity(it) }
                     emit(Resource.Success(newMessagesSent))
                 }
                 is Resource.Error -> {
@@ -558,16 +594,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getMessagesSentByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesSentLocal = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
+        val messagesSentLocal =
+            dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
         emit(Resource.Loading(data = messagesSentLocal))
         try {
             val response = api.getMessagesSentByCondition(page.toString())
@@ -576,9 +614,15 @@ class RepositoryImpl(
                     val messagesSentApi = converter.toMessages(response)
                     dataSource.deleteAllMessageSent()
                     messagesSentApi.forEach { dataSource.insertMessageSent(it) }
-                    var newMessagesSent = dataSource.getAllMessagesSent().map { converter.toMessageSentFromEntity(it) }
-                    newMessagesSent = newMessagesSent.subList(messagesSentLocal.size, newMessagesSent.size)
-                    emit(Resource.Success(newMessagesSent))
+                    var newMessagesSent = dataSource.getAllMessagesSent()
+                        .map { converter.toMessageSentFromEntity(it) }
+                    if (newMessagesSent.isNotEmpty()) {
+                        newMessagesSent =
+                            newMessagesSent.subList(messagesSentLocal.size, newMessagesSent.size)
+                        emit(Resource.Success(newMessagesSent))
+                    } else {
+                        emit(Resource.Success(emptyList()))
+                    }
                 }
                 is Resource.Error -> {
                     emit(Resource.Error(SESSION_COOKIE_EXPIRED))
@@ -588,10 +632,9 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
-            Log.e("console log", ": load more messages sent")
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -599,7 +642,8 @@ class RepositoryImpl(
 
     override fun getMessagesStarred(): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesStarredLocal = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+        val messagesStarredLocal =
+            dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
         emit(Resource.Loading(data = messagesStarredLocal))
         try {
             val response = api.getMessagesStarred()
@@ -608,7 +652,8 @@ class RepositoryImpl(
                     val messagesStarredApi = converter.toMessages(response)
                     dataSource.deleteAllMessageStarred()
                     messagesStarredApi.forEach { dataSource.insertMessageStarred(it) }
-                    val newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+                    val newMessagesStarred = dataSource.getAllMessagesStarred()
+                        .map { converter.toMessageStarredFromEntity(it) }
                     emit(Resource.Success(newMessagesStarred))
                 }
                 is Resource.Error -> {
@@ -619,16 +664,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getMessagesStarredByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesStarredLocal = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
+        val messagesStarredLocal =
+            dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
         emit(Resource.Loading(data = messagesStarredLocal))
         try {
             val response = api.getMessagesStarredByCondition(page.toString())
@@ -637,9 +684,17 @@ class RepositoryImpl(
                     val messagesStarredApi = converter.toMessages(response)
                     dataSource.deleteAllMessageStarred()
                     messagesStarredApi.forEach { dataSource.insertMessageStarred(it) }
-                    var newMessagesStarred = dataSource.getAllMessagesStarred().map { converter.toMessageStarredFromEntity(it) }
-                    newMessagesStarred = newMessagesStarred.subList(messagesStarredLocal.size, newMessagesStarred.size)
-                    emit(Resource.Success(newMessagesStarred))
+                    var newMessagesStarred = dataSource.getAllMessagesStarred()
+                        .map { converter.toMessageStarredFromEntity(it) }
+                    if (newMessagesStarred.isNotEmpty()) {
+                        newMessagesStarred = newMessagesStarred.subList(
+                            messagesStarredLocal.size,
+                            newMessagesStarred.size
+                        )
+                        emit(Resource.Success(newMessagesStarred))
+                    } else {
+                        emit(Resource.Success(emptyList()))
+                    }
                 }
                 is Resource.Error -> {
                     emit(Resource.Error(SESSION_COOKIE_EXPIRED))
@@ -649,16 +704,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getMessagesDeleted(): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesDeletedLocal = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+        val messagesDeletedLocal =
+            dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
         emit(Resource.Loading(data = messagesDeletedLocal))
         try {
             val response = api.getMessagesDeleted()
@@ -667,7 +724,8 @@ class RepositoryImpl(
                     val messagesDeletedApi = converter.toMessages(response)
                     dataSource.deleteAllMessageDeleted()
                     messagesDeletedApi.forEach { dataSource.insertMessageDeleted(it) }
-                    val newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+                    val newMessagesDeleted = dataSource.getAllMessagesDeleted()
+                        .map { converter.toMessageDeletedFromEntity(it) }
                     emit(Resource.Success(newMessagesDeleted))
                 }
                 is Resource.Error -> {
@@ -678,16 +736,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getMessagesDeletedByCondition(page: Int): Flow<Resource<List<Message>>> = flow {
         emit(Resource.Loading())
-        val messagesDeletedLocal = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
+        val messagesDeletedLocal =
+            dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
         emit(Resource.Loading(data = messagesDeletedLocal))
         try {
             val response = api.getMessagesDeletedByCondition(page.toString())
@@ -696,9 +756,17 @@ class RepositoryImpl(
                     val messagesDeletedApi = converter.toMessages(response)
                     dataSource.deleteAllMessageDeleted()
                     messagesDeletedApi.forEach { dataSource.insertMessageDeleted(it) }
-                    var newMessagesDeleted = dataSource.getAllMessagesDeleted().map { converter.toMessageDeletedFromEntity(it) }
-                    newMessagesDeleted = newMessagesDeleted.subList(messagesDeletedLocal.size, newMessagesDeleted.size)
-                    emit(Resource.Success(newMessagesDeleted))
+                    var newMessagesDeleted = dataSource.getAllMessagesDeleted()
+                        .map { converter.toMessageDeletedFromEntity(it) }
+                    if (newMessagesDeleted.isNotEmpty()) {
+                        newMessagesDeleted = newMessagesDeleted.subList(
+                            messagesDeletedLocal.size,
+                            newMessagesDeleted.size
+                        )
+                        emit(Resource.Success(newMessagesDeleted))
+                    } else {
+                        emit(Resource.Success(emptyList()))
+                    }
                 }
                 is Resource.Error -> {
                     emit(Resource.Error(SESSION_COOKIE_EXPIRED))
@@ -708,17 +776,22 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
-    override fun getMessageIndividual(id: String, isSent: Boolean): Flow<Resource<MessageIndividual>> = flow {
+    override fun getMessageIndividual(
+        id: String,
+        isSent: Boolean
+    ): Flow<Resource<MessageIndividual>> = flow {
         emit(Resource.Loading())
         dataSource.deleteAllMessageIndividual()
-        val messageIndividualLocal = converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
+        val messageIndividualLocal =
+            converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
         emit(Resource.Loading(data = messageIndividualLocal))
         try {
             val response = api.getMessageIndividual(id)
@@ -731,7 +804,9 @@ class RepositoryImpl(
                     }
                     dataSource.deleteMessageIndividualById(id.toLong())
                     dataSource.insertMessageIndividual(messagesIndividualApi)
-                    val newMessagesIndividual = converter.toMessageIndividualFromEntity(dataSource.getMessageIndividualById(id.toLong()))
+                    val newMessagesIndividual = converter.toMessageIndividualFromEntity(
+                        dataSource.getMessageIndividualById(id.toLong())
+                    )
                     emit(Resource.Success(newMessagesIndividual))
                 }
                 is Resource.Error -> {
@@ -742,9 +817,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -760,7 +836,8 @@ class RepositoryImpl(
                     val holidayApi = converter.toHoliday(response)
                     dataSource.deleteAllHoliday()
                     holidayApi.forEach { dataSource.insertHoliday(it) }
-                    val newHoliday = dataSource.getAllHolidays().map { converter.toHolidayFromEntity(it) }
+                    val newHoliday =
+                        dataSource.getAllHolidays().map { converter.toHolidayFromEntity(it) }
                     emit(Resource.Success(newHoliday))
                 }
                 is Resource.Error -> {
@@ -771,16 +848,18 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
 
     override fun getParentMeetings(): Flow<Resource<List<ParentMeeting>>> = flow {
         emit(Resource.Loading())
-        val parentMeetingsLocal = dataSource.getAllParentMeetings().map { converter.toParentMeetingFromEntity(it) }
+        val parentMeetingsLocal =
+            dataSource.getAllParentMeetings().map { converter.toParentMeetingFromEntity(it) }
         emit(Resource.Loading(data = parentMeetingsLocal))
         try {
             val response = api.getParentMeetings()
@@ -789,7 +868,8 @@ class RepositoryImpl(
                     val parentMeetingsApi = converter.toParentMeeting(response)
                     dataSource.deleteAllParentMeeting()
                     parentMeetingsApi.forEach { dataSource.insertParentMeeting(it) }
-                    val newParentMeetings = dataSource.getAllParentMeetings().map { converter.toParentMeetingFromEntity(it) }
+                    val newParentMeetings = dataSource.getAllParentMeetings()
+                        .map { converter.toParentMeetingFromEntity(it) }
                     emit(Resource.Success(newParentMeetings))
                 }
                 is Resource.Error -> {
@@ -800,9 +880,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }
@@ -811,7 +892,11 @@ class RepositoryImpl(
         emit(Resource.Loading())
         val scheduleLocal = mutableListOf<ScheduleDay>()
         for (i in 1..7) {
-            scheduleLocal.add(ScheduleDay(dataSource.getAllScheduleByWeekDay(i.toLong()).map { converter.toScheduleFromEntity(it) }))
+            scheduleLocal.add(
+                ScheduleDay(
+                    dataSource.getAllScheduleByWeekDay(i.toLong())
+                        .map { converter.toScheduleFromEntity(it) })
+            )
         }
         emit(Resource.Loading(data = scheduleLocal))
         try {
@@ -823,7 +908,11 @@ class RepositoryImpl(
                     scheduleApi.forEach { dataSource.insertSchedule(it) }
                     val newSchedule = mutableListOf<ScheduleDay>()
                     for (i in 1..7) {
-                        newSchedule.add(ScheduleDay(dataSource.getAllScheduleByWeekDay(i.toLong()).map { converter.toScheduleFromEntity(it) }))
+                        newSchedule.add(
+                            ScheduleDay(
+                                dataSource.getAllScheduleByWeekDay(i.toLong())
+                                    .map { converter.toScheduleFromEntity(it) })
+                        )
                     }
                     emit(Resource.Success(newSchedule))
                 }
@@ -835,9 +924,10 @@ class RepositoryImpl(
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))
         } catch (e: IOException) {
             emit(Resource.Error(message = IO_ERROR))
-        } catch (e: HttpRequestTimeoutException){
+        } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
     }

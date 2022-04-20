@@ -46,11 +46,8 @@ fun LoginFragment(
     loginViewModel: LoginViewModel = hiltViewModel(),
     context: Context = LocalContext.current
 ) {
-    /* TODO only for testing */
-    var username by remember { mutableStateOf("abca68237@gmail.com") }
-    var password by remember { mutableStateOf("KR10kly5") }
-//    var username by remember { mutableStateOf(viewModel.credentials.username) }
-//    var password by remember { mutableStateOf(viewModel.credentials.password) }
+    var username by remember { mutableStateOf(loginViewModel.credentialsState.credentials?.username ?: "") }
+    var password by remember { mutableStateOf(loginViewModel.credentialsState.credentials?.password ?: "") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }

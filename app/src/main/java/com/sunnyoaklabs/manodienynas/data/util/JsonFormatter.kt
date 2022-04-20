@@ -7,4 +7,6 @@ interface JsonFormatter {
 
     fun toCalendar(json: String): List<Calendar>
 
+    fun toIsSessionEstablished(json: String): Boolean
+
 }
