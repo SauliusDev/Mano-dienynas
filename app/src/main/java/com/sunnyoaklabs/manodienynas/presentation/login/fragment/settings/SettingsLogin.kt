@@ -1,4 +1,4 @@
-package com.sunnyoaklabs.manodienynas.presentation.login.fragment
+package com.sunnyoaklabs.manodienynas.presentation.login.fragment.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,9 +16,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.sunnyoaklabs.manodienynas.R
+import com.sunnyoaklabs.manodienynas.presentation.core.ItemAppDescription
+import com.sunnyoaklabs.manodienynas.presentation.core.ItemAppLicense
+import com.sunnyoaklabs.manodienynas.presentation.core.ItemReportABug
 import com.sunnyoaklabs.manodienynas.presentation.login.LoginViewModel
 import com.sunnyoaklabs.manodienynas.presentation.login.fragment.destinations.LoginFragmentDestination
-import com.sunnyoaklabs.manodienynas.presentation.login.fragment.settings.dialog.DialogTextSettingsLogin
 import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.primaryGreenAccent
 
@@ -34,15 +36,17 @@ fun SettingsLoginFragment(
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        ToolbarSettings(navigator)
-        ItemKeepSignedIn(loginViewModel)
+        ToolbarSettingsLogin(navigator)
+
+        ItemKeepSignedInLogin(loginViewModel)
         ItemAppDescription(loginViewModel.getAppDescription())
         ItemAppLicense(loginViewModel.getAppLicense())
+        ItemReportABug()
     }
 }
 
 @Composable
-fun ToolbarSettings(
+private fun ToolbarSettingsLogin(
     navigator: DestinationsNavigator
 ) {
     TopAppBar(
@@ -70,7 +74,7 @@ fun ToolbarSettings(
 }
 
 @Composable
-fun ItemKeepSignedIn(
+private fun ItemKeepSignedInLogin(
     loginViewModel: LoginViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -108,112 +112,6 @@ fun ItemKeepSignedIn(
                 )
                 Text(
                     text = stringResource(id = R.string.keep_signed_in)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ItemAppDescription(
-    appDescription: String,
-    modifier: Modifier = Modifier
-) {
-    var showDialog by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = Modifier.padding(
-            top = LocalSpacing.current.medium,
-            start = LocalSpacing.current.small,
-            end = LocalSpacing.current.small
-        ),
-        elevation = 10.dp
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .clickable {
-                    showDialog = true
-                }
-        ) {
-            Row(
-                modifier = Modifier.padding(
-                    horizontal = LocalSpacing.current.medium,
-                    vertical = LocalSpacing.current.medium
-                ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    tint = Color.Gray,
-                    painter = painterResource(id = R.drawable.ic_description),
-                    contentDescription = stringResource(id = R.string.app_description),
-                    modifier = Modifier
-                        .width(30.dp)
-                        .height(30.dp)
-                )
-                Text(
-                    modifier = Modifier.padding(start = LocalSpacing.current.small),
-                    text = AnnotatedString(stringResource(id = R.string.app_description)),
-                )
-                DialogTextSettingsLogin(
-                    showDialog,
-                    stringResource(id = R.string.app_description),
-                    appDescription,
-                    onDismiss = {showDialog = false},
-                    onNegativeClick = {showDialog = false}
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ItemAppLicense(
-    appLicense: String,
-    modifier: Modifier = Modifier,
-) {
-    var showDialog by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = Modifier.padding(
-            top = LocalSpacing.current.medium,
-            start = LocalSpacing.current.small,
-            end = LocalSpacing.current.small
-        ),
-        elevation = 10.dp
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .clickable {
-                    showDialog = true
-                }
-        ) {
-            Row(
-                modifier = modifier.padding(
-                    horizontal = LocalSpacing.current.medium,
-                    vertical = LocalSpacing.current.medium
-                ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    tint = Color.Gray,
-                    painter = painterResource(id = R.drawable.ic_license),
-                    contentDescription = stringResource(id = R.string.app_license),
-                    modifier = Modifier
-                        .width(30.dp)
-                        .height(30.dp)
-                )
-                Text(
-                    modifier = Modifier.padding(start = LocalSpacing.current.small),
-                    text = AnnotatedString(stringResource(id = R.string.app_license)),
-                )
-                DialogTextSettingsLogin(
-                    showDialog,
-                    stringResource(id = R.string.app_license),
-                    appLicense,
-                    onDismiss = {showDialog = false},
-                    onNegativeClick = {showDialog = false}
                 )
             }
         }

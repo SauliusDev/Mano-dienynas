@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.ColorInt
@@ -49,7 +50,7 @@ import com.sunnyoaklabs.manodienynas.presentation.core.getBottomNavTextColor
 import com.sunnyoaklabs.manodienynas.presentation.main.MainViewModel
 import com.sunnyoaklabs.manodienynas.presentation.main.Screen
 import com.sunnyoaklabs.manodienynas.presentation.main.bottomNavigationItems
-import com.sunnyoaklabs.manodienynas.presentation.main.fragment.SettingsMainFragment
+import com.sunnyoaklabs.manodienynas.presentation.main.fragment.settings.SettingsMainFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.events.EventsFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.marks.MarksFragment
 import com.sunnyoaklabs.manodienynas.presentation.main.fragment.messages.MessagesFragment
@@ -224,12 +225,12 @@ fun BottomNavigationBar(
                 },
                 label = {
                     Text(
-                        text = LocalContext.current.resources.getString(screen.title),
+                        text = stringResource(screen.title),
                         color = getBottomNavTextColor(),
-                        fontSize = if (LocalContext.current.resources.getString(screen.title).length >= 9) {
-                            11.sp
-                        } else {
-                            12.sp
+                        fontSize = when(stringResource(screen.title)) {
+                            stringResource(id = R.string.bottom_nav_messages) -> 10.sp
+                            stringResource(id = R.string.bottom_nav_terms) -> 11.sp
+                            else -> 12.sp
                         }
                     )
                 },

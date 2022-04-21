@@ -46,7 +46,7 @@ class SplashViewModel @Inject constructor(
     var errorMessage = ""
         private set
 
-    private var _credentials = Credentials("", "")
+    private var _credentials = Credentials("", "", false)
 
     private val _userStateSplash = MutableStateFlow(UserStateSplash())
     val userStateSplash = _userStateSplash.asStateFlow()
@@ -55,68 +55,67 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             getKeepSignedIn().join()
             getCredentials()
-            if (_credentials != Credentials("", "")) {
-                if (!isInitialLogin) {
-                    /** data will be displayed from cache,
-                     *  cookies will be gotten in MainViewModel
-                    **/
-                    firebaseCrashlytics.log("(MainViewModel) credentials are not null, logging in")
-                    _userStateSplash.emit(
-                        UserStateSplash(
+            if (_credentials.areValidated == true && _keepSignedIn) {
+                /** data will be displayed from cache,
+                 *  cookies will be gotten in MainViewModel
+                **/
+                firebaseCrashlytics.log("(MainViewModel) credentials are not null, logging in")
+                _userStateSplash.emit(
+                    UserStateSplash(
                         isLoading = false,
                         isUserLoggedIn = true
                     )
-                    )
-                } else {
-                    /** in initial login situation there will be no cache data loaded
-                     *  so cookies request will be initiated in SplashViewModel
-                     *  (also verifies if credentials are correct)
-                    **/
-                    firebaseCrashlytics.log("(SplashViewModel) credentials are not null, verifying credentials")
-                    if (!validator.hasInternetConnection(getApplication<ManoDienynasApp>())) {
-                        errorMessage = IO_ERROR
-                        _userStateSplash.emit(
-                            UserStateSplash(
-                                isLoading = false,
-                                isUserLoggedIn = false
-                            )
+                )
+            } else if(isInitialLogin) {
+                /** in initial login situation there will be no cache data loaded
+                 *  so cookies request will be initiated in SplashViewModel
+                 *  (also verifies if credentials are correct)
+                **/
+                firebaseCrashlytics.log("(SplashViewModel) credentials are not null, verifying credentials")
+                if (!validator.hasInternetConnection(getApplication<ManoDienynasApp>())) {
+                    errorMessage = IO_ERROR
+                    _userStateSplash.emit(
+                        UserStateSplash(
+                            isLoading = false,
+                            isUserLoggedIn = false
                         )
-                        this.cancel()
-                        yield()
-                    }
-                    getSessionCookies().collect { wasSessionCreated ->
-                        when (wasSessionCreated) {
-                            is Resource.Success -> {
-                                firebaseCrashlytics.log("(SplashViewModel) Success: credentials, sessionCookies")
-                                _userStateSplash.emit(
-                                    UserStateSplash(
-                                    isLoading = false,
-                                    isUserLoggedIn = true
-                                )
-                                )
-                            }
-                            is Resource.Error -> {
-                                firebaseCrashlytics.log("(SplashViewModel) Error: credentials, sessionCookies")
-                                errorMessage = wasSessionCreated.message ?: UNKNOWN_ERROR
-                                _userStateSplash.emit(
-                                    UserStateSplash(
-                                    isLoading = false,
-                                    isUserLoggedIn = false
-                                )
-                                )
-                            }
-                            else -> {}
+                    )
+                    this.cancel()
+                    yield()
+                }
+                getSessionCookies().collect {
+                    when (it) {
+                        is Resource.Success -> {
+                            updateCredentialsValidated(_credentials)
+                            deleteEverythingInCache()
+                            firebaseCrashlytics.log("(SplashViewModel) Success: credentials, sessionCookies")
+                            _userStateSplash.emit(
+                                UserStateSplash(
+                                isLoading = false,
+                                isUserLoggedIn = true,
+                            )
+                            )
                         }
+                        is Resource.Error -> {
+                            firebaseCrashlytics.log("(SplashViewModel) Error: credentials, sessionCookies")
+                            errorMessage = it.message ?: UNKNOWN_ERROR
+                            _userStateSplash.emit(
+                                UserStateSplash(
+                                isLoading = false,
+                                isUserLoggedIn = false,
+                            )
+                            )
+                        }
+                        else -> {}
                     }
                 }
             } else {
-                firebaseCrashlytics.log("(MainViewModel) credentials are null")
-                errorMessage = NULL_OBJECT_RECEIVED_ERROR
+                deleteCredentials()
                 _userStateSplash.emit(
                     UserStateSplash(
-                    isLoading = false,
-                    isUserLoggedIn = false
-                )
+                        isLoading = false,
+                        isUserLoggedIn = false,
+                    )
                 )
             }
         }
@@ -141,7 +140,40 @@ class SplashViewModel @Inject constructor(
         _credentials = repository.getCredentials()
     }
 
+    private fun updateCredentialsValidated(credentials: Credentials): Job {
+        return viewModelScope.launch {
+            dataSource.deleteCredentials()
+            dataSource.insertCredentials(Credentials(credentials.username, credentials.password, true))
+            getCredentials()
+        }
+    }
+
     fun setInitialLogin(isInitialLogin: Boolean) {
         this.isInitialLogin = isInitialLogin
+    }
+
+    private suspend fun deleteCredentials() {
+        dataSource.deleteCredentials()
+    }
+
+    private suspend fun deleteEverythingInCache() {
+        dataSource.deleteCredentials()
+        dataSource.deleteAllEvents()
+        dataSource.deleteAllMarks()
+        dataSource.deleteAllAttendance()
+        dataSource.deleteAllClassWork()
+        dataSource.deleteAllHomeWork()
+        dataSource.deleteAllControlWork()
+        dataSource.deleteAllTerm()
+        dataSource.deleteAllMessageGotten()
+        dataSource.deleteAllMessageSent()
+        dataSource.deleteAllMessageStarred()
+        dataSource.deleteAllMessageDeleted()
+        dataSource.deleteAllMessageIndividual()
+        dataSource.deleteAllHoliday()
+        dataSource.deleteAllParentMeeting()
+        dataSource.deleteAllSchedule()
+        dataSource.deleteAllCalendar()
+        dataSource.deleteAllCalendarEvent()
     }
 }

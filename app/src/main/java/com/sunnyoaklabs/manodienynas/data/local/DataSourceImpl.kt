@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.local
 
+import android.util.Log
 import com.sunnyoaklabs.manodienynas.ManoDienynasDatabase
 import com.sunnyoaklabs.manodienynas.core.util.DispatcherProvider
 import com.sunnyoaklabs.manodienynas.core.util.toLong
@@ -75,7 +76,8 @@ class DataSourceImpl @Inject constructor(
         return withContext(dispatchers.io) {
             db.credentialsEntityQueries.insertCredentials(
                 credentials.username,
-                credentials.password
+                credentials.password,
+                credentials.areValidated?.toLong()
             )
         }
     }

@@ -27,7 +27,8 @@ class DataSourceObjectParserImpl(
     override fun toCredentialsFromEntity(credentialsEntity: CredentialsEntity?): Credentials {
         return Credentials(
             credentialsEntity?.username ?: "",
-            credentialsEntity?.password ?: ""
+            credentialsEntity?.password ?: "",
+            credentialsEntity?.areValidated?.toBoolean() ?: false,
         )
     }
 

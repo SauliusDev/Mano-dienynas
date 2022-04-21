@@ -1,12 +1,15 @@
 package com.sunnyoaklabs.manodienynas.presentation.main.fragment_view_model
 
+import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.core.util.EventUITypes.START_ACTIVITY_LOGIN_EVENT_UI_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.domain.model.Settings
@@ -20,11 +23,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SettingsMainFragmentViewModel @Inject constructor(
+    private val app: Application,
     private val repository: Repository,
     private val backendApi: BackendApi,
     private val dataSource: DataSource,
     private val getSettings: GetSettings,
-) : ViewModel() {
+    private val validator: Validator,
+) : AndroidViewModel(app) {
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -40,9 +45,9 @@ class SettingsMainFragmentViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            backendApi.getLogout()
+            _eventFlow.emit(UIEvent.StartActivity(START_ACTIVITY_LOGIN_EVENT_UI_TYPE))
+            if (validator.hasInternetConnection(app)) backendApi.getLogout()
             deleteEverythingInCache()
-            _eventFlow.emit(UIEvent.ShowToast(START_ACTIVITY_LOGIN_EVENT_UI_TYPE))
         }
     }
 

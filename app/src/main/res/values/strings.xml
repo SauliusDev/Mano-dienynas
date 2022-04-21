@@ -10,6 +10,7 @@
     <string name="keep_signed_in">Palikti mano paskyrą prijungta</string>
     <string name="app_description">Programos aprašymas</string>
     <string name="app_license">Programos licencija</string>
+    <string name="report_a_bug">Pranėšti apie klaida</string>
     <string name="cancel">Atšaukti</string>
     <string name="ok">Gerai</string>
     <string name="go_to_login_screen">Eiti į prisijungimo ekraną</string>
@@ -28,7 +29,7 @@
     <!-- Main activity -->
     <string name="bottom_nav_events">Įvykiai</string>
     <string name="bottom_nav_marks">Pažymiai</string>
-    <string name="bottom_nav_messages">Žinutės</string>
+    <string name="bottom_nav_messages">Pranešimai</string>
     <string name="bottom_nav_more">Daugiau</string>
     <string name="bottom_nav_terms">Pusmečiai</string>
     <string name="bottom_nav_settings">Nustatymai</string>
@@ -92,5 +93,7 @@
     <string name="snackbar_no_network">Nėra tinklo ryšio!</string>
     <string name="snackbar_timeout">Lėtas susisiekimas su serveriu!</string>
     <string name="snackbar_session_cookie_expired">Sesija pasibaigė!</string>
+    <string name="snackbar_incorrect_credentials">Neteisingi prisijungimo duomenys!</string>
+    <string name="snackbar_empty_credentials">Tušti prisijungimo duomenys!</string>
 
 </resources>

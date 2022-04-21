@@ -2,6 +2,7 @@ package com.sunnyoaklabs.manodienynas.presentation.login.fragment.login
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,6 +36,7 @@ import com.sunnyoaklabs.manodienynas.ui.custom.LocalSpacing
 import com.sunnyoaklabs.manodienynas.ui.theme.accentBlue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 
 
@@ -42,119 +44,127 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginFragment(
     navigator: DestinationsNavigator,
-    modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier,
     context: Context = LocalContext.current
 ) {
-    var username by remember { mutableStateOf(loginViewModel.credentialsState.credentials?.username ?: "") }
-    var password by remember { mutableStateOf(loginViewModel.credentialsState.credentials?.password ?: "") }
+//    var username by remember { mutableStateOf(loginViewModel.credentialsState.credentials?.username ?: "") }
+//    var password by remember { mutableStateOf(loginViewModel.credentialsState.credentials?.password ?: "") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
-    ConstraintLayout(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        val (button) = createRefs()
+    val scaffoldState = rememberScaffoldState()
 
-        SettingButton(
-            isLoading,
-            navigator,
-            modifier = Modifier
-                .constrainAs(button) {
-                    top.linkTo(parent.top, margin = 32.dp)
-                    end.linkTo(parent.end, margin = 64.dp)
-                }
-                .width(50.dp)
-                .height(50.dp)
-        )
-    }
-
-    Column(
-        modifier = modifier
-            .fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Scaffold(
+        scaffoldState = scaffoldState,
     ) {
-        TextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text(stringResource(id = R.string.username)) },
-            maxLines = 1,
-            textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold),
-            modifier = Modifier
-                .padding(
-                    vertical = LocalSpacing.current.medium,
-                    horizontal = LocalSpacing.current.extraLarge
-                )
-                .fillMaxWidth(),
-            enabled = !isLoading
-        )
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(stringResource(id = R.string.password)) },
-            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            maxLines = 1,
-            textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold),
-            trailingIcon = {
-                val image = if (passwordVisibility)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-                IconButton(
-                    onClick = {
-                        passwordVisibility = !passwordVisibility
-                    }
-                ) {
-                    Icon(imageVector = image, "")
-                }
-            },
-            modifier = Modifier
-                .padding(
-                    vertical = LocalSpacing.current.medium,
-                    horizontal = LocalSpacing.current.extraLarge
-                )
-                .fillMaxWidth(),
-            enabled = !isLoading
-        )
-        CheckboxItem(
-            isLoading,
-            loginViewModel
-        )
-        Button(
-            onClick = {
-                if (username.isNotEmpty() && password.isNotEmpty()) {
-                    isLoading = true
-                    startActivityMain(loginViewModel, context, username, password)
-                }
-            },
-            modifier = Modifier
-                .padding(
-                    vertical = LocalSpacing.current.medium,
-                    horizontal = LocalSpacing.current.extraLarge
-                )
-                .fillMaxWidth(),
-            enabled = !isLoading
+        ConstraintLayout(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
-            Text(text = stringResource(id = R.string.sign_in))
+            val (button) = createRefs()
+
+            SettingButton(
+                isLoading,
+                navigator,
+                modifier = Modifier
+                    .constrainAs(button) {
+                        top.linkTo(parent.top, margin = 32.dp)
+                        end.linkTo(parent.end, margin = 64.dp)
+                    }
+                    .width(50.dp)
+                    .height(50.dp)
+            )
         }
-        if(isLoading) {
-            ProgressBar(Modifier.padding(vertical = 20.dp))
+        Column(
+            modifier = modifier
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TextField(
+                value = loginViewModel.username,
+                onValueChange = { loginViewModel.updateUsernameOnType(it) },
+                label = { Text(stringResource(id = R.string.username)) },
+                maxLines = 1,
+                textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold),
+                modifier = Modifier
+                    .padding(
+                        vertical = LocalSpacing.current.medium,
+                        horizontal = LocalSpacing.current.extraLarge
+                    )
+                    .fillMaxWidth(),
+                enabled = !isLoading
+            )
+            TextField(
+                value = loginViewModel.password,
+                onValueChange = { loginViewModel.updatePasswordOnType(it) },
+                label = { Text(stringResource(id = R.string.password)) },
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                maxLines = 1,
+                textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold),
+                trailingIcon = {
+                    val image = if (passwordVisibility)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+                    IconButton(
+                        onClick = {
+                            passwordVisibility = !passwordVisibility
+                        }
+                    ) {
+                        Icon(imageVector = image, "")
+                    }
+                },
+                modifier = Modifier
+                    .padding(
+                        vertical = LocalSpacing.current.medium,
+                        horizontal = LocalSpacing.current.extraLarge
+                    )
+                    .fillMaxWidth(),
+                enabled = !isLoading
+            )
+            CheckboxItem(
+                isLoading,
+                loginViewModel
+            )
+            Button(
+                onClick = {
+                    if (loginViewModel.username.isNotEmpty() && loginViewModel.password.isNotEmpty()) {
+                        isLoading = true
+                        startActivityMain(context)
+                    } else {
+                        CoroutineScope(Main).launch {
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = context.resources.getString(R.string.snackbar_empty_credentials),
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .padding(
+                        vertical = LocalSpacing.current.medium,
+                        horizontal = LocalSpacing.current.extraLarge
+                    )
+                    .fillMaxWidth(),
+                enabled = !isLoading
+            ) {
+                Text(text = stringResource(id = R.string.sign_in))
+            }
+            if(isLoading) {
+                ProgressBar(Modifier.padding(vertical = 20.dp))
+            }
         }
     }
 }
 
 private fun startActivityMain(
-    loginViewModel: LoginViewModel,
     context: Context,
-    username: String,
-    password: String
 ){
     CoroutineScope(IO).launch {
-        loginViewModel.updateCredentials(Credentials(username, password)).join()
         val intent = Intent(context, MainActivity::class.java)
             .putExtra("initial", "Login from login activity")
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.sunnyoaklabs.manodienynas.MainActivity
 import com.sunnyoaklabs.manodienynas.R
 import com.sunnyoaklabs.manodienynas.core.util.Resource
+import com.sunnyoaklabs.manodienynas.core.util.UIEvent
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
 import com.sunnyoaklabs.manodienynas.domain.model.Settings
@@ -23,10 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import javax.inject.Inject
@@ -40,7 +38,9 @@ class LoginViewModel @Inject constructor(
     private val getSettings: GetSettings
 ) : ViewModel() {
 
-    var credentialsState by mutableStateOf(CredentialsState())
+    var username by mutableStateOf("")
+        private set
+    var password by mutableStateOf("")
         private set
 
     var keepSignedIn by mutableStateOf(SettingsState())
@@ -48,30 +48,31 @@ class LoginViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            getCredentials()
             getKeepSignedIn()
         }
     }
 
     private suspend fun getCredentials() {
-        credentialsState = CredentialsState(
-            repository.getCredentials(),
-            false
-        )
+        val credentials = repository.getCredentials()
+        username = credentials.username
+        password = credentials.password
     }
 
-    private suspend fun insertCredentials(credentials: Credentials) {
-        dataSource.insertCredentials(credentials)
+    fun updateUsernameOnType(username: String) {
+        this.username = username
+        updateCredentialsNotValidated(Credentials(username, password))
     }
 
-    private suspend fun deleteCredentials() {
-        dataSource.deleteCredentials()
+    fun updatePasswordOnType(password: String) {
+        this.password = password
+        updateCredentialsNotValidated(Credentials(username, password))
     }
 
-    fun updateCredentials(credentials: Credentials): Job {
+    private fun updateCredentialsNotValidated(credentials: Credentials): Job {
         return viewModelScope.launch {
-            deleteCredentials()
-            insertCredentials(credentials = credentials)
-            getCredentials()
+            dataSource.deleteCredentials()
+            dataSource.insertCredentials(Credentials(credentials.username, credentials.password, false))
         }
     }
 
