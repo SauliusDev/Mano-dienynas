@@ -48,9 +48,6 @@ fun LoginFragment(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current
 ) {
-//    var username by remember { mutableStateOf(loginViewModel.credentialsState.credentials?.username ?: "") }
-//    var password by remember { mutableStateOf(loginViewModel.credentialsState.credentials?.password ?: "") }
-
     var passwordVisibility by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 

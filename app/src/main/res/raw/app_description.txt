@@ -9,6 +9,6 @@
 Programa kol kas yra tik ankstyvoje (beta) versijoje todėl kai kurios funkcijos gali būti neištobulintos. Programą numatoma tobulinti, taisyti esamas ar pastebėtas klaidas. Pastabas ir pasiūlymus prašome siųsti pasirinkus meniu "Praneškite apie klaidą".
 
 Įspėjimas:
-- Programą gali neveikti su trimestrais
+- Programa gali neveikti su trimestrais
 
 Programos versija
