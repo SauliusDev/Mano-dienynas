@@ -185,7 +185,8 @@ private fun EmptyMessagesDeletedItem(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_empty_folder),
-                contentDescription = stringResource(id = R.string.no_data)
+                contentDescription = stringResource(id = R.string.no_data),
+                modifier = Modifier.size(150.dp)
             )
             Text(text = stringResource(id = R.string.no_data))
             Spacer(modifier = Modifier.height(10.dp))
@@ -202,7 +203,7 @@ private fun EmptyMessagesDeletedItem(
             ) {
                 Icon(
                     modifier = Modifier
-                        .width(50.dp)
+                        .size(50.dp)
                         .height(50.dp),
                     painter = painterResource(id = R.drawable.ic_download),
                     contentDescription = stringResource(id = R.string.reload),

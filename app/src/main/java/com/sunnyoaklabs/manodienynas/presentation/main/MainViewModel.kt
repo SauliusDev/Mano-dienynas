@@ -38,6 +38,7 @@ import com.sunnyoaklabs.manodienynas.core.util.Fragments.SETTINGS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Fragments.TERMS_FRAGMENT
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.core.util.demo.DemoAccount
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.data.remote.BackendApi
 import com.sunnyoaklabs.manodienynas.domain.repository.Repository
@@ -71,6 +72,8 @@ class MainViewModel @Inject constructor(
     val settingsMainFragmentViewModel: SettingsMainFragmentViewModel
 ) : AndroidViewModel(app) {
 
+    private var isDemoAccount = false
+
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -84,8 +87,14 @@ class MainViewModel @Inject constructor(
 
     private var dataLoadScope: CoroutineScope = CoroutineScope(Job())
 
+    fun setDemoAccount(isDemoAccount: Boolean) {
+        this.isDemoAccount = isDemoAccount
+        eventsFragmentViewModel.initDemo()
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun onFragmentOpen(fragment: String) {
+        if(isDemoAccount) return
         verifySessionCookies()
         dataLoadScope.cancel()
         dataLoadScope = CoroutineScope(Job())

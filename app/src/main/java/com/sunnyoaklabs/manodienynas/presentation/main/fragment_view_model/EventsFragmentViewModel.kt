@@ -15,6 +15,7 @@ import com.sunnyoaklabs.manodienynas.ManoDienynasApp
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.UIEvent
+import com.sunnyoaklabs.manodienynas.core.util.demo.DemoAccount
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEvents
 import com.sunnyoaklabs.manodienynas.domain.use_case.GetEventsPage
@@ -30,7 +31,8 @@ class EventsFragmentViewModel @Inject constructor(
     private val app: Application,
     private val getEvents: GetEvents,
     private val getEventsPage: GetEventsPage,
-    val validator: Validator
+    val validator: Validator,
+    val demoAccount: DemoAccount
 ) : AndroidViewModel(app) {
 
     private val _eventState = mutableStateOf(EventState())
@@ -38,6 +40,15 @@ class EventsFragmentViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    fun initDemo() {
+        _eventState.value = eventState.value.copy(
+            events = demoAccount.getDataDemoAccountEvent(),
+            isLoading = false,
+            isLoadingLocale = false,
+            isEveryEventLoaded = true
+        )
+    }
 
     fun initEventsAndPerson(coroutineScope: CoroutineScope): Job {
         return coroutineScope.launch {

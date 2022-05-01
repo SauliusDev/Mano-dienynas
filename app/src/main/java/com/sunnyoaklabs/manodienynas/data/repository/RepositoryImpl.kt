@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.data.repository
 
 import android.util.Log
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sunnyoaklabs.manodienynas.core.util.Errors
 import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.SESSION_COOKIE_EXPIRED
@@ -50,6 +51,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -86,6 +88,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -128,6 +131,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -158,6 +162,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -194,6 +199,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -212,6 +218,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -244,6 +251,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -276,6 +284,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -311,6 +320,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -342,6 +352,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -376,6 +387,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -408,6 +420,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -443,6 +456,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -473,6 +487,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -496,6 +511,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -528,6 +544,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -565,6 +582,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -597,6 +615,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -635,6 +654,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -667,6 +687,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -707,6 +728,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -739,6 +761,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -779,6 +802,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -820,6 +844,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -851,6 +876,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -883,6 +909,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }
@@ -927,6 +954,7 @@ class RepositoryImpl(
         } catch (e: HttpRequestTimeoutException) {
             emit(Resource.Error(message = TIMEOUT_ERROR))
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             e.printStackTrace()
             emit(Resource.Error(message = UNKNOWN_ERROR))
         }

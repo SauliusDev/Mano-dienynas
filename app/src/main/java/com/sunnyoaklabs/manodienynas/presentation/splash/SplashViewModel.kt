@@ -17,6 +17,7 @@ import com.sunnyoaklabs.manodienynas.core.util.Errors.IO_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.NULL_OBJECT_RECEIVED_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Errors.UNKNOWN_ERROR
 import com.sunnyoaklabs.manodienynas.core.util.Resource
+import com.sunnyoaklabs.manodienynas.core.util.demo.DemoAccount
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
 import com.sunnyoaklabs.manodienynas.domain.model.Credentials
@@ -36,8 +37,12 @@ class SplashViewModel @Inject constructor(
     private val getSessionCookies: GetSessionCookies,
     private val dataSource: DataSource,
     private val firebaseCrashlytics: FirebaseCrashlytics,
-    private val getSettings: GetSettings
+    private val getSettings: GetSettings,
+    private val demoAccount: DemoAccount
 ) : AndroidViewModel(app) {
+
+    var isDemoAccount = false
+        private set
 
     private var _keepSignedIn = false
 
@@ -53,8 +58,9 @@ class SplashViewModel @Inject constructor(
 
     fun runSplash() {
         viewModelScope.launch {
-            getKeepSignedIn().join()
             getCredentials()
+            if (demoAccount.verifyDemoAccount(repository.getCredentials())) onDemo(this)
+            getKeepSignedIn().join()
             if (_credentials.areValidated == true && _keepSignedIn) {
                 /** data will be displayed from cache,
                  *  cookies will be gotten in MainViewModel
@@ -119,6 +125,17 @@ class SplashViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private suspend fun onDemo(coroutineScope: CoroutineScope) {
+        isDemoAccount = true
+        _userStateSplash.emit(
+            UserStateSplash(
+                isLoading = false,
+                isUserLoggedIn = true
+            )
+        )
+        coroutineScope.cancel()
     }
 
     private suspend fun getKeepSignedIn(): Job {

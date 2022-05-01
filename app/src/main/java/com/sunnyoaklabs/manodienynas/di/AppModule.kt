@@ -8,6 +8,8 @@ import com.squareup.sqldelight.db.SqlDriver
 import com.sunnyoaklabs.manodienynas.ManoDienynasDatabase
 import com.sunnyoaklabs.manodienynas.core.util.DispatcherProvider
 import com.sunnyoaklabs.manodienynas.core.util.StandardDispatchers
+import com.sunnyoaklabs.manodienynas.core.util.demo.DemoAccount
+import com.sunnyoaklabs.manodienynas.core.util.demo.DemoAccountImpl
 import com.sunnyoaklabs.manodienynas.core.util.validator.Validator
 import com.sunnyoaklabs.manodienynas.core.util.validator.ValidatorImpl
 import com.sunnyoaklabs.manodienynas.data.local.DataSource
@@ -34,9 +36,10 @@ object AppModule {
         app: Application,
         getEvents: GetEvents,
         getEventsPage: GetEventsPage,
-        validator: Validator
+        validator: Validator,
+        demoAccount: DemoAccount
     ): EventsFragmentViewModel {
-        return EventsFragmentViewModel(app, getEvents, getEventsPage, validator)
+        return EventsFragmentViewModel(app, getEvents, getEventsPage, validator, demoAccount)
     }
 
     @Provides
@@ -155,6 +158,12 @@ object AppModule {
     @Singleton
     fun provideBackendApi(): BackendApi {
         return BackendApi.create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDemoAccount(): DemoAccount {
+        return DemoAccountImpl()
     }
 
     @Provides

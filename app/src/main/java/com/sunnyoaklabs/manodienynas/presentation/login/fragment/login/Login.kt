@@ -130,6 +130,7 @@ fun LoginFragment(
             Button(
                 onClick = {
                     if (loginViewModel.username.isNotEmpty() && loginViewModel.password.isNotEmpty()) {
+                        loginViewModel.updateCredentialsOnType(loginViewModel.username, loginViewModel.password)
                         isLoading = true
                         startActivityMain(context)
                     } else {

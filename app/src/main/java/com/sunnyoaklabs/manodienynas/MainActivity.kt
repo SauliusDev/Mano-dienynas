@@ -91,7 +91,8 @@ class MainActivity : AppCompatActivity() {
                 if (!it.isUserLoggedIn && !it.isLoading) {
                     startActivityLogin(this@MainActivity)
                 } else if(!it.isLoading) {
-                    mainViewModel.initSessionCookies()
+                    if (splashViewModel.isDemoAccount) mainViewModel.setDemoAccount(true)
+                    else mainViewModel.initSessionCookies()
                 }
             }
         }

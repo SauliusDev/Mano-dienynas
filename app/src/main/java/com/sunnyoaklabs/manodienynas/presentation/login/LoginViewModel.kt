@@ -3,6 +3,7 @@ package com.sunnyoaklabs.manodienynas.presentation.login
 import android.app.Application
 import android.content.Intent
 import android.util.Log
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +58,10 @@ class LoginViewModel @Inject constructor(
         val credentials = repository.getCredentials()
         username = credentials.username
         password = credentials.password
+    }
+
+    fun updateCredentialsOnType(username: String, password: String) {
+        updateCredentialsNotValidated(Credentials(username, password))
     }
 
     fun updateUsernameOnType(username: String) {

@@ -184,7 +184,8 @@ private fun EmptyParentMeetingsItem(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_empty_folder),
-                contentDescription = stringResource(id = R.string.no_data)
+                contentDescription = stringResource(id = R.string.no_data),
+                modifier = Modifier.size(150.dp)
             )
             Text(text = stringResource(id = R.string.no_data))
             Spacer(modifier = Modifier.height(10.dp))
