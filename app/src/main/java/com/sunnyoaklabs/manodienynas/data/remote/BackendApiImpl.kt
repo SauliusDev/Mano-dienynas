@@ -2,9 +2,9 @@ package com.sunnyoaklabs.manodienynas.data.remote
 
 import android.util.Log
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.ATTENDANCE_GET
+import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.BASE_URL
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_EVENT_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CALENDAR_GET
-import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CHANGE_ROLE_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CLASS_WORK_GET
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CLASS_WORK_POST
 import com.sunnyoaklabs.manodienynas.data.remote.HttpRoutes.CONTROL_WORK_GET
@@ -59,7 +59,7 @@ class BackendApiImpl(
     }
 
     override suspend fun getChangeRole(schoolId: String): String {
-        return client.get { url(CHANGE_ROLE_GET.replace("{school_id}", schoolId)) }
+        return client.get { url(BASE_URL+schoolId) }
     }
 
     override suspend fun postEvents(postEvents: PostEvents): String {

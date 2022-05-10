@@ -2,17 +2,11 @@ package com.sunnyoaklabs.manodienynas.data.remote
 
 object HttpRoutes {
 
-    private const val BASE_URL = "https://www.manodienynas.lt"
+    const val BASE_URL = "https://www.manodienynas.lt"
    
     const val LOGIN_POST = "$BASE_URL/1/lt/ajax/user/login"
 
     const val LOGOUT_GET = "$BASE_URL/1/lt/action/user/logout"
-
-    /**
-     * 1-2365-23/1 - saules
-     * 1-2158-23/1 - muzikos
-     * **/
-    const val CHANGE_ROLE_GET = "$BASE_URL/1/lt/action/user/change_role/1-{school_id}-23/1"
 
     const val EVENTS_POST = "$BASE_URL/event/list"
     const val EVENTS_GET = "$BASE_URL/1/lt/page/sf/resolve_post/event/list"

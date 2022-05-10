@@ -2,6 +2,7 @@ package com.sunnyoaklabs.manodienynas.presentation.main.fragment.settings.dialog
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -101,6 +102,7 @@ private fun ChangeRoleListItem(
                             context.startActivity(intent)
                         }
                     } else {
+                        Log.e("console log", "compose "+schoolInfo.schoolId+" | "+ settings.selectedSchool.schoolId)
                         onHideDialog()
                     }
                 }

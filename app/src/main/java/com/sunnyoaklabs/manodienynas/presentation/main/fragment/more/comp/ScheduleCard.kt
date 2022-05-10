@@ -104,7 +104,7 @@ private fun ScheduleItem(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = weekDays[scheduleDay.dayLessons[0].weekDay.toInt()],
+                    text = weekDays[scheduleDay.dayLessons[0].weekDay.toInt()-1],
                     fontSize = 16.sp,
                     modifier = Modifier.padding(4.dp).fillMaxWidth(),
                     textAlign = TextAlign.Center

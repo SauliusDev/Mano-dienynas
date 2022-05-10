@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.data.util
 
+import android.util.Log
 import com.sunnyoaklabs.manodienynas.core.util.Resource
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.ATTENDANCE_EVENT_TYPE
 import com.sunnyoaklabs.manodienynas.core.util.EventTypes.CHANGED_MARK_EVENT_TYPE
@@ -24,7 +25,10 @@ class JsoupWebScrapper() : WebScrapper {
                 val schoolName =
                     elementSchoolsDetails[i].getElementsByClass("additional-school-name overflowed-text ")
                         .text()
-                val schoolId = elementSchoolWrapper[i].attr("data-school_id")
+                val schoolId =
+                    elementSchoolWrapper[i]
+                        .getElementsByTag("li").attr("onClick").toString()
+                        .removePrefix("window.location.href = '").removeSuffix("'")
                 schoolsInfo.add(SchoolInfo(roleName, schoolName, schoolId))
             }
             return Resource.Success(Person(
