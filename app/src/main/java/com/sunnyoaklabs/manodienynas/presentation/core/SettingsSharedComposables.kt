@@ -1,6 +1,7 @@
 package com.sunnyoaklabs.manodienynas.presentation.core
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -38,7 +39,7 @@ fun ItemAppDescription(
             start = LocalSpacing.current.small,
             end = LocalSpacing.current.small
         ),
-        elevation = 10.dp
+        elevation = 10.dp,
     ) {
         Box(
             modifier = modifier
@@ -156,7 +157,6 @@ fun ItemReportABug(
                     intent.putExtra(Intent.EXTRA_EMAIL, addresses)
                     intent.putExtra(Intent.EXTRA_SUBJECT, subject)
                     if (intent.resolveActivity(context.packageManager) != null) {
-                        Log.e("resolveActivity", "default called, value: ")
                         context.startActivity(intent)
                     }
                 }

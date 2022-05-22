@@ -92,7 +92,6 @@ class MainViewModel @Inject constructor(
         eventsFragmentViewModel.initDemo()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun onFragmentOpen(fragment: String) {
         if(isDemoAccount) return
         verifySessionCookies()

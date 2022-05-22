@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -21,9 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -70,7 +74,6 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private val splashViewModel: SplashViewModel by viewModels()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /** Handles initial login **/
@@ -89,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             splashViewModel.runSplash()
             splashViewModel.userStateSplash.collect {
                 if (!it.isUserLoggedIn && !it.isLoading) {
-                    startActivityLogin(this@MainActivity)
+                    startActivityLogin()
                 } else if(!it.isLoading) {
                     if (splashViewModel.isDemoAccount) mainViewModel.setDemoAccount(true)
                     else mainViewModel.initSessionCookies()
@@ -158,11 +161,12 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun startActivityLogin(context: Context) {
-        val intent = Intent(context, LoginActivity::class.java)
+    private fun startActivityLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
             .putExtra("error", splashViewModel.errorMessage)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        context.startActivity(intent)
+        this.finish()
+        this.startActivity(intent)
     }
 
     private suspend fun processEvent(
@@ -179,9 +183,7 @@ class MainActivity : AppCompatActivity() {
             is UIEvent.StartActivity -> {
                 when(event.message) {
                     START_ACTIVITY_LOGIN_EVENT_UI_TYPE -> {
-                        val intent = Intent(this, LoginActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        this.startActivity(intent)
+                        startActivityLogin()
                     }
                 }
             }
@@ -202,170 +204,171 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-}
-
-@Composable
-fun BottomNavigationBar(
-    navController: NavHostController,
-    mainViewModel: MainViewModel,
-    bottomNavigationItems: List<Screen>
-) {
-    BottomNavigation(
-        backgroundColor = primaryGreenAccent,
+    @Composable
+    fun BottomNavigationBar(
+        navController: NavHostController,
+        mainViewModel: MainViewModel,
+        bottomNavigationItems: List<Screen>
     ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-        bottomNavigationItems.forEach { screen ->
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = screen.icon),
-                        contentDescription = LocalContext.current.resources.getString(screen.title),
-                        tint = accentGreenDarkest
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(screen.title),
-                        color = getBottomNavTextColor(),
-                        fontSize = when(stringResource(screen.title)) {
-                            stringResource(id = R.string.bottom_nav_messages) -> 10.sp
-                            stringResource(id = R.string.bottom_nav_terms) -> 11.sp
-                            else -> 12.sp
-                        }
-                    )
-                },
-                selected = currentRoute == screen.route,
-                alwaysShowLabel = false,
-                onClick = {
-                    when (screen.route) {
-                        "events" -> {
-                            mainViewModel.onFragmentOpen(EVENTS_FRAGMENT)
-                            navController.navigate(Screen.Events.route)
-                        }
-                        "marks" -> {
-                            mainViewModel.onFragmentOpen(MARKS_FRAGMENT)
-                            navController.navigate(Screen.Marks.route)
-                        }
-                        "messages" -> {
-                            mainViewModel.onFragmentOpen(MESSAGES_FRAGMENT)
-                            navController.navigate(Screen.Messages.route)
-                        }
-                        "terms" -> {
-                            mainViewModel.onFragmentOpen(TERMS_FRAGMENT)
-                            navController.navigate(Screen.Terms.route)
-                        }
-                        "more" -> {
-                            mainViewModel.onFragmentOpen(MORE_FRAGMENT)
-                            navController.navigate(Screen.More.route)
-                        }
-                        "settings" -> {
-                            mainViewModel.onFragmentOpen(SETTINGS_FRAGMENT)
-                            navController.navigate(Screen.Settings.route)
+        BottomNavigation(
+            backgroundColor = primaryGreenAccent,
+        ) {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+            bottomNavigationItems.forEach { screen ->
+                BottomNavigationItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = screen.icon),
+                            contentDescription = LocalContext.current.resources.getString(screen.title),
+                            tint = accentGreenDarkest,
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(screen.title),
+                            color = getBottomNavTextColor(),
+                            fontSize = with(LocalDensity.current) { 10.dp.toSp() },
+                            maxLines = 1,
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    selected = currentRoute == screen.route,
+                    alwaysShowLabel = false,
+                    onClick = {
+                        when (screen.route) {
+                            "events" -> {
+                                mainViewModel.onFragmentOpen(EVENTS_FRAGMENT)
+                                navController.navigate(Screen.Events.route)
+                            }
+                            "marks" -> {
+                                mainViewModel.onFragmentOpen(MARKS_FRAGMENT)
+                                navController.navigate(Screen.Marks.route)
+                            }
+                            "messages" -> {
+                                mainViewModel.onFragmentOpen(MESSAGES_FRAGMENT)
+                                navController.navigate(Screen.Messages.route)
+                            }
+                            "terms" -> {
+                                mainViewModel.onFragmentOpen(TERMS_FRAGMENT)
+                                navController.navigate(Screen.Terms.route)
+                            }
+                            "more" -> {
+                                mainViewModel.onFragmentOpen(MORE_FRAGMENT)
+                                navController.navigate(Screen.More.route)
+                            }
+                            "settings" -> {
+                                mainViewModel.onFragmentOpen(SETTINGS_FRAGMENT)
+                                navController.navigate(Screen.Settings.route)
+                            }
                         }
                     }
+                )
+            }
+        }
+    }
+
+    sealed class MenuAction(
+        @StringRes val label: Int,
+        @DrawableRes val icon: Int,
+        @ColorInt val color: Color
+    ) {
+        object Settings : MenuAction(R.string.settings, R.drawable.ic_settings, accentGreenDarkest)
+    }
+
+    @Composable
+    fun ToolbarMain(
+        mainViewModel: MainViewModel,
+        context: Context,
+        navController: NavHostController
+    ) {
+        var isDataBeingLoaded by remember {
+            mutableStateOf(false)
+        }
+        isDataBeingLoaded = checkIfLoading(mainViewModel = mainViewModel)
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                    val imageLoader = ImageLoader.Builder(context)
+                        .components {
+                            if (Build.VERSION.SDK_INT >= 28) {
+                                add(ImageDecoderDecoder.Factory())
+                            } else {
+                                add(GifDecoder.Factory())
+                            }
+                        }
+                        .build()
+                    if (isDataBeingLoaded) {
+                        Image(
+                            painter = rememberImagePainter(data = R.drawable.loading_animation, imageLoader = imageLoader),
+                            contentDescription = "",
+                            modifier = Modifier.size(25.dp)
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_data_synched),
+                            contentDescription = "",
+                            tint = accentGreenDarkest,
+                            modifier = Modifier.size(25.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(id = R.string.app_name_long),
+                        color = accentGreenDarkest,
+                    )
                 }
+            },
+            backgroundColor = primaryGreenAccent,
+            actions = {
+                AppBarIcon(
+                    MenuAction.Settings
+                ) {
+                    navController.navigate(Screen.Settings.route)
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun AppBarIcon(
+        menuAction: MenuAction,
+        function: () -> Unit
+    ) {
+        IconButton(
+            modifier = Modifier
+                .background(Color.Transparent)
+                .padding(end = 10.dp),
+            onClick = {
+                function.invoke()
+            },
+        ) {
+            Icon(
+                painter = painterResource(id = menuAction.icon),
+                contentDescription = stringResource(id = menuAction.label),
+                tint = menuAction.color
             )
         }
     }
-}
 
-sealed class MenuAction(
-    @StringRes val label: Int,
-    @DrawableRes val icon: Int,
-    @ColorInt val color: Color
-) {
-    object Settings : MenuAction(R.string.settings, R.drawable.ic_settings, accentGreenDarkest)
-}
-
-@Composable
-fun ToolbarMain(
-    mainViewModel: MainViewModel,
-    context: Context,
-    navController: NavHostController
-) {
-    var isDataBeingLoaded by remember {
-        mutableStateOf(false)
+    private fun checkIfLoading(mainViewModel: MainViewModel): Boolean {
+        return mainViewModel.eventsFragmentViewModel.eventState.value.isLoading ||
+                mainViewModel.marksFragmentViewModel.markState.value.isLoading ||
+                mainViewModel.marksFragmentViewModel.controlWorkState.value.isLoading ||
+                mainViewModel.marksFragmentViewModel.homeWorkState.value.isLoading ||
+                mainViewModel.marksFragmentViewModel.classWorkState.value.isLoading ||
+                mainViewModel.messagesFragmentViewModel.messagesGottenState.value.isLoading ||
+                mainViewModel.messagesFragmentViewModel.messagesSentState.value.isLoading ||
+                mainViewModel.messagesFragmentViewModel.messagesStarredState.value.isLoading ||
+                mainViewModel.messagesFragmentViewModel.messagesDeletedState.value.isLoading ||
+                mainViewModel.termsFragmentViewModel.termState.value.isLoading ||
+                mainViewModel.moreFragmentViewModel.scheduleState.value.isLoading ||
+                mainViewModel.moreFragmentViewModel.holidayState.value.isLoading ||
+                mainViewModel.moreFragmentViewModel.parentMeetingState.value.isLoading ||
+                mainViewModel.userStateState.value.isLoading
     }
-    isDataBeingLoaded = checkIfLoading(mainViewModel = mainViewModel)
-    TopAppBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
-        title = {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                val imageLoader = ImageLoader.Builder(context)
-                    .components {
-                        if (Build.VERSION.SDK_INT >= 28) {
-                            add(ImageDecoderDecoder.Factory())
-                        } else {
-                            add(GifDecoder.Factory())
-                        }
-                    }
-                    .build()
-                if (isDataBeingLoaded) {
-                    Image(
-                        painter = rememberImagePainter(data = R.drawable.loading_animation, imageLoader = imageLoader),
-                        contentDescription = "",
-                        modifier = Modifier.size(25.dp)
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_data_synched),
-                        contentDescription = "",
-                        tint = accentGreenDarkest,
-                        modifier = Modifier.size(25.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(text = stringResource(id = R.string.app_name_long), color = accentGreenDarkest)
-            }
-        },
-        backgroundColor = primaryGreenAccent,
-        actions = {
-            AppBarIcon(
-                MenuAction.Settings
-            ) {
-                navController.navigate(Screen.Settings.route)
-            }
-        }
-    )
-}
-
-@Composable
-fun AppBarIcon(
-    menuAction: MenuAction,
-    function: () -> Unit
-) {
-    IconButton(
-        modifier = Modifier
-            .background(Color.Transparent)
-            .padding(end = 10.dp),
-        onClick = {
-            function.invoke()
-        },
-    ) {
-        Icon(
-            painter = painterResource(id = menuAction.icon),
-            contentDescription = stringResource(id = menuAction.label),
-            tint = menuAction.color
-        )
-    }
-}
-
-private fun checkIfLoading(mainViewModel: MainViewModel): Boolean {
-    return mainViewModel.eventsFragmentViewModel.eventState.value.isLoading ||
-        mainViewModel.marksFragmentViewModel.markState.value.isLoading ||
-        mainViewModel.marksFragmentViewModel.controlWorkState.value.isLoading ||
-        mainViewModel.marksFragmentViewModel.homeWorkState.value.isLoading ||
-        mainViewModel.marksFragmentViewModel.classWorkState.value.isLoading ||
-        mainViewModel.messagesFragmentViewModel.messagesGottenState.value.isLoading ||
-        mainViewModel.messagesFragmentViewModel.messagesSentState.value.isLoading ||
-        mainViewModel.messagesFragmentViewModel.messagesStarredState.value.isLoading ||
-        mainViewModel.messagesFragmentViewModel.messagesDeletedState.value.isLoading ||
-        mainViewModel.termsFragmentViewModel.termState.value.isLoading ||
-        mainViewModel.moreFragmentViewModel.scheduleState.value.isLoading ||
-        mainViewModel.moreFragmentViewModel.holidayState.value.isLoading ||
-        mainViewModel.moreFragmentViewModel.parentMeetingState.value.isLoading ||
-        mainViewModel.userStateState.value.isLoading
 }

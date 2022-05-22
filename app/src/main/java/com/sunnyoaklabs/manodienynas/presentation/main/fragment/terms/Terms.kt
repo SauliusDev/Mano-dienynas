@@ -149,11 +149,10 @@ private fun TermListItem(
                     Spacer(modifier = Modifier.width(5.dp))
                     Box(
                         modifier = Modifier
-                            .size(18.dp)
                             .clip(RoundedCornerShape(5.dp))
                             .background(accentYellowDark)
                     ) {
-                        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.padding(5.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                             Text(
                                 text = "${i+1}",
                                 modifier = Modifier,

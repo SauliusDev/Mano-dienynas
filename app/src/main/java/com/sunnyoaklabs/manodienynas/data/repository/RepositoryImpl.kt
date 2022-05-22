@@ -123,6 +123,7 @@ class RepositoryImpl(
                 is Resource.Error -> {
                     emit(Resource.Error(SESSION_COOKIE_EXPIRED))
                 }
+                else -> {}
             }
         } catch (e: RedirectResponseException) {
             emit(Resource.Error(message = SESSION_COOKIE_EXPIRED))

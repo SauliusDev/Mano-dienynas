@@ -1,5 +1,6 @@
 package com.sunnyoaklabs.manodienynas.presentation.login.fragment.login
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -50,6 +51,7 @@ fun LoginFragment(
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
+    val activity = (LocalContext.current as? Activity)
 
     val scaffoldState = rememberScaffoldState()
 
@@ -132,7 +134,7 @@ fun LoginFragment(
                     if (loginViewModel.username.isNotEmpty() && loginViewModel.password.isNotEmpty()) {
                         loginViewModel.updateCredentialsOnType(loginViewModel.username, loginViewModel.password)
                         isLoading = true
-                        startActivityMain(context)
+                        startActivityMain(activity)
                     } else {
                         CoroutineScope(Main).launch {
                             scaffoldState.snackbarHostState.showSnackbar(
@@ -160,14 +162,13 @@ fun LoginFragment(
 }
 
 private fun startActivityMain(
-    context: Context,
+    activity: Activity?
 ){
-    CoroutineScope(IO).launch {
-        val intent = Intent(context, MainActivity::class.java)
-            .putExtra("initial", "Login from login activity")
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        context.startActivity(intent)
-    }
+    val intent = Intent(activity, MainActivity::class.java)
+        .putExtra("initial", "Login from login activity")
+    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+    activity?.finish()
+    activity?.startActivity(intent)
 }
 
 @Composable

@@ -147,17 +147,23 @@ private fun ItemSchoolSelected(
                             text = AnnotatedString(settings?.selectedSchool?.schoolName ?: ""),
                         )
                         Row() {
+//                            Text(
+//                                text = AnnotatedString(settings?.selectedSchool?.role ?: ""),
+//                                color = Color.Gray
+//                            )
+//                            Spacer(
+//                                modifier = Modifier
+//                                    .width(4.dp)
+//                                    .background(Color.Gray)
+//                            )
                             Text(
-                                text = AnnotatedString(settings?.selectedSchool?.role ?: ""),
-                                color = Color.Gray
-                            )
-                            Spacer(
-                                modifier = Modifier
-                                    .width(4.dp)
-                                    .background(Color.Gray)
-                            )
-                            Text(
-                                text = AnnotatedString(person?.name ?: ""),
+                                text = AnnotatedString(if (person?.role?.isEmpty() == true) {
+                                    // for parent
+                                    settings?.selectedSchool?.role ?: ""
+                                } else {
+                                    // for student
+                                    (settings?.selectedSchool?.role ?: "")+" "+(person?.name ?: "")
+                                }),
                                 color = Color.Gray,
                             )
                         }

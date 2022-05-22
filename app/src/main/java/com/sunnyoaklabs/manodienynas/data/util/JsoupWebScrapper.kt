@@ -16,20 +16,36 @@ class JsoupWebScrapper() : WebScrapper {
             val document = Jsoup.parse(html)
             val element = document.getElementById("act-user-info-text")
             val name = element.getElementsByTag("a").attr("title")
-            val role = element.getElementsByTag("span").attr("title")
-            val elementSchoolWrapper = document.getElementsByClass("school-wrapper")
+            var role = ""
             val schoolsInfo: MutableList<SchoolInfo> = mutableListOf()
-            val elementSchoolsDetails = document.getElementsByClass("additional-school-user-details")
-            for (i in elementSchoolWrapper.indices) {
-                val roleName = elementSchoolsDetails[i].getElementsByClass("role-name").text()
-                val schoolName =
-                    elementSchoolsDetails[i].getElementsByClass("additional-school-name overflowed-text ")
-                        .text()
-                val schoolId =
-                    elementSchoolWrapper[i]
-                        .getElementsByTag("li").attr("onClick").toString()
-                        .removePrefix("window.location.href = '").removeSuffix("'")
-                schoolsInfo.add(SchoolInfo(roleName, schoolName, schoolId))
+            val childName = try { element.getElementsByClass("child-name-sm").text() } catch (e: Exception) { "" }
+            if (childName.isNotEmpty()) {
+                val elementSchoolWrapper = document.getElementsByClass("child-info-wrapper-in-list current_child")
+                for (i in elementSchoolWrapper.indices) {
+                    val elementSchoolsDetails = document.getElementsByClass("child-details")
+                    val roleName = elementSchoolsDetails[i].getElementsByClass("child-name-surname overflowed-text").text()
+                    val schoolName = elementSchoolsDetails[i].getElementsByClass("child-school-class").text()
+                    val schoolId =
+                        elementSchoolWrapper.attr("onClick").toString()
+                            .removePrefix("window.location.href = '").removeSuffix("'")
+                    schoolsInfo.add(SchoolInfo(roleName, schoolName, schoolId))
+                }
+            } else {
+                role = element.getElementsByTag("span").attr("title")
+                val elementSchoolWrapper = document.getElementsByClass("school-wrapper")
+                val elementSchoolsDetails =
+                    document.getElementsByClass("additional-school-user-details")
+                for (i in elementSchoolWrapper.indices) {
+                    val roleName = elementSchoolsDetails[i].getElementsByClass("role-name").text()
+                    val schoolName =
+                        elementSchoolsDetails[i].getElementsByClass("additional-school-name overflowed-text ")
+                            .text()
+                    val schoolId =
+                        elementSchoolWrapper[i]
+                            .getElementsByTag("li").attr("onClick").toString()
+                            .removePrefix("window.location.href = '").removeSuffix("'")
+                    schoolsInfo.add(SchoolInfo(roleName, schoolName, schoolId))
+                }
             }
             return Resource.Success(Person(
                 name = name,

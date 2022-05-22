@@ -29,7 +29,7 @@
     <!-- Main activity -->
     <string name="bottom_nav_events">Įvykiai</string>
     <string name="bottom_nav_marks">Pažymiai</string>
-    <string name="bottom_nav_messages">Pranešimai</string>
+    <string name="bottom_nav_messages">Žinutės</string>
     <string name="bottom_nav_more">Daugiau</string>
     <string name="bottom_nav_terms">Pusmečiai</string>
     <string name="bottom_nav_settings">Nustatymai</string>
