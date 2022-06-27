@@ -459,9 +459,4 @@ class MainViewModel @Inject constructor(
         return app.resources.openRawResource(R.raw.app_description)
             .bufferedReader().use(BufferedReader::readText)
     }
-
-    fun getAppLicense(): String {
-        return app.resources.openRawResource(R.raw.app_license)
-            .bufferedReader().use(BufferedReader::readText)
-    }
 }

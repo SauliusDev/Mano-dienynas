@@ -27,8 +27,8 @@ android {
         applicationId "com.sunnyoaklabs.manodienynas"
         minSdk 26 // setInitialTimeRanges() fun requires min 26
         targetSdk 31
-        versionCode 5 /** [on release] {...+1} **/
-        versionName "1.1" /** [on release] {...+1} **/
+        versionCode 6 /** [on release] {...+1} **/
+        versionName "1.2" /** [on release] {...+1} **/
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -99,9 +99,9 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:29.0.4')
 
     // Compose dependencies
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
-    implementation "androidx.navigation:navigation-compose:2.5.0-alpha01"
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
+    implementation "androidx.navigation:navigation-compose:2.5.0-rc01"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
     // Coroutines
